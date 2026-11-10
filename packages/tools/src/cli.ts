@@ -2,7 +2,7 @@
  * Text interface: play a game against the AI in the terminal.
  *
  * Usage: pnpm play [--lang it|en] [--deck forge|sprout|forgeSprout] [--opponent <deck>]
- *                  [--ai easy|random] [--seed N] [--auto]
+ *                  [--ai easy|medium|random] [--seed N] [--auto]
  * --auto lets the AI play for you too (useful to watch a game).
  */
 import { createInterface } from "node:readline";
@@ -68,7 +68,7 @@ async function main(): Promise<void> {
   const tr = createTranslator(lang);
   const deckName = values.deck && STARTER_DECKS[values.deck] ? values.deck : "forge";
   const foeDeckName = values.opponent && STARTER_DECKS[values.opponent] ? values.opponent : "sprout";
-  const level: AiLevel = values.ai === "random" ? "random" : "easy";
+  const level: AiLevel = values.ai === "random" || values.ai === "medium" ? values.ai : "easy";
   const seed = values.seed ? Number(values.seed) : Date.now() % 1_000_000;
   const rng = new AiRandom(seed + 17);
 

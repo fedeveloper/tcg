@@ -25,7 +25,7 @@ import {
   BEACON_LIGHT,
   damageBeacon,
 } from "./core.ts";
-import { killKeeper, placeKeeper, processDeaths, runEffectList, runEffects, runRoundTrigger, targetStillValid } from "./effects.ts";
+import { killKeeper, placeKeeper, replaceKeeper, processDeaths, runEffectList, runEffects, runRoundTrigger, targetStillValid } from "./effects.ts";
 import { isLegal } from "./legal.ts";
 import { randomInt, shuffle } from "./rng.ts";
 import {
@@ -254,7 +254,10 @@ function resolveLink(state: GameState, link: ChainLink, events: GameEvent[]): vo
   const chosen = a.targets[0] ?? null;
   switch (def.type) {
     case "keeper": {
-      if (!a.slot || keeperAt(state, player, a.slot)) return fizzle(state, a.card, events);
+      if (!a.slot) return fizzle(state, a.card, events);
+      // A new keeper can replace one of your keepers. The old keeper goes to the graveyard (not a death).
+      const old = keeperAt(state, player, a.slot);
+      if (old) replaceKeeper(state, old, events);
       placeKeeper(state, player, a.card, a.slot, events);
       shiftTide(state, player, def.tidePush ?? 0, events);
       runEffects(state, "enterPlay", { controller: player, source: a.card, lane: a.slot.lane, chosen, resonance: link.resonance }, events);

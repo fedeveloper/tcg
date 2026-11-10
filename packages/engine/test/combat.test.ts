@@ -6,7 +6,7 @@ const light = (s: ReturnType<typeof blank>, p: 0 | 1) => s.players[p].beacons.ma
 describe("clash", () => {
   it("a front keeper with no blocker damages the enemy beacon of its lane", () => {
     const s = blank();
-    put(s, 0, "forge-001", 1); // 2/1 in lane B
+    put(s, 0, "forge-001", 1); // 2/2 in lane B
     const next = endManeuver(s).state;
     expect(light(next, 1)).toEqual([10, 8, 10]);
   });
@@ -19,14 +19,14 @@ describe("clash", () => {
 
   it("Surge lets a keeper attack in the round it enters play", () => {
     const s = blank();
-    put(s, 0, "forge-002", 0, "front", true); // 1/1 Surge
-    expect(light(endManeuver(s).state, 1)).toEqual([9, 10, 10]);
+    put(s, 0, "forge-002", 0, "front", true); // 2/1 Surge
+    expect(light(endManeuver(s).state, 1)).toEqual([8, 10, 10]);
   });
 
   it("a fresh blocker blocks and hits back the attacker", () => {
     const s = blank();
     const attacker = put(s, 0, "forge-004", 0); // 2/3
-    const blocker = put(s, 1, "forge-001", 0, "front", true); // 2/1, fresh
+    const blocker = put(s, 1, "forge-001", 0, "front", true); // 2/2, fresh
     const { state, events } = endManeuver(s);
     expect(light(state, 1)).toEqual([10, 10, 10]);
     expect(events).toContainEqual({ type: "KeeperDamaged", keeper: attacker, amount: 2, source: null });
@@ -35,8 +35,8 @@ describe("clash", () => {
 
   it("two ready front keepers deal damage at the same time", () => {
     const s = blank();
-    const a = put(s, 0, "forge-001", 2); // 2/1
-    const b = put(s, 1, "forge-001", 2); // 2/1
+    const a = put(s, 0, "forge-001", 2); // 2/2
+    const b = put(s, 1, "forge-001", 2); // 2/2
     const { events } = endManeuver(s);
     const died = events.filter((e) => e.type === "KeeperDied").map((e) => (e.type === "KeeperDied" ? e.keeper : ""));
     expect(died.sort()).toEqual([a, b].sort());
@@ -45,19 +45,19 @@ describe("clash", () => {
   it("excess damage does not reach the beacon without Overrun", () => {
     const s = blank();
     put(s, 0, "forge-013", 0); // 7/6 Overrun, Surge
-    put(s, 0, "forge-004", 1); // 2/3, no Overrun
-    put(s, 1, "forge-001", 0); // 2/1
+    put(s, 0, "forge-004", 1); // 3/3, no Overrun
+    put(s, 1, "forge-001", 0); // 2/2
     put(s, 1, "sprout-t01", 1); // 1/1
     const next = endManeuver(s).state;
-    expect(light(next, 1)).toEqual([4, 10, 10]); // 7 - 1 remaining Hold = 6 to the beacon
+    expect(light(next, 1)).toEqual([5, 10, 10]); // 7 - 2 remaining Hold = 5 to the beacon
   });
 
   it("Reach lets a back keeper attack the enemy front keeper or beacon", () => {
     const s = blank();
-    put(s, 0, "forge-005", 0, "back"); // 1/2 Reach
-    put(s, 0, "forge-001", 1, "back"); // 2/1, no Reach: does not attack from the back
+    put(s, 0, "forge-005", 0, "back"); // 2/2 Reach
+    put(s, 0, "forge-001", 1, "back"); // 2/2, no Reach: does not attack from the back
     const next = endManeuver(s).state;
-    expect(light(next, 1)).toEqual([9, 10, 10]);
+    expect(light(next, 1)).toEqual([8, 10, 10]);
   });
 
   it("damage on keepers resets at Dusk", () => {

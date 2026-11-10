@@ -43,7 +43,7 @@ describe("responses and chain", () => {
     expect(st.chain).toHaveLength(4);
     expect(legalActions(st)).toEqual([{ type: "Pass" }]);
     const end = run(st, PASS).state;
-    expect(attackOf(end, k)).toBe(2 + 4);
+    expect(attackOf(end, k)).toBe(3 + 4);
   });
 
   it("a rite with a target that is gone has no effect", () => {
@@ -58,13 +58,13 @@ describe("responses and chain", () => {
     expect(events).toContainEqual({ type: "Fizzled", card: hymn });
   });
 
-  it("a keeper whose slot is taken when it resolves goes to the graveyard", () => {
+  it("a keeper replaces the keeper that took its slot while the card was on the chain", () => {
     const s = blank();
     const a = give(s, 0, "forge-001");
     const st = run(s, findPlay(s, a, (x) => x.slot?.lane === 0 && x.slot.row === "front")).state;
-    put(st, 0, "forge-004", 0); // the slot is taken while the card is on the chain
+    const other = put(st, 0, "forge-004", 0); // the slot is taken while the card is on the chain
     const { state, events } = run(st, PASS);
-    expect(events).toContainEqual({ type: "Fizzled", card: a });
-    expect(state.players[0].graveyard).toContain(a);
+    expect(state.players[0].board[0][0]).toBe(a);
+    expect(events.some((e) => e.type === "KeeperReplaced" && e.keeper === other)).toBe(true);
   });
 });

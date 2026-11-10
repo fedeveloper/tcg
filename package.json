@@ -15,7 +15,8 @@
     "sim": "tsx packages/tools/src/sim.ts",
     "play": "tsx packages/tools/src/cli.ts",
     "assets": "python3 assets/src/build.py",
-    "check": "pnpm typecheck && pnpm test && pnpm validate:cards && pnpm check:i18n && pnpm sim --games 500"
+    "check": "pnpm typecheck && pnpm test && pnpm validate:cards && pnpm check:i18n && pnpm sim --games 500",
+    "duel": "tsx packages/tools/src/duel.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

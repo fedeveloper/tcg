@@ -258,7 +258,8 @@
       "beacons": "Due Fari sono spenti.",
       "roundLimit": "La partita ha raggiunto il round 20.",
       "concede": "Un giocatore ha abbandonato."
-    }
+    },
+    "KeeperReplaced": "{{card}} lascia il posto e va nel cimitero."
   },
   "actions": {
     "keep": "Tieni la mano",
@@ -271,7 +272,8 @@
     "activate": "Attiva {{card}}{{target}}",
     "pass": "Passa",
     "resolve": "Lascia risolvere la catena",
-    "targetSuffix": " su {{target}}"
+    "targetSuffix": " su {{target}}",
+    "replaces": " (sostituisce {{old}})"
   },
   "ui": {
     "title": "Fari Sommersi",

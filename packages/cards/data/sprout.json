@@ -2,9 +2,9 @@
   { "id": "sprout-001", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 1, "attack": 1, "hold": 2, "keywords": ["rooted"] },
   {
     "id": "sprout-002", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 1, "attack": 1, "hold": 1,
-    "effects": [{ "when": "dusk", "actions": [{ "op": "buff", "hold": 1, "until": "permanent", "target": "self" }] }]
+    "effects": [{ "when": "dusk", "actions": [{ "op": "buff", "attack": 1, "until": "permanent", "target": "self" }] }]
   },
-  { "id": "sprout-003", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 2, "attack": 1, "hold": 4, "keywords": ["rooted"] },
+  { "id": "sprout-003", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 2, "attack": 1, "hold": 3, "keywords": ["rooted"] },
   {
     "id": "sprout-004", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 2, "attack": 2, "hold": 2,
     "effects": [{ "when": "enterPlay", "actions": [{ "op": "heal", "amount": 2, "target": "allyBeaconSameLane" }] }]
@@ -13,13 +13,13 @@
     "id": "sprout-005", "type": "keeper", "faction": "sprout", "rarity": "uncommon", "cost": 2, "attack": 1, "hold": 2, "keywords": ["reach"],
     "effects": [{ "when": "dusk", "actions": [{ "op": "buff", "attack": 1, "until": "permanent", "target": "self" }] }]
   },
-  { "id": "sprout-006", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 3, "attack": 1, "hold": 6, "keywords": ["rooted"] },
+  { "id": "sprout-006", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 3, "attack": 1, "hold": 5, "keywords": ["rooted"] },
   {
     "id": "sprout-007", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 3, "attack": 2, "hold": 3,
     "effects": [{ "when": "enterPlay", "actions": [{ "op": "summon", "card": "sprout-t01", "where": "sameLaneBack" }] }]
   },
   {
-    "id": "sprout-008", "type": "keeper", "faction": "sprout", "rarity": "uncommon", "cost": 4, "attack": 3, "hold": 5, "keywords": ["rooted"],
+    "id": "sprout-008", "type": "keeper", "faction": "sprout", "rarity": "uncommon", "cost": 4, "attack": 3, "hold": 4, "keywords": ["rooted"],
     "effects": [{ "when": "dusk", "actions": [{ "op": "heal", "amount": 1, "target": "allyBeaconSameLane" }] }]
   },
   {
@@ -28,18 +28,18 @@
     "effects": [{ "when": "enterPlay", "condition": { "resonance": true }, "actions": [{ "op": "buff", "attack": 1, "hold": 1, "until": "permanent", "target": "chosen" }] }]
   },
   {
-    "id": "sprout-010", "type": "keeper", "faction": "sprout", "rarity": "rare", "cost": 5, "attack": 3, "hold": 6, "keywords": ["rooted"],
+    "id": "sprout-010", "type": "keeper", "faction": "sprout", "rarity": "rare", "cost": 5, "attack": 3, "hold": 5, "keywords": ["rooted"],
     "effects": [{ "when": "dusk", "actions": [{ "op": "buff", "attack": 1, "hold": 1, "until": "permanent", "target": "self" }] }]
   },
   {
-    "id": "sprout-011", "type": "keeper", "faction": "sprout", "rarity": "legendary", "cost": 7, "attack": 5, "hold": 8, "keywords": ["rooted"],
+    "id": "sprout-011", "type": "keeper", "faction": "sprout", "rarity": "legendary", "cost": 7, "attack": 5, "hold": 7, "keywords": ["rooted"],
     "effects": [{ "when": "dusk", "actions": [{ "op": "heal", "amount": 1, "target": "allAllyBeacons" }] }]
   },
   {
     "id": "sprout-012", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 4, "attack": 4, "hold": 4,
     "effects": [{ "when": "enterPlay", "condition": { "highTide": true }, "actions": [{ "op": "buff", "hold": 2, "until": "permanent", "target": "self" }] }]
   },
-  { "id": "sprout-013", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 2, "attack": 2, "hold": 3, "tidePush": 1 },
+  { "id": "sprout-013", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 2, "attack": 2, "hold": 2, "tidePush": 1 },
   {
     "id": "sprout-014", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 2, "attack": 1, "hold": 2,
     "effects": [{ "when": "enterPlay", "actions": [{ "op": "draw", "amount": 1 }] }]

@@ -1,16 +1,16 @@
 [
-  { "id": "forge-001", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 1, "attack": 2, "hold": 1 },
-  { "id": "forge-002", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 1, "attack": 1, "hold": 1, "keywords": ["surge"] },
-  { "id": "forge-003", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 3, "hold": 1, "tidePush": 1 },
-  { "id": "forge-004", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 2, "hold": 3 },
-  { "id": "forge-005", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 1, "hold": 2, "keywords": ["reach"] },
-  { "id": "forge-006", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 3, "hold": 2, "keywords": ["surge", "wear"] },
-  { "id": "forge-007", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 4, "attack": 5, "hold": 3, "keywords": ["overrun", "wear"] },
+  { "id": "forge-001", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 1, "attack": 2, "hold": 2 },
+  { "id": "forge-002", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 1, "attack": 2, "hold": 1, "keywords": ["surge"] },
+  { "id": "forge-003", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 3, "hold": 2, "tidePush": 1 },
+  { "id": "forge-004", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 3, "hold": 3 },
+  { "id": "forge-005", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 2, "hold": 2, "keywords": ["reach"] },
+  { "id": "forge-006", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 4, "hold": 2, "keywords": ["surge", "wear"] },
+  { "id": "forge-007", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 4, "attack": 5, "hold": 4, "keywords": ["overrun", "wear"] },
   {
     "id": "forge-008", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 2, "hold": 2,
-    "effects": [{ "when": "enterPlay", "actions": [{ "op": "damage", "amount": 1, "target": "enemyBeaconSameLane" }] }]
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "damage", "amount": 2, "target": "enemyBeaconSameLane" }] }]
   },
-  { "id": "forge-009", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 3, "attack": 2, "hold": 3, "tidePush": 2 },
+  { "id": "forge-009", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 3, "attack": 3, "hold": 3, "tidePush": 2 },
   {
     "id": "forge-010", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 2, "keywords": ["reach"],
     "target": { "kind": "keeper", "side": "enemy" },
@@ -40,7 +40,7 @@
   {
     "id": "forge-016", "type": "slowRite", "faction": "forge", "rarity": "common", "cost": 2,
     "target": { "kind": "beacon", "side": "enemy" },
-    "effects": [{ "when": "play", "actions": [{ "op": "damage", "amount": 3, "target": "chosen" }] }]
+    "effects": [{ "when": "play", "actions": [{ "op": "damage", "amount": 4, "target": "chosen" }] }]
   },
   {
     "id": "forge-017", "type": "quickRite", "faction": "forge", "rarity": "common", "cost": 1,
@@ -52,7 +52,7 @@
     "effects": [{ "when": "play", "actions": [{ "op": "tide", "amount": 2 }, { "op": "draw", "amount": 1 }] }]
   },
   {
-    "id": "forge-019", "type": "slowRite", "faction": "forge", "rarity": "rare", "cost": 4,
+    "id": "forge-019", "type": "slowRite", "faction": "forge", "rarity": "rare", "cost": 3,
     "effects": [{ "when": "play", "actions": [{ "op": "damage", "amount": 2, "target": "allEnemyKeepers" }] }]
   },
   {
