@@ -695,6 +695,25 @@ def sprout_t01(f):  # Germoglino: a tiny sprout token
     return finish(c)
 
 
+def unknown_keeper(f):  # A hooded keeper with a lantern: the fallback for a card with no art yet
+    c = Canvas(32, 32)
+    a = human(c, f, cx=13, body="slate", legs="iron", skin="steel")
+    b = a["b"]
+    c.shade(poly([(8, a["ty"]), (18, a["ty"]), (20, 29), (6, 29)]), "slate")  # long cloak
+    c.shade(ell(13, a["hy"] - 1, 5, 5), "slate")  # hood
+    c.fill(rect(13, a["hy"] - 1, 16, a["hy"] + 2), "ink")
+    c.dots("foam", (14, a["hy"]), (16, a["hy"]))
+    arm(c, a["sh_f"], (22, a["ty"] + 4), "slate", hand="ash")
+    lx, ly = 23, a["ty"] + 6 + abs(SWAY[f])
+    c.fill(rect(lx - 2, ly, lx + 2, ly + 5), "glow")
+    c.fill(rect(lx - 2, ly, lx + 2, ly) | rect(lx - 2, ly + 5, lx + 2, ly + 5), "copper")
+    c.fill(rect(lx, ly + 1, lx, ly + 4), "white")
+    finish(c)
+    if f % 2 == 0:
+        c.dots("glow", (lx - 4, ly + 2), (lx + 4, ly + 3))
+    return c
+
+
 KEEPERS = {
     "forge-001": forge_001, "forge-002": forge_002, "forge-003": forge_003, "forge-004": forge_004,
     "forge-005": forge_005, "forge-006": forge_006, "forge-007": forge_007, "forge-008": forge_008,

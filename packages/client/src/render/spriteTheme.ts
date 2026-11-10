@@ -196,11 +196,16 @@ export class SpriteTheme implements Theme {
   ) {}
 
   private anim(source: Spritesheet, name: string, loop = true): AnimatedSprite {
-    const s = new AnimatedSprite(source.animations[name] ?? [Texture.EMPTY]);
+    const s = new AnimatedSprite(this.frames(source, name));
     s.animationSpeed = IDLE_SPEED;
     s.loop = loop;
     if (loop) s.play();
     return s;
+  }
+
+  /** The frames of an animation. A Keeper with no art yet gets the hooded fallback sprite. */
+  private frames(source: Spritesheet, name: string): Texture[] {
+    return source.animations[name] ?? (name.startsWith("keeper/") ? source.animations["keeper/unknown/idle"] : undefined) ?? [Texture.EMPTY];
   }
 
   background(): Container {
@@ -237,7 +242,7 @@ export class SpriteTheme implements Theme {
     c.update = (l: KeeperLook) => {
       if (l.cardId !== shown) {
         shown = l.cardId;
-        sprite.textures = this.art.keepers.animations[`keeper/${l.cardId}/idle`] ?? [Texture.EMPTY];
+        sprite.textures = this.frames(this.art.keepers, `keeper/${l.cardId}/idle`);
       }
       sprite.scale.x = l.mine ? 1 : -1;
       // A keeper that entered in this round waits: it is darker and it does not move.

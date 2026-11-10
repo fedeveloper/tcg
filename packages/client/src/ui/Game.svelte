@@ -14,16 +14,8 @@
   import { integerScale, VIEW_HEIGHT, WIDTH, type Rect } from "../render/layout.ts";
   import { ShapeTheme, type Theme } from "../render/theme.ts";
   import { loadArt, SpriteTheme } from "../render/spriteTheme.ts";
-  import artData from "../../../../assets/sheets/card-art.json";
-  import artUrl from "../../../../assets/sheets/card-art.png?url";
-
-  /** CSS for the illustration of a card: a 56x40 frame of the art sheet at scale 2. */
-  function artStyle(cardId: string): string {
-    const f = (artData.frames as Record<string, { frame: { x: number; y: number } }>)[`art/${cardId}`]?.frame;
-    if (!f) return "display: none";
-    const { w, h } = artData.meta.size;
-    return `background-image: url(${artUrl}); background-position: -${f.x * 2}px -${f.y * 2}px; background-size: ${w * 2}px ${h * 2}px;`;
-  }
+  import PixelCard from "./PixelCard.svelte";
+  import type { CardFace } from "./pixelCanvas.ts";
 
   interface Props {
     tr: Translator;
@@ -213,7 +205,19 @@
     const inst = game?.cards[id];
     const def = inst ? CARDS[inst.cardId] : undefined;
     if (!def) return null;
-    return { def, summary: cardSummary(tr, def), rules: cardRulesText(tr, def), echo: !!inst?.echoCopy };
+    const echo = !!inst?.echoCopy;
+    const keeper = def.type === "keeper";
+    // The text box of the pixel card has one line: the keywords of a Keeper, or the type of the card.
+    const lines = [keeper && def.keywords.length ? def.keywords.map((k) => tr.t(`keywords.${k}.name`)).join(", ") : tr.t(`types.${def.type}`)];
+    const face: CardFace = {
+      cardId: def.id,
+      name: tr.t(`${def.id}.name`, { ns: "cards" }),
+      faction: def.faction,
+      cost: def.cost,
+      stats: keeper ? { attack: echo ? 1 : (def.attack ?? 0), hold: echo ? 1 : (def.hold ?? 1) } : undefined,
+      lines,
+    };
+    return { def, face, summary: cardSummary(tr, def), rules: cardRulesText(tr, def), echo };
   }
 
   function playable(id: string): boolean {
@@ -299,8 +303,8 @@
             class:dim={game.phase !== "mulligan" && !playable(id)}
             onclick={() => (game?.phase === "mulligan" ? toggleMulligan(id) : pickCard(id))}
           >
-            <div class="art" style={artStyle(info.def.id)}></div>
-            <div class="title">{info.summary}{info.echo ? " [1/1]" : ""}</div>
+            <PixelCard face={info.face} />
+            <span class="sr-only">{info.summary}{info.echo ? " [1/1]" : ""}</span>
             {#each info.rules as line}<div class="rules">{line}</div>{/each}
           </button>
         {/if}
@@ -344,15 +348,13 @@
   .board { line-height: 0; max-width: 100%; overflow: hidden; }
   .board :global(canvas) { image-rendering: pixelated; max-width: 100%; }
   .hand { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; width: 100%; max-width: 1440px; }
-  .card { width: 190px; min-height: 92px; text-align: left; padding: 6px 8px; font-size: 12px; border-width: 2px; }
-  .card.forge { border-color: #c8553d; }
-  .card.sprout { border-color: #4f9d69; }
-  .card.neutral { border-color: #8a8a8a; }
-  .card.selected { outline: 2px solid var(--accent); }
+  .card { width: 148px; padding: 8px 8px 6px; font-size: 11px; text-align: left; display: flex; flex-direction: column; align-items: center; gap: 6px; background: transparent; border: 0; transition: transform 0.12s ease-out; }
+  .card:hover:not(.dim) { transform: translateY(-6px) rotate(-1deg); background: transparent; }
+  .card.selected { transform: translateY(-12px); filter: drop-shadow(0 0 6px var(--accent)); }
   .card.dim { opacity: 0.55; }
-  .card .art { width: 112px; height: 80px; margin: 0 auto 6px; image-rendering: pixelated; outline: 2px solid #1a1423; }
-  .card .title { font-weight: bold; margin-bottom: 4px; }
-  .card .rules { color: var(--muted); }
+  .card .rules { color: var(--muted); width: 100%; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
   .chain, .log { width: 100%; max-width: 1440px; background: var(--panel); border-radius: 4px; padding: 6px 10px; font-size: 12px; }
   .lesson { width: 100%; max-width: 1440px; background: #1d2f22; border: 1px solid #4f9d69; border-radius: 4px; padding: 8px 10px; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
   .lesson .goal { color: var(--accent); }

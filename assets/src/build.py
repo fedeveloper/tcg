@@ -19,7 +19,7 @@ import font as font_mod  # noqa: E402
 import ui  # noqa: E402
 from beacon import STATES, beacon  # noqa: E402
 from cards import CARD_IDS, illustration  # noqa: E402
-from keepers import KEEPERS  # noqa: E402
+from keepers import KEEPERS, unknown_keeper  # noqa: E402
 from palette import COLOURS, FACTION_COLOURS, RGB  # noqa: E402
 from px import Canvas  # noqa: E402
 
@@ -93,6 +93,10 @@ def build_keepers():
         names = [f"keeper/{kid}/idle/{f}" for f in range(4)]
         items += [(n, fn(f)) for f, n in enumerate(names)]
         anims[f"keeper/{kid}/idle"] = names
+    # A fallback sprite for a Keeper that has no art yet.
+    names = [f"keeper/unknown/idle/{f}" for f in range(4)]
+    items += [(n, unknown_keeper(f)) for f, n in enumerate(names)]
+    anims["keeper/unknown/idle"] = names
     pack("keepers", items, 8, anims, {"frameDurationMs": IDLE_MS})
 
 
@@ -100,7 +104,7 @@ def build_cards():
     arts = {cid: illustration(cid) for cid in CARD_IDS}
     pack("card-art", [(f"art/{cid}", c) for cid, c in arts.items()], 8)
     frames = [(f"frame/{fac}/{'keeper' if k else 'spell'}", ui.card_frame(fac, k))
-              for fac in ("forge", "sprout", "neutral") for k in (True, False)]
+              for fac in ("forge", "sprout", "neutral", "abyss", "gear", "vesper") for k in (True, False)]
     frames.append(("frame/back", ui.card_back()))
     pack("card-frames", frames, 7, extra={"artWindow": dict(zip("xywh", ui.ART))})
     return arts

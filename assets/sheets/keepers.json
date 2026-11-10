@@ -2399,6 +2399,86 @@
     "w": 32,
     "h": 32
    }
+  },
+  "keeper/unknown/idle/0": {
+   "frame": {
+    "x": 0,
+    "y": 480,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  },
+  "keeper/unknown/idle/1": {
+   "frame": {
+    "x": 32,
+    "y": 480,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  },
+  "keeper/unknown/idle/2": {
+   "frame": {
+    "x": 64,
+    "y": 480,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
+  },
+  "keeper/unknown/idle/3": {
+   "frame": {
+    "x": 96,
+    "y": 480,
+    "w": 32,
+    "h": 32
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 32
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 32
+   }
   }
  },
  "meta": {
@@ -2407,7 +2487,7 @@
   "format": "RGBA8888",
   "size": {
    "w": 256,
-   "h": 480
+   "h": 512
   },
   "scale": "1",
   "frameDurationMs": 180
@@ -2592,6 +2672,12 @@
    "keeper/sprout-t01/idle/1",
    "keeper/sprout-t01/idle/2",
    "keeper/sprout-t01/idle/3"
+  ],
+  "keeper/unknown/idle": [
+   "keeper/unknown/idle/0",
+   "keeper/unknown/idle/1",
+   "keeper/unknown/idle/2",
+   "keeper/unknown/idle/3"
   ]
  }
 }

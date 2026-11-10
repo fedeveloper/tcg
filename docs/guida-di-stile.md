@@ -74,7 +74,7 @@ La carta misura 64 × 88 pixel.
 | Tenuta (solo Custodi) | centro 55, 80 | scudo | Numero in `white` |
 
 - Disegna prima l'illustrazione, poi la cornice.
-- La cornice esiste in 6 varianti: 3 fazioni × 2 tipi (`keeper`, `spell`).
+- La cornice esiste in 12 varianti: 6 fazioni × 2 tipi (`keeper`, `spell`).
 - La variante `spell` serve per Riti, Reliquie e Luoghi.
 - Il rombo indica l'Attacco. Lo scudo indica la Tenuta. La forma non dipende dal colore.
 - Il testo completo delle regole appare nella vista a schermo intero.
