@@ -1,0 +1,6 @@
+[
+  {
+    "id": "neutral-spark", "type": "quickRite", "faction": "neutral", "rarity": "common", "cost": 0, "token": true,
+    "effects": [{ "when": "play", "actions": [{ "op": "ember", "amount": 1 }] }]
+  }
+]

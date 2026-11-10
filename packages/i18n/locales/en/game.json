@@ -1,0 +1,345 @@
+{
+  "factions": {
+    "forge": "Forge",
+    "abyss": "Abyss",
+    "sprout": "Sprout",
+    "gear": "Gear",
+    "vesper": "Vesper",
+    "neutral": "Neutral"
+  },
+  "types": {
+    "keeper": "Keeper",
+    "quickRite": "Quick Rite",
+    "slowRite": "Slow Rite",
+    "relic": "Relic",
+    "site": "Site"
+  },
+  "rarities": {
+    "common": "Common",
+    "uncommon": "Uncommon",
+    "rare": "Rare",
+    "legendary": "Legendary"
+  },
+  "keywords": {
+    "rooted": {
+      "name": "Rooted",
+      "reminder": "It cannot be moved. It has +1 Hold in the Front row."
+    },
+    "reach": {
+      "name": "Reach",
+      "reminder": "It also attacks from the Back row."
+    },
+    "overrun": {
+      "name": "Overrun",
+      "reminder": "Excess damage hits the Beacon."
+    },
+    "echo": {
+      "name": "Echo",
+      "reminder": "When it dies, a 1/1 copy returns to your hand."
+    },
+    "wear": {
+      "name": "Wear",
+      "reminder": "It loses 1 Attack at each Dusk."
+    },
+    "anchor": {
+      "name": "Anchor",
+      "reminder": "The Tide does not move while it is in play."
+    },
+    "surge": {
+      "name": "Surge",
+      "reminder": "It also attacks in the round it enters play."
+    }
+  },
+  "conditions": {
+    "highTide": {
+      "name": "High Tide",
+      "reminder": "Active when the Tide is on your side by 2 or more."
+    },
+    "lowTide": {
+      "name": "Ebb",
+      "reminder": "Active when the Tide is on the opponent's side by 2 or more."
+    },
+    "resonance": {
+      "name": "Resonance",
+      "reminder": "Active if you already played a card of the same faction this round."
+    }
+  },
+  "triggers": {
+    "enterPlay": "Enters play",
+    "dawn": "Dawn",
+    "dusk": "Dusk",
+    "death": "Death"
+  },
+  "stats": {
+    "attack": "{{value}} Attack",
+    "hold": "{{value}} Hold",
+    "both": "{{attack}}/{{hold}}"
+  },
+  "targets": {
+    "keeper": {
+      "enemy": "an enemy Keeper",
+      "ally": "one of your Keepers",
+      "any": "a Keeper"
+    },
+    "row": {
+      "front": " in the Front row",
+      "back": " in the Back row"
+    },
+    "sameLane": " in this lane",
+    "beacon": {
+      "enemy": "an enemy Beacon",
+      "ally": "one of your Beacons"
+    },
+    "self": "this Keeper",
+    "attachedKeeper": "the Keeper with this Relic",
+    "attachedBeacon": "the Beacon with this Relic",
+    "enemyBeaconSameLane": "the enemy Beacon in this lane",
+    "allyBeaconSameLane": "your Beacon in this lane",
+    "enemyFrontSameLane": "the enemy Front Keeper in this lane",
+    "enemyKeepersSameLane": "each enemy Keeper in this lane",
+    "allyKeepersSameLane": "each of your Keepers in this lane",
+    "allEnemyKeepers": "each enemy Keeper",
+    "allAllyKeepers": "each of your Keepers",
+    "allEnemyBeacons": "each enemy Beacon",
+    "allAllyBeacons": "each of your Beacons",
+    "again": {
+      "keeper": "that Keeper",
+      "beacon": "that Beacon"
+    }
+  },
+  "rules": {
+    "join": ", then ",
+    "conditionPrefix": "{{condition}}: ",
+    "triggerPrefix": "{{trigger}}: ",
+    "damage_one": "deal 1 damage {{target}}",
+    "damage_other": "deal {{count}} damage {{target}}",
+    "healBeacon": "{{target}} recovers {{count}} Light",
+    "buff": "{{target}} gets {{stats}}",
+    "buffUntilDusk": "{{target}} gets {{stats}} until Dusk",
+    "destroy": "destroy {{target}}",
+    "grant": "{{target}} gains {{keyword}}",
+    "draw_one": "draw 1 card",
+    "draw_other": "draw {{count}} cards",
+    "tide": "move the Tide {{count}} toward you",
+    "tideAway": "move the Tide {{count}} toward the opponent",
+    "ember": "gain {{count}} Ember",
+    "summon": {
+      "sameLaneFront": "create a {{stats}} {{card}} in the Front row of this lane",
+      "sameLaneBack": "create a {{stats}} {{card}} in the Back row of this lane",
+      "eachLaneBack": "create a {{stats}} {{card}} in the Back row of each lane"
+    },
+    "tidePush": "Move the Tide {{count}} toward you.",
+    "tidePushAway": "Move the Tide {{count}} toward the opponent.",
+    "attachKeeper": "Attach to one of your Keepers.",
+    "attachBeacon": "Attach to one of your Beacons.",
+    "auraKeeper": "The Keeper gets {{stats}}.",
+    "auraKeeperKeywords": "The Keeper has {{keywords}}.",
+    "auraSite": "Keepers in this lane get {{stats}}.",
+    "auraSiteKeywords": "Keepers in this lane have {{keywords}}.",
+    "ability": "{{cost}} Ember: {{text}} (once per round).",
+    "healKeeper": "{{target}} heals {{count}} damage",
+    "triggerWithCondition": "{{trigger}} ({{condition}}): ",
+    "sacrifice_one": "Sacrifice 1: to play this card, destroy 1 of your Keepers.",
+    "sacrifice_other": "Sacrifice {{count}}: to play this card, destroy {{count}} of your Keepers."
+  },
+  "board": {
+    "lanes": [
+      "A",
+      "B",
+      "C"
+    ],
+    "rows": {
+      "front": "Front",
+      "back": "Back"
+    },
+    "slot": "{{lane}} {{row}}",
+    "beacon": "Beacon {{lane}}",
+    "yourBeacon": "your Beacon {{lane}}",
+    "enemyBeacon": "the enemy Beacon {{lane}}"
+  },
+  "events": {
+    "GameStarted": {
+      "self": "You have the Initiative in the first round.",
+      "other": "The opponent has the Initiative in the first round."
+    },
+    "Mulliganed": {
+      "self_one": "You replace 1 card.",
+      "self_other": "You replace {{count}} cards.",
+      "other_one": "The opponent replaces 1 card.",
+      "other_other": "The opponent replaces {{count}} cards.",
+      "selfKeep": "You keep your hand.",
+      "otherKeep": "The opponent keeps their hand."
+    },
+    "RoundStarted": {
+      "self": "Round {{round}}. You have the Initiative.",
+      "other": "Round {{round}}. The opponent has the Initiative."
+    },
+    "CardDrawn": {
+      "self": "You draw {{card}}.",
+      "other": "The opponent draws a card."
+    },
+    "CardBurned": {
+      "self": "Your hand is full: {{card}} goes to the graveyard.",
+      "other": "The opponent's hand is full: {{card}} goes to the graveyard."
+    },
+    "DeckEmpty": {
+      "self": "Your deck is empty: each of your Beacons loses 2 Light.",
+      "other": "The opponent's deck is empty: each enemy Beacon loses 2 Light."
+    },
+    "EmberRefilled": {
+      "self": "You have {{ember}} Ember.",
+      "other": "The opponent has {{ember}} Ember."
+    },
+    "CardPlayed": {
+      "self": "You play {{card}}{{target}}.",
+      "other": "The opponent plays {{card}}{{target}}."
+    },
+    "targetSuffix": " on {{target}}",
+    "AbilityActivated": {
+      "self": "You activate the ability of {{card}}.",
+      "other": "The opponent activates the ability of {{card}}."
+    },
+    "KeeperMoveDeclared": {
+      "self": "You move {{card}} to {{slot}}.",
+      "other": "The opponent moves {{card}} to {{slot}}."
+    },
+    "Passed": {
+      "self": "You pass.",
+      "other": "The opponent passes."
+    },
+    "ChainResolving": "The chain resolves.",
+    "Fizzled": "{{card}} has no effect.",
+    "KeeperSummoned": {
+      "self": "{{card}} enters play on your side, in {{slot}}.",
+      "other": "{{card}} enters play on the opponent's side, in {{slot}}."
+    },
+    "KeeperMoved": "{{card}} moves to {{slot}}.",
+    "KeeperDamaged_one": "{{card}} takes 1 damage.",
+    "KeeperDamaged_other": "{{card}} takes {{count}} damage.",
+    "KeeperHealed_one": "{{card}} heals 1 damage.",
+    "KeeperHealed_other": "{{card}} heals {{count}} damage.",
+    "KeeperBuffed": "{{card}} gets {{stats}}.",
+    "KeeperBuffedUntilDusk": "{{card}} gets {{stats}} until Dusk.",
+    "KeywordGranted": "{{card}} gains {{keyword}}.",
+    "KeeperDied": "{{card}} dies.",
+    "EchoReturned": {
+      "self": "Echo: a 1/1 copy of {{card}} returns to your hand.",
+      "other": "Echo: a 1/1 copy of {{card}} returns to the opponent's hand."
+    },
+    "BeaconDamaged": {
+      "self": "Your Beacon {{lane}} loses {{count}} Light (now {{light}}).",
+      "other": "The enemy Beacon {{lane}} loses {{count}} Light (now {{light}})."
+    },
+    "BeaconHealed": {
+      "self": "Your Beacon {{lane}} recovers {{count}} Light (now {{light}}).",
+      "other": "The enemy Beacon {{lane}} recovers {{count}} Light (now {{light}})."
+    },
+    "BeaconOut": {
+      "self": "Your Beacon {{lane}} goes out!",
+      "other": "The enemy Beacon {{lane}} goes out!"
+    },
+    "TideShifted": "The Tide moves from {{from}} to {{to}}.",
+    "TideAnchored": "An Anchor holds the Tide.",
+    "EmberGained": {
+      "self": "You gain {{count}} Ember.",
+      "other": "The opponent gains {{count}} Ember."
+    },
+    "RelicAttached": "{{card}} attaches to {{target}}.",
+    "SitePlaced": "{{card}} becomes the Site of lane {{lane}}.",
+    "ClashStarted": "Clash!",
+    "DuskStarted": "Dusk.",
+    "Worn": "Wear: {{card}} loses 1 Attack.",
+    "GameOver": {
+      "win": "You win!",
+      "lose": "You lose.",
+      "draw": "The game is a draw."
+    },
+    "reasons": {
+      "beacons": "Two Beacons are out.",
+      "roundLimit": "The game reached round 20.",
+      "concede": "A player conceded."
+    }
+  },
+  "actions": {
+    "keep": "Keep your hand",
+    "mulligan": "Replace: {{cards}}",
+    "playKeeper": "Play {{card}} in {{slot}}{{target}}",
+    "playSite": "Play {{card}} in lane {{lane}}",
+    "play": "Play {{card}}{{target}}",
+    "sacrifice": " (sacrifice {{cards}})",
+    "move": "Move {{card}} to {{slot}} (1 Ember)",
+    "activate": "Activate {{card}}{{target}}",
+    "pass": "Pass",
+    "resolve": "Let the chain resolve",
+    "targetSuffix": " on {{target}}"
+  },
+  "ui": {
+    "title": "Sunken Beacons",
+    "subtitle": "Text interface. Type the number of an action and press Enter.",
+    "help": "Commands: a number chooses an action. \"c N\" shows card N of your hand. \"k\" shows the keywords. \"q\" quits.",
+    "round": "Round {{round}}",
+    "tide": "Tide {{value}}",
+    "tideHint": "(positive: on your side)",
+    "initiative": "Initiative: {{who}}",
+    "you": "You",
+    "opponent": "Opponent",
+    "ember": "Ember {{ember}}",
+    "reserve": "Reserve {{reserve}}",
+    "hand": "Hand {{count}}",
+    "deck": "Deck {{count}}",
+    "graveyard": "Graveyard {{count}}",
+    "beacons": "Beacons",
+    "sites": "Sites",
+    "emptySlot": "·",
+    "noSite": "—",
+    "out": "out",
+    "yourHand": "Your hand:",
+    "chain": "Chain (from the last card to the first):",
+    "chooseAction": "Choose an action:",
+    "chooseResponse": "The opponent acted. Do you want to respond with a Quick Rite?",
+    "prompt": "> ",
+    "invalid": "Invalid choice. Type a number from the list.",
+    "opponentThinking": "The opponent is thinking...",
+    "mulliganTitle": "Mulligan: you can replace up to 4 cards, once.",
+    "cost": "Cost {{cost}}",
+    "fresh": "just entered",
+    "relics": "Relics: {{list}}",
+    "keywordsTitle": "Keywords:",
+    "goodbye": "Goodbye.",
+    "deckLabel": "Deck: {{deck}}",
+    "finalScore": "Total Light: you {{you}}, opponent {{opponent}}.",
+    "mulligan": "Mulligan"
+  },
+  "deckNames": {
+    "forge": "Forge",
+    "sprout": "Sprout",
+    "forgeSprout": "Forge and Sprout"
+  },
+  "targetsTo": {
+    "keeper": {
+      "enemy": "to an enemy Keeper",
+      "ally": "to one of your Keepers",
+      "any": "to a Keeper"
+    },
+    "beacon": {
+      "enemy": "to an enemy Beacon",
+      "ally": "to one of your Beacons"
+    },
+    "self": "to this Keeper",
+    "attachedKeeper": "to the Keeper with this Relic",
+    "attachedBeacon": "to the Beacon with this Relic",
+    "enemyBeaconSameLane": "to the enemy Beacon in this lane",
+    "allyBeaconSameLane": "to your Beacon in this lane",
+    "enemyFrontSameLane": "to the enemy Front Keeper in this lane",
+    "enemyKeepersSameLane": "to each enemy Keeper in this lane",
+    "allyKeepersSameLane": "to each of your Keepers in this lane",
+    "allEnemyKeepers": "to each enemy Keeper",
+    "allAllyKeepers": "to each of your Keepers",
+    "allEnemyBeacons": "to each enemy Beacon",
+    "allAllyBeacons": "to each of your Beacons",
+    "again": {
+      "keeper": "to that Keeper",
+      "beacon": "to that Beacon"
+    }
+  }
+}

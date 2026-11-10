@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Type check
+        run: pnpm typecheck
+      - name: Unit and property tests
+        run: pnpm test
+      - name: Card validator
+        run: pnpm validate:cards
+      - name: Localization check
+        run: pnpm check:i18n
+      - name: Simulation of 500 games
+        run: pnpm sim --games 500 --ai random
+      - name: Simulation with the easy AI
+        run: pnpm sim --games 30 --ai easy --decks starter

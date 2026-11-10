@@ -1,0 +1,8 @@
+{
+  "name": "@tcg/i18n",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "@tcg/cards": "workspace:*", "@tcg/engine": "workspace:*", "i18next": "^25.5.0" }
+}
