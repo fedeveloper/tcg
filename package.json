@@ -14,8 +14,11 @@
     "check:i18n": "tsx packages/tools/src/check-i18n.ts",
     "sim": "tsx packages/tools/src/sim.ts",
     "play": "tsx packages/tools/src/cli.ts",
-    "check": "pnpm typecheck && pnpm test && pnpm validate:cards && pnpm check:i18n && pnpm sim --games 500",
-    "duel": "tsx packages/tools/src/duel.ts"
+    "check": "pnpm typecheck && pnpm check:client && pnpm test && pnpm validate:cards && pnpm check:i18n && pnpm sim --games 500 && pnpm build",
+    "duel": "tsx packages/tools/src/duel.ts",
+    "dev": "pnpm --filter @tcg/client dev",
+    "build": "pnpm --filter @tcg/client build",
+    "check:client": "pnpm --filter @tcg/client check"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

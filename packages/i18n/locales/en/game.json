@@ -310,7 +310,28 @@
     "goodbye": "Goodbye.",
     "deckLabel": "Deck: {{deck}}",
     "finalScore": "Total Light: you {{you}}, opponent {{opponent}}.",
-    "mulligan": "Mulligan"
+    "mulligan": "Mulligan",
+    "newGame": "New game",
+    "start": "Play",
+    "language": "Language",
+    "difficulty": "Difficulty",
+    "levels": {
+      "easy": "Easy",
+      "medium": "Medium"
+    },
+    "yourDeck": "Your deck",
+    "opponentDeck": "Opponent deck",
+    "confirmMulligan": "Confirm",
+    "mulliganHint": "Choose the cards to replace, then confirm.",
+    "cancel": "Cancel",
+    "speedHint": "Click the board: faster animations.",
+    "selectTarget": "Choose a highlighted target.",
+    "yourTurn": "Your turn.",
+    "waiting": "The opponent acts...",
+    "log": "Log",
+    "menu": "Menu",
+    "stats": "{{attack}}/{{hold}}",
+    "moveHint": "Click one of your Keepers to move it (1 Ember)."
   },
   "deckNames": {
     "forge": "Forge",

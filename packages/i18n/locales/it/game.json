@@ -310,7 +310,28 @@
     "goodbye": "Arrivederci.",
     "deckLabel": "Mazzo: {{deck}}",
     "finalScore": "Luce totale: tu {{you}}, avversario {{opponent}}.",
-    "mulligan": "Mulligan"
+    "mulligan": "Mulligan",
+    "newGame": "Nuova partita",
+    "start": "Gioca",
+    "language": "Lingua",
+    "difficulty": "Difficoltà",
+    "levels": {
+      "easy": "Facile",
+      "medium": "Media"
+    },
+    "yourDeck": "Il tuo mazzo",
+    "opponentDeck": "Mazzo avversario",
+    "confirmMulligan": "Conferma",
+    "mulliganHint": "Scegli le carte da sostituire, poi conferma.",
+    "cancel": "Annulla",
+    "speedHint": "Clic sul campo: animazioni più veloci.",
+    "selectTarget": "Scegli un bersaglio evidenziato.",
+    "yourTurn": "Tocca a te.",
+    "waiting": "L'avversario agisce...",
+    "log": "Cronaca",
+    "menu": "Menu",
+    "stats": "{{attack}}/{{hold}}",
+    "moveHint": "Clic su un tuo Custode per spostarlo (1 Brace)."
   },
   "deckNames": {
     "forge": "Fucina",
