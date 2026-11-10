@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
@@ -14,7 +16,21 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["packages/*/src/**/*.ts", "packages/*/test/**/*.ts", "vitest.config.ts"]
+  "include": [
+    "packages/engine/src/**/*.ts",
+    "packages/engine/test/**/*.ts",
+    "packages/cards/src/**/*.ts",
+    "packages/cards/test/**/*.ts",
+    "packages/i18n/src/**/*.ts",
+    "packages/i18n/test/**/*.ts",
+    "packages/ai/src/**/*.ts",
+    "packages/ai/test/**/*.ts",
+    "packages/tools/src/**/*.ts",
+    "packages/tools/test/**/*.ts",
+    "vitest.config.ts"
+  ]
 }

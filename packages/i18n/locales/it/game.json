@@ -310,7 +310,28 @@
     "goodbye": "Arrivederci.",
     "deckLabel": "Mazzo: {{deck}}",
     "finalScore": "Luce totale: tu {{you}}, avversario {{opponent}}.",
-    "mulligan": "Mulligan"
+    "mulligan": "Mulligan",
+    "newGame": "Nuova partita",
+    "start": "Gioca",
+    "language": "Lingua",
+    "difficulty": "Difficoltà",
+    "levels": {
+      "easy": "Facile",
+      "medium": "Media"
+    },
+    "yourDeck": "Il tuo mazzo",
+    "opponentDeck": "Mazzo avversario",
+    "confirmMulligan": "Conferma",
+    "mulliganHint": "Scegli le carte da sostituire, poi conferma.",
+    "cancel": "Annulla",
+    "speedHint": "Clic sul campo: animazioni più veloci.",
+    "selectTarget": "Scegli un bersaglio evidenziato.",
+    "yourTurn": "Tocca a te.",
+    "waiting": "L'avversario agisce...",
+    "log": "Cronaca",
+    "menu": "Menu",
+    "stats": "{{attack}}/{{hold}}",
+    "moveHint": "Clic su un tuo Custode per spostarlo (1 Brace)."
   },
   "deckNames": {
     "forge": "Fucina",
@@ -342,6 +363,43 @@
     "again": {
       "keeper": "a quel Custode",
       "beacon": "a quel Faro"
+    }
+  },
+  "tutorial": {
+    "title": "Tutorial",
+    "lesson": "Lezione {{n}}",
+    "goalLabel": "Obiettivo",
+    "done": "Lezione completata!",
+    "failed": "Lezione non riuscita.",
+    "retry": "Riprova",
+    "next": "Lezione successiva",
+    "back": "Torna al menu",
+    "lessons": {
+      "keepers": {
+        "title": "Custodi e Fari",
+        "intro": "Gioca un Custode nella fila Fronte. Un Custode appena entrato non attacca nel suo primo round. Nel round dopo, il Custode attacca il Faro nemico della sua corsia.",
+        "goal": "Spegni un Faro nemico."
+      },
+      "blocking": {
+        "title": "Bloccare e Gittata",
+        "intro": "Un Custode nemico attacca il tuo Faro A. Un Custode in Fronte blocca e risponde al danno. Un Custode con Gittata attacca anche dalla fila Retro.",
+        "goal": "Distruggi il Custode nemico."
+      },
+      "ember": {
+        "title": "Brace e Riserva",
+        "intro": "Ogni carta costa Brace. A fine round conservi fino a 2 Brace nella Riserva. La Riserva si aggiunge alla Brace del round dopo.",
+        "goal": "Spegni due Fari nemici con i Riti."
+      },
+      "tide": {
+        "title": "La Marea",
+        "intro": "Alcune carte spostano la Marea verso di te. Con la Marea dal tuo lato di 2 o più, gli effetti Alta Marea si attivano.",
+        "goal": "Vinci la partita."
+      },
+      "chain": {
+        "title": "Risposte e catena",
+        "intro": "L'avversario gioca un Rito contro il tuo Custode. Rispondi con un Rito Rapido. La catena si risolve dall'ultima carta alla prima.",
+        "goal": "Salva il tuo Custode e vinci la partita."
+      }
     }
   }
 }
