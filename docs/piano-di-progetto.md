@@ -209,9 +209,11 @@ Il primo set ha **150 carte**: 26 per fazione e 20 neutrali.
 | Audio | **Howler.js** | Audio semplice e compatibile con i browser. |
 | Validazione dati | **Zod** | Schema per le carte e per i messaggi di rete. |
 | Salvataggio locale | **IndexedDB** (libreria `idb`) | Collezione e progressi offline. |
+| Database del server (fase 4) | **SQLite** (libreria `better-sqlite3`) | Un solo file, nessun processo separato, poca RAM. |
 | Test | **Vitest**, **fast-check**, **Playwright** | Test unitari, test basati su proprietà, test end-to-end. |
 | Server (fase 4) | **Node.js** + **WebSocket** (`ws`) | Il server esegue lo stesso motore di regole del client. |
-| Deploy | **Cloudflare Pages** o **GitHub Pages** | Hosting statico gratuito per il client. |
+| Deploy di test | **Raspberry Pi 3B** o **ThinkPad T480** | Hardware del proprietario. Vedi la sezione 6.7. |
+| Deploy pubblico | Da decidere (esempio: Cloudflare Pages + un VPS) | Il pubblico richiede un hosting diverso. Vedi la sezione 6.7. |
 
 ### 6.2 Struttura del repository
 
@@ -321,6 +323,54 @@ Input del giocatore
 - Il server invia a ogni giocatore solo la sua vista.
 - Il server salva il seme e la lista delle azioni. Questo dato permette i replay completi.
 - Il primo PvP è asincrono o con timer lungo. Questo modo riduce il carico sul server.
+
+### 6.7 Hosting di test e hosting pubblico
+
+Durante lo sviluppo il gioco gira su hardware del proprietario del progetto.
+L'architettura tiene il server leggero. Così il server gira anche su un Raspberry Pi 3B.
+
+| Macchina | Risorse | Uso previsto |
+|---|---|---|
+| **Raspberry Pi 3B** | 4 core ARM Cortex-A53, 1 GB di RAM | Hosting di test principale: client statico e server PvP con pochi giocatori. |
+| **ThinkPad T480** | 8 GB di RAM, CPU x86-64 | Alternativa al Raspberry Pi. Simulazioni di bilanciamento lunghe. |
+
+**Perché il Raspberry Pi 3B è sufficiente.**
+- Il client è un insieme di file statici. Il browser del giocatore esegue tutto il rendering e l'IA.
+- Il server esegue solo il motore di regole. Il motore non usa grafica e consuma poca CPU.
+- Il server non esegue l'IA. In fase di test le partite contro l'IA restano nel browser.
+
+**Regole per il Raspberry Pi 3B.**
+
+1. Installa un sistema operativo a 64 bit (Raspberry Pi OS Lite, senza desktop).
+2. Usa **Caddy** come server web. Caddy serve i file statici, gestisce HTTPS e inoltra le connessioni WebSocket al server Node.js.
+3. Esegui il server Node.js con un limite di memoria: `node --max-old-space-size=256`.
+4. Gestisci il processo con **systemd**. Evita Docker sul Raspberry Pi: Docker usa RAM in più.
+5. Non compilare il progetto sul Raspberry Pi. GitHub Actions crea il build. Uno script copia il build sul Raspberry Pi con `rsync`.
+6. Non eseguire le simulazioni di bilanciamento sul Raspberry Pi. Esegui le simulazioni sul ThinkPad o in CI.
+
+**Budget di risorse sul Raspberry Pi 3B.**
+
+| Componente | RAM massima |
+|---|---|
+| Sistema operativo | 150 MB |
+| Caddy | 40 MB |
+| Server Node.js con 10 partite attive | 200 MB |
+| SQLite e margine | 100 MB |
+| **Totale** | **circa 500 MB su 1 GB** |
+
+Un test automatico misura la RAM del server con 10 partite simulate. Il test fallisce sopra 200 MB.
+
+**Codice portabile.**
+- Il server non dipende dall'hardware. Lo stesso codice gira su Raspberry Pi, ThinkPad e cloud.
+- La configurazione usa variabili d'ambiente (porta, percorso del database, origine consentita).
+- L'unica dipendenza nativa è `better-sqlite3`. La libreria ha binari precompilati per ARM64.
+
+**Hosting pubblico (dopo i test).**
+Il Raspberry Pi e il ThinkPad non servono il pubblico. Il passaggio al pubblico richiede:
+- un CDN per il client statico (esempio: Cloudflare Pages);
+- un VPS o un servizio di container per il server;
+- un database gestito, oppure SQLite con backup automatici;
+- un'immagine Docker del server, creata solo per questo ambiente.
 
 ## 7. Grafica: pixel art con animazioni fluide
 
@@ -437,6 +487,7 @@ Il motore viene prima della grafica. Questo ordine permette di testare le regole
 | Combinazioni di carte che rompono il gioco | Alto | Simulazioni automatiche, test basati su proprietà, limite di 2 parole chiave. |
 | Costo alto della pixel art | Medio | Palette fissa, sprite piccoli, riuso delle animazioni tra Custodi simili. |
 | Prestazioni basse su mobile | Medio | PixiJS con batching, atlanti di texture, test su dispositivi reali. |
+| RAM insufficiente sul Raspberry Pi 3B | Basso | Budget di memoria, test automatico della RAM, ThinkPad come alternativa. |
 | Desincronizzazione nel PvP | Alto | Motore deterministico, server autoritativo, test di replay. |
 
 ## 12. Decisioni aperte
