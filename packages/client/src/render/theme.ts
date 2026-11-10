@@ -26,6 +26,19 @@ export interface BeaconLook {
 /** A display object that the board can update in place. */
 export interface KeeperView extends Container {
   update(look: KeeperLook): void;
+  /** The part that squashes and stretches. Its origin is at the feet. Default: the view itself. */
+  body?: Container;
+}
+
+export interface SiteView extends Container {
+  setName(name: string | null, cardId?: string): void;
+}
+
+export type FxKind = "hit" | "puff" | "spark";
+
+/** A dither dissolve in progress. `threshold` runs from 0 (visible) to 1 (gone). */
+export interface Dissolve {
+  threshold: number;
 }
 
 export interface BeaconView extends Container {
@@ -43,11 +56,17 @@ export interface Theme {
   slot(rect: Rect, mine: boolean): Container;
   keeper(rect: Rect, look: KeeperLook): KeeperView;
   beacon(rect: Rect, look: BeaconLook): BeaconView;
-  site(rect: Rect, name: string | null): Container & { setName(name: string | null): void };
+  site(rect: Rect, name: string | null): SiteView;
   tideGauge(): Container;
   tideMarker(): Container;
   highlight(rect: Rect): Container;
   floatingText(text: string, color: number): Container;
+  /** Optional: a short effect sprite that destroys itself at the end. */
+  fx?(kind: FxKind, tint?: number): Container;
+  /** Optional: the illustration of a card, to show a played card on the board. */
+  cardGhost?(cardId: string): Container | null;
+  /** Optional: starts a dither dissolve on the target (plan, section 7.3). */
+  dissolve?(target: Container): Dissolve;
 }
 
 export const FACTION_COLORS: Record<Faction, number> = {
@@ -125,8 +144,8 @@ export class ShapeTheme implements Theme {
     return c;
   }
 
-  site(r: Rect, name: string | null): Container & { setName(name: string | null): void } {
-    const c = new Container() as Container & { setName(name: string | null): void };
+  site(r: Rect, name: string | null): SiteView {
+    const c = new Container() as SiteView;
     c.position.set(r.x, r.y);
     const bg = new Graphics().roundRect(2, 2, r.w - 4, r.h - 4, 2).stroke({ color: 0x5f7f8f, width: 1 });
     const text = label("", 6, 0xbfd8e0, this.resolution);

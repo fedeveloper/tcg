@@ -24,11 +24,20 @@ L'input resta bloccato durante le animazioni. Un clic sul campo accelera l'anima
 | `src/render/board.ts` | Campo PixiJS, stato visivo, animazioni per evento. |
 | `src/ui/App.svelte`, `src/ui/Game.svelte` | Menu, mano, pulsanti, cronaca, schermata finale. |
 
-## Punto di aggancio per la pixel art
+## Tema grafico
 
-1. Scrivi una classe che implementa `Theme` con gli sprite di `assets/sheets`.
-2. Sostituisci `new ShapeTheme(scale)` in `src/ui/Game.svelte` con la nuova classe.
-3. Cambia i tempi delle animazioni in `BoardView.animateEvent` secondo `assets/animations/animations.json`.
+Il campo usa il tema `SpriteTheme` (`src/render/spriteTheme.ts`). Il tema implementa l'interfaccia `Theme`.
+
+- `loadArt()` carica gli spritesheet e i font di `assets/`. Vite copia i file nella build.
+- `PixelFont` e `PixelText` disegnano il testo con i font Faro e Faro Mini.
+- Il tema `ShapeTheme` resta come riserva. Il client lo usa se il caricamento degli sprite fallisce.
+- La mano nel DOM mostra l'illustrazione di ogni carta (foglio `card-art`, scala ×2).
+- Il canvas mostra solo la parte alta della scena (`VIEW_HEIGHT` = 186 pixel). La mano è sotto il canvas.
+
+Tre metodi di `Theme` sono opzionali: `fx` (scintille, sbuffi, colpi), `cardGhost` (illustrazione della carta giocata) e `dissolve` (dissolvenza a dithering).
+`BoardView.animateEvent` applica i tempi di `assets/animations/animations.json`. Vedi [animazioni.md](animazioni.md).
+
+NOTA: l'opzione "Riduci le animazioni" non esiste ancora nel client.
 
 Il campo usa una scala intera (×1, ×2, ×3) e il filtro `nearest`, come chiede il piano (sezione 7.2).
 
