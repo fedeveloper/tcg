@@ -7,6 +7,8 @@ import type { Lane, PlayerId, Row } from "@tcg/engine";
  */
 export const WIDTH = 480;
 export const HEIGHT = 270;
+/** The visible part of the scene. The hand is in the DOM, below the canvas. */
+export const VIEW_HEIGHT = 186;
 export const CELL = 48;
 
 const COLUMNS = { beacon0: 72, back0: 120, front0: 168, site: 216, front1: 264, back1: 312, beacon1: 360 } as const;

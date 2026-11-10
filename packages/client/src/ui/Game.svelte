@@ -11,8 +11,19 @@
   import { LESSONS, type Lesson } from "../tutorial/lessons.ts";
   import { highlightPlaces, narrow, optionsForCard, optionsForKeeper, stageOf } from "../game/selection.ts";
   import { BoardView, type BoardClick } from "../render/board.ts";
-  import { HEIGHT, integerScale, WIDTH, type Rect } from "../render/layout.ts";
-  import { ShapeTheme } from "../render/theme.ts";
+  import { integerScale, VIEW_HEIGHT, WIDTH, type Rect } from "../render/layout.ts";
+  import { ShapeTheme, type Theme } from "../render/theme.ts";
+  import { loadArt, SpriteTheme } from "../render/spriteTheme.ts";
+  import artData from "../../../../assets/sheets/card-art.json";
+  import artUrl from "../../../../assets/sheets/card-art.png?url";
+
+  /** CSS for the illustration of a card: a 56x40 frame of the art sheet at scale 2. */
+  function artStyle(cardId: string): string {
+    const f = (artData.frames as Record<string, { frame: { x: number; y: number } }>)[`art/${cardId}`]?.frame;
+    if (!f) return "display: none";
+    const { w, h } = artData.meta.size;
+    return `background-image: url(${artUrl}); background-position: -${f.x * 2}px -${f.y * 2}px; background-size: ${w * 2}px ${h * 2}px;`;
+  }
 
   interface Props {
     tr: Translator;
@@ -70,11 +81,19 @@
     app = new Application();
     let disposed = false;
     void (async () => {
-      await app!.init({ width: WIDTH * scale, height: HEIGHT * scale, antialias: false, background: "#0e1a24" });
+      await app!.init({ width: WIDTH * scale, height: VIEW_HEIGHT * scale, antialias: false, background: "#1a1423", preference: "webgl" });
+      // The pixel art theme needs the spritesheets. The shape theme is the fallback.
+      let theme: Theme;
+      try {
+        theme = new SpriteTheme(await loadArt(), scale);
+      } catch (err) {
+        console.warn("Sprites not loaded, using shapes", err);
+        theme = new ShapeTheme(scale);
+      }
       if (disposed) return;
       host.appendChild(app!.canvas);
       app!.stage.scale.set(scale);
-      board = new BoardView(new ShapeTheme(scale), tr, HUMAN, speed);
+      board = new BoardView(theme, tr, HUMAN, speed);
       board.onClick = onBoardClick;
       app!.stage.addChild(board.root);
       app!.stage.eventMode = "static";
@@ -267,6 +286,7 @@
             class:dim={game.phase !== "mulligan" && !playable(id)}
             onclick={() => (game?.phase === "mulligan" ? toggleMulligan(id) : pickCard(id))}
           >
+            <div class="art" style={artStyle(info.def.id)}></div>
             <div class="title">{info.summary}{info.echo ? " [1/1]" : ""}</div>
             {#each info.rules as line}<div class="rules">{line}</div>{/each}
           </button>
@@ -316,6 +336,7 @@
   .card.neutral { border-color: #8a8a8a; }
   .card.selected { outline: 2px solid var(--accent); }
   .card.dim { opacity: 0.55; }
+  .card .art { width: 112px; height: 80px; margin: 0 auto 6px; image-rendering: pixelated; outline: 2px solid #1a1423; }
   .card .title { font-weight: bold; margin-bottom: 4px; }
   .card .rules { color: var(--muted); }
   .chain, .log { width: 100%; max-width: 1440px; background: var(--panel); border-radius: 4px; padding: 6px 10px; font-size: 12px; }
