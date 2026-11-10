@@ -310,7 +310,28 @@
     "goodbye": "Goodbye.",
     "deckLabel": "Deck: {{deck}}",
     "finalScore": "Total Light: you {{you}}, opponent {{opponent}}.",
-    "mulligan": "Mulligan"
+    "mulligan": "Mulligan",
+    "newGame": "New game",
+    "start": "Play",
+    "language": "Language",
+    "difficulty": "Difficulty",
+    "levels": {
+      "easy": "Easy",
+      "medium": "Medium"
+    },
+    "yourDeck": "Your deck",
+    "opponentDeck": "Opponent deck",
+    "confirmMulligan": "Confirm",
+    "mulliganHint": "Choose the cards to replace, then confirm.",
+    "cancel": "Cancel",
+    "speedHint": "Click the board: faster animations.",
+    "selectTarget": "Choose a highlighted target.",
+    "yourTurn": "Your turn.",
+    "waiting": "The opponent acts...",
+    "log": "Log",
+    "menu": "Menu",
+    "stats": "{{attack}}/{{hold}}",
+    "moveHint": "Click one of your Keepers to move it (1 Ember)."
   },
   "deckNames": {
     "forge": "Forge",
@@ -342,6 +363,43 @@
     "again": {
       "keeper": "to that Keeper",
       "beacon": "to that Beacon"
+    }
+  },
+  "tutorial": {
+    "title": "Tutorial",
+    "lesson": "Lesson {{n}}",
+    "goalLabel": "Goal",
+    "done": "Lesson complete!",
+    "failed": "Lesson failed.",
+    "retry": "Try again",
+    "next": "Next lesson",
+    "back": "Back to the menu",
+    "lessons": {
+      "keepers": {
+        "title": "Keepers and Beacons",
+        "intro": "Play a Keeper in the Front row. A new Keeper does not attack in its first round. In the next round, the Keeper attacks the enemy Beacon in its lane.",
+        "goal": "Put out an enemy Beacon."
+      },
+      "blocking": {
+        "title": "Blocking and Reach",
+        "intro": "An enemy Keeper attacks your Beacon A. A Keeper in the Front row blocks and hits back. A Keeper with Reach also attacks from the Back row.",
+        "goal": "Destroy the enemy Keeper."
+      },
+      "ember": {
+        "title": "Ember and Reserve",
+        "intro": "Each card costs Ember. At the end of a round you keep up to 2 Ember in the Reserve. The Reserve adds to your Ember in the next round.",
+        "goal": "Put out two enemy Beacons with Rites."
+      },
+      "tide": {
+        "title": "The Tide",
+        "intro": "Some cards move the Tide toward you. With the Tide on your side by 2 or more, High Tide effects work.",
+        "goal": "Win the game."
+      },
+      "chain": {
+        "title": "Responses and the chain",
+        "intro": "The opponent plays a Rite against your Keeper. Respond with a Quick Rite. The chain resolves from the last card to the first.",
+        "goal": "Save your Keeper and win the game."
+      }
     }
   }
 }

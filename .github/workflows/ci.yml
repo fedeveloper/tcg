@@ -19,6 +19,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Type check
         run: pnpm typecheck
+      - name: Client type check (Svelte)
+        run: pnpm check:client
       - name: Unit and property tests
         run: pnpm test
       - name: Card validator
@@ -31,3 +33,9 @@ jobs:
         run: pnpm sim --games 30 --ai easy --decks starter
       - name: Simulation with the medium AI
         run: pnpm sim --games 10 --ai medium --decks starter
+      - name: Client build
+        run: pnpm build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client
+          path: packages/client/dist
