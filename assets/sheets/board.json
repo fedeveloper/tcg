@@ -1,0 +1,91 @@
+{
+ "size": {
+  "width": 480,
+  "height": 270
+ },
+ "cell": {
+  "width": 48,
+  "height": 48
+ },
+ "columns": {
+  "beacon0": 72,
+  "back0": 120,
+  "front0": 168,
+  "site": 216,
+  "front1": 264,
+  "back1": 312,
+  "beacon1": 360
+ },
+ "lanes": {
+  "A": 30,
+  "B": 78,
+  "C": 126
+ },
+ "keeperAnchor": {
+  "dx": 24,
+  "dy": 43,
+  "note": "bottom centre of the 32x32 sprite, relative to the cell"
+ },
+ "beaconAnchor": {
+  "dx": 8,
+  "dy": -2,
+  "note": "top left of the 32x48 sprite, relative to the cell"
+ },
+ "siteAnchor": {
+  "dx": 24,
+  "dy": 30,
+  "note": "centre of the site token, relative to the cell"
+ },
+ "tideGauge": {
+  "x": 170,
+  "y": 4,
+  "cell": 12,
+  "firstCellX": 174,
+  "markerY": 0
+ },
+ "hand": {
+  "x": 96,
+  "y": 180,
+  "width": 288,
+  "cardWidth": 64,
+  "cardHeight": 88
+ },
+ "hud": {
+  "player": {
+   "ember": {
+    "x": 8,
+    "y": 8
+   },
+   "deck": {
+    "x": 8,
+    "y": 192
+   },
+   "name": {
+    "x": 22,
+    "y": 8
+   }
+  },
+  "opponent": {
+   "ember": {
+    "x": 465,
+    "y": 8
+   },
+   "deck": {
+    "x": 440,
+    "y": 192
+   },
+   "name": {
+    "x": 458,
+    "y": 8,
+    "align": "right"
+   }
+  },
+  "pass": {
+   "x": 404,
+   "y": 232,
+   "width": 64,
+   "height": 20
+  }
+ },
+ "mirror": "Flip the sprites of player 1 (the opponent) on the x axis."
+}
