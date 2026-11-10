@@ -104,6 +104,8 @@ Passare presto conserva informazioni. Passare tardi conserva la possibilità di 
 ### 3.5 Combattimento
 
 - In ogni corsia, il Custode in Fronte attacca il Custode in Fronte avversario nella stessa corsia.
+- Un Custode **appena entrato in gioco** non attacca nel round del suo ingresso. Il Custode blocca e risponde al danno.
+- Se solo un Custode attacca, il Custode bloccante infligge il suo danno al Custode attaccante come risposta.
 - I due Custodi infliggono danno nello stesso momento.
 - Se la corsia avversaria non ha un Custode in Fronte, il danno va al Faro di quella corsia.
 - Il danno in eccesso non passa al Faro, salvo con la parola chiave **Travolgere**.
@@ -138,6 +140,7 @@ La catena ha un limite di 4 carte. Questo limite mantiene le partite leggibili.
 | **Alta Marea** | L'effetto si attiva con la Marea dal proprio lato di 2 o più. |
 | **Riflusso** | L'effetto si attiva con la Marea dal lato avversario di 2 o più. |
 | **Sacrificio X** | Per giocare la carta, distruggi X tuoi Custodi. |
+| **Slancio** | Il Custode attacca anche nel round del suo ingresso. Parola chiave rara, tipica della Fucina. |
 
 Regola di design: una carta ha al massimo **2 parole chiave** e **1 riga di testo libero**.
 
@@ -150,7 +153,21 @@ Regola di design: una carta ha al massimo **2 parole chiave** e **1 riga di test
 - La mano ha un limite di 8 carte. Una carta in eccesso va nel cimitero.
 - Quando il mazzo finisce, ogni pesca mancata toglie 2 Luce a ogni Faro del giocatore.
 
-### 3.10 Perché le meccaniche sono profonde
+### 3.10 Regole di dettaglio
+
+Queste regole chiudono i casi limite per il motore.
+
+| Caso | Regola |
+|---|---|
+| Iniziativa al round 1 | Il gioco sceglie il giocatore a caso. La Marea parte da 0. |
+| Fila di ingresso | Il giocatore sceglie Fronte o Retro quando gioca un Custode. |
+| Fronte vuoto | Il Custode in Retro non avanza da solo. Il giocatore lo sposta con un'azione (costo 1 Brace). |
+| Custode appena entrato | Il Custode non attacca nel round del suo ingresso. Il Custode blocca e risponde al danno. Eccezione: **Slancio**. |
+| Danno contro un Faro spento | Il danno va perso. La corsia resta attiva e i Custodi bloccano ancora. |
+| Limite di round | La partita termina al round 20. Vince il giocatore con più Luce totale. Con Luce uguale, la partita è pari. |
+| Vittoria simultanea | Se entrambi i giocatori spengono il secondo Faro avversario nello stesso Scontro, la partita è pari. |
+
+### 3.11 Perché le meccaniche sono profonde
 
 | Asse di decisione | Fonte della profondità |
 |---|---|
@@ -207,6 +224,7 @@ Il primo set ha **150 carte**: 26 per fazione e 20 neutrali.
 | Interfaccia dei menu | **Svelte** sopra il canvas | Menu, editor del mazzo e collezione con poco codice. |
 | Animazioni | **GSAP** | Timeline, easing e sequenze affidabili. |
 | Audio | **Howler.js** | Audio semplice e compatibile con i browser. |
+| Lingue | **i18next** | Testi in italiano e inglese, plurali, lingua di riserva. Vedi la sezione 6.8. |
 | Validazione dati | **Zod** | Schema per le carte e per i messaggi di rete. |
 | Salvataggio locale | **IndexedDB** (libreria `idb`) | Collezione e progressi offline. |
 | Database del server (fase 4) | **SQLite** (libreria `better-sqlite3`) | Un solo file, nessun processo separato, poca RAM. |
@@ -222,6 +240,7 @@ tcg/
 ├── packages/
 │   ├── engine/      Motore di regole puro (nessun DOM, nessuna grafica)
 │   ├── cards/       Dati delle carte (JSON) e schema Zod
+│   ├── i18n/        Testi del gioco in più lingue (it, en)
 │   ├── ai/          Avversario artificiale
 │   ├── client/      Gioco nel browser (PixiJS + Svelte)
 │   ├── server/      Server per il PvP (fase 4)
@@ -237,25 +256,25 @@ Il motore è il componente più importante. Il motore è una libreria pura e det
 Regole di architettura:
 
 1. **Stato serializzabile.** Lo stato della partita è un oggetto JSON semplice. Lo stato non contiene classi o funzioni.
-2. **Funzione di transizione.** `applica(stato, azione) → { stato, eventi }`. La funzione non modifica lo stato originale.
+2. **Funzione di transizione.** `apply(state, action) → { state, events }`. La funzione non modifica lo stato originale.
 3. **Determinismo.** Il motore usa un generatore casuale con seme (PRNG, generatore di numeri pseudo-casuali). Lo stesso seme e le stesse azioni danno sempre lo stesso risultato.
-4. **Azioni legali.** `azioniLegali(stato, giocatore)` restituisce tutte le azioni valide. Il client e l'IA usano la stessa funzione.
-5. **Eventi.** Ogni cambiamento produce un evento (`CustodeEvocato`, `DannoInflitto`, `MareaSpostata`...). Il client anima gli eventi. Il client non calcola le regole.
-6. **Viste per giocatore.** `vista(stato, giocatore)` nasconde le carte segrete. Il PvP usa questa funzione contro gli imbrogli.
+4. **Azioni legali.** `legalActions(state, player)` restituisce tutte le azioni valide. Il client e l'IA usano la stessa funzione.
+5. **Eventi.** Ogni cambiamento produce un evento (`KeeperSummoned`, `DamageDealt`, `TideShifted`...). Il client anima gli eventi. Il client non calcola le regole.
+6. **Viste per giocatore.** `viewFor(state, player)` nasconde le carte segrete. Il PvP usa questa funzione contro gli imbrogli.
 
 ```ts
-type Azione =
-  | { tipo: "GiocaCarta"; carta: IdIstanza; bersagli: Bersaglio[]; slot?: Slot }
-  | { tipo: "Sposta"; custode: IdIstanza; verso: Slot }
-  | { tipo: "Attiva"; fonte: IdIstanza; abilita: number; bersagli: Bersaglio[] }
-  | { tipo: "Passa" };
+type Action =
+  | { type: "PlayCard"; card: InstanceId; targets: Target[]; slot?: Slot }
+  | { type: "Move"; keeper: InstanceId; to: Slot }
+  | { type: "Activate"; source: InstanceId; ability: number; targets: Target[] }
+  | { type: "Pass" };
 
-interface Risultato {
-  stato: StatoPartita;
-  eventi: EventoGioco[];
+interface Result {
+  state: GameState;
+  events: GameEvent[];
 }
 
-function applica(stato: StatoPartita, azione: Azione): Risultato;
+function apply(state: GameState, action: Action): Result;
 ```
 
 ### 6.4 Effetti delle carte
@@ -265,24 +284,35 @@ Un piccolo insieme di funzioni TypeScript copre i casi speciali.
 
 ```json
 {
-  "id": "fucina-012",
-  "nome": "Fabbro delle Scintille",
-  "tipo": "custode",
-  "fazione": "fucina",
-  "costo": 3,
-  "attacco": 3,
-  "tenuta": 2,
-  "paroleChiave": ["travolgere"],
-  "effetti": [
+  "id": "forge-012",
+  "type": "keeper",
+  "faction": "forge",
+  "cost": 3,
+  "attack": 3,
+  "hold": 2,
+  "keywords": ["overrun"],
+  "effects": [
     {
-      "quando": "entraInGioco",
-      "condizione": { "altaMarea": true },
-      "azioni": [{ "danno": 2, "bersaglio": "faroNemicoStessaCorsia" }]
+      "when": "enterPlay",
+      "condition": { "highTide": true },
+      "actions": [{ "damage": 2, "target": "enemyBeaconSameLane" }]
     }
   ],
-  "spintaMarea": 1
+  "tidePush": 1
 }
 ```
+
+Il file della carta non contiene testi. I testi vivono nei file di traduzione (sezione 6.8):
+
+```json
+// locales/it/cards.json
+{ "forge-012": { "name": "Fabbro delle Scintille", "flavor": "Il rame ricorda ogni colpo." } }
+
+// locales/en/cards.json
+{ "forge-012": { "name": "Sparksmith", "flavor": "Copper remembers every blow." } }
+```
+
+Il testo delle regole di una carta nasce in modo automatico dagli effetti. Un traduttore non riscrive le regole di ogni carta.
 
 Vantaggi:
 
@@ -372,6 +402,52 @@ Il Raspberry Pi e il ThinkPad non servono il pubblico. Il passaggio al pubblico 
 - un database gestito, oppure SQLite con backup automatici;
 - un'immagine Docker del server, creata solo per questo ambiente.
 
+### 6.8 Lingue (localizzazione)
+
+Il gioco supporta più lingue dal primo giorno. Le prime lingue sono **italiano** e **inglese**.
+
+- Il codice non contiene testi visibili al giocatore. Ogni testo ha una **chiave** (esempio: `ui.menu.play`).
+- Ogni lingua ha una cartella: `packages/i18n/locales/it/`, `packages/i18n/locales/en/`.
+- La libreria è **i18next**. La libreria gestisce plurali, variabili e lingua di riserva.
+- La lingua di riserva è l'inglese. Una chiave mancante in italiano mostra il testo inglese.
+- Il gioco sceglie la lingua del browser al primo avvio. Il giocatore cambia la lingua nelle opzioni.
+- Le parole chiave hanno un nome per lingua (esempio: `overrun` → "Travolgere" / "Overrun").
+- Il testo delle regole di una carta nasce da modelli tradotti (esempio: `Infliggi {{n}} danni al Faro nemico`).
+- Il font pixel copre tutti i caratteri accentati dell'italiano e i caratteri delle lingue future.
+- Il layout delle carte accetta testi più lunghi del 30%. Il tedesco e il francese usano parole lunghe.
+
+Un controllo in CI blocca la PR se una chiave esiste in una lingua e manca nell'altra.
+
+### 6.9 Convenzioni di sviluppo
+
+| Tema | Regola |
+|---|---|
+| Lingua del codice | Codice, nomi tecnici, commenti e messaggi di commit in inglese. |
+| Lingua della documentazione di design | Italiano. |
+| Runtime | Node.js 22 LTS, pnpm. |
+| Flusso di lavoro | Una PR per ogni traguardo. Il proprietario del progetto unisce le PR. |
+| Licenza | Tutti i diritti riservati, fino a una decisione diversa. |
+| Grafica provvisoria | Fino alla fase 2 il codice genera forme semplici al posto della pixel art. |
+
+**Glossario per il codice.** I termini di gioco hanno un nome inglese fisso nel codice.
+
+| Italiano (gioco) | Inglese (codice) |
+|---|---|
+| Faro | Beacon |
+| Luce | Light |
+| Custode | Keeper |
+| Attacco / Tenuta | Attack / Hold |
+| Rito Rapido / Rito Lento | QuickRite / SlowRite |
+| Reliquia | Relic |
+| Luogo | Site |
+| Corsia | Lane |
+| Fronte / Retro | Front / Back |
+| Brace / Riserva | Ember / Reserve |
+| Marea | Tide |
+| Iniziativa | Initiative |
+| Alba / Manovra / Scontro / Tramonto | Dawn / Maneuver / Clash / Dusk |
+| Fucina / Abisso / Germoglio / Ingranaggio / Vespro | Forge / Abyss / Sprout / Gear / Vesper |
+
 ## 7. Grafica: pixel art con animazioni fluide
 
 ### 7.1 Direzione artistica
@@ -446,6 +522,7 @@ L'IA usa lo stesso motore del gioco e ha tre livelli di difficoltà.
   - La Marea resta sempre tra −5 e +5.
   - Il numero totale di carte di un giocatore non cambia.
   - Ogni azione legale produce uno stato valido.
+- **Test di localizzazione**: ogni chiave esiste in italiano e in inglese.
 - **Test di replay**: un file con seme e azioni deve sempre produrre lo stesso stato finale.
 - **Test end-to-end** con Playwright per i flussi principali (tutorial, partita completa, editor del mazzo).
 
@@ -470,8 +547,8 @@ GitHub Actions esegue a ogni pull request:
 
 | Fase | Durata stimata | Obiettivo | Criterio di uscita |
 |---|---|---|---|
-| **0. Prototipo cartaceo** | 2 settimane | Validare le regole di base con carte stampate | 10 partite di prova divertenti, regole stabili |
-| **1. Motore** | 4 settimane | Motore di regole completo, interfaccia testuale da terminale | 2 fazioni, 50 carte, IA facile, tutti i test verdi |
+| ~~0. Prototipo cartaceo~~ | — | Fase saltata. Il motore con l'interfaccia testuale sostituisce il prototipo di carta. | — |
+| **1. Motore** | 4 settimane | Motore di regole completo, interfaccia testuale da terminale | Fucina e Germoglio, 50 carte, IA facile, testi in italiano e inglese, tutti i test verdi |
 | **2. Vertical slice** | 6 settimane | Prima versione giocabile nel browser con grafica finale | 1 partita completa con animazioni, tutorial, IA media |
 | **3. Contenuti** | 8 settimane | 5 fazioni, 150 carte, Spedizione, Draft, collezione | Bilanciamento entro il 45–55% di vittorie per mazzo |
 | **4. Online** | 6 settimane | Server, PvP, replay, account | 100 partite PvP senza errori di sincronizzazione |
