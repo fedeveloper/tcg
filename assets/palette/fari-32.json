@@ -1,0 +1,188 @@
+{
+ "name": "Fari 32",
+ "colours": [
+  {
+   "name": "ink",
+   "hex": "#1a1423",
+   "group": "neutral"
+  },
+  {
+   "name": "abyss",
+   "hex": "#232a4d",
+   "group": "sea"
+  },
+  {
+   "name": "deep",
+   "hex": "#2f4a73",
+   "group": "sea"
+  },
+  {
+   "name": "sea",
+   "hex": "#3f7396",
+   "group": "sea"
+  },
+  {
+   "name": "mist",
+   "hex": "#7fb0c4",
+   "group": "sea"
+  },
+  {
+   "name": "foam",
+   "hex": "#c9e4e3",
+   "group": "sea"
+  },
+  {
+   "name": "white",
+   "hex": "#f6f3e4",
+   "group": "neutral"
+  },
+  {
+   "name": "slate",
+   "hex": "#3d3a4f",
+   "group": "neutral"
+  },
+  {
+   "name": "stone",
+   "hex": "#666479",
+   "group": "neutral"
+  },
+  {
+   "name": "ash",
+   "hex": "#9b9aa6",
+   "group": "neutral"
+  },
+  {
+   "name": "soot",
+   "hex": "#4a2030",
+   "group": "forge"
+  },
+  {
+   "name": "rust",
+   "hex": "#8f3b2e",
+   "group": "forge"
+  },
+  {
+   "name": "ember",
+   "hex": "#d95a2b",
+   "group": "forge"
+  },
+  {
+   "name": "flame",
+   "hex": "#f29a2e",
+   "group": "forge"
+  },
+  {
+   "name": "glow",
+   "hex": "#fbd35a",
+   "group": "forge"
+  },
+  {
+   "name": "copper",
+   "hex": "#b5683f",
+   "group": "forge"
+  },
+  {
+   "name": "kelp_dark",
+   "hex": "#1f4a3c",
+   "group": "sprout"
+  },
+  {
+   "name": "kelp",
+   "hex": "#2f7a4f",
+   "group": "sprout"
+  },
+  {
+   "name": "moss",
+   "hex": "#6aa84a",
+   "group": "sprout"
+  },
+  {
+   "name": "sprout",
+   "hex": "#b5d665",
+   "group": "sprout"
+  },
+  {
+   "name": "coral",
+   "hex": "#e8766a",
+   "group": "sprout"
+  },
+  {
+   "name": "verd_dark",
+   "hex": "#2a6b6a",
+   "group": "verdigris"
+  },
+  {
+   "name": "verd",
+   "hex": "#4fa89a",
+   "group": "verdigris"
+  },
+  {
+   "name": "verd_light",
+   "hex": "#9bd6bd",
+   "group": "verdigris"
+  },
+  {
+   "name": "wood_dark",
+   "hex": "#4e3528",
+   "group": "earth"
+  },
+  {
+   "name": "wood",
+   "hex": "#7d5236",
+   "group": "earth"
+  },
+  {
+   "name": "tan",
+   "hex": "#b98a5a",
+   "group": "earth"
+  },
+  {
+   "name": "sand",
+   "hex": "#e3c48c",
+   "group": "earth"
+  },
+  {
+   "name": "dusk",
+   "hex": "#4b3766",
+   "group": "dusk"
+  },
+  {
+   "name": "violet",
+   "hex": "#7b5aa6",
+   "group": "dusk"
+  },
+  {
+   "name": "lilac",
+   "hex": "#b99bd6",
+   "group": "dusk"
+  },
+  {
+   "name": "coral_dark",
+   "hex": "#a83f5a",
+   "group": "sprout"
+  }
+ ],
+ "factions": {
+  "forge": [
+   "soot",
+   "rust",
+   "ember",
+   "flame",
+   "glow"
+  ],
+  "sprout": [
+   "kelp_dark",
+   "kelp",
+   "moss",
+   "sprout",
+   "coral"
+  ],
+  "neutral": [
+   "slate",
+   "stone",
+   "ash",
+   "sand",
+   "white"
+  ]
+ }
+}

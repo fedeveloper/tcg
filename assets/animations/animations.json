@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "units": { "time": "ms", "distance": "px at 480x270", "scale": "1 = 100%" },
+  "defaults": {
+    "frameDurationMs": 180,
+    "eases": { "anticipate": "power2.out", "strike": "power4.in", "settle": "back.out(2)", "drift": "sine.inOut", "fall": "power2.in" },
+    "reducedMotion": { "timeScale": 0.5, "cameraShake": false, "hitStop": false, "particles": 0.3, "squashStretch": false }
+  },
+  "events": {
+    "CardPlayed": {
+      "blocksInput": true,
+      "totalMs": 420,
+      "steps": [
+        { "at": 0, "ms": 90, "target": "card", "tween": { "scaleX": 0.92, "scaleY": 1.08, "y": "-=6" }, "ease": "anticipate", "note": "anticipation: the card lifts and stretches" },
+        { "at": 90, "ms": 200, "target": "card", "tween": { "x": "stage.x", "y": "stage.y", "rotation": 0, "scaleX": 1, "scaleY": 1 }, "ease": "power3.out", "note": "the card flies to the stage point above the target cell" },
+        { "at": 290, "ms": 60, "target": "card", "tween": { "scaleX": 1.12, "scaleY": 0.9 }, "ease": "power1.out", "note": "squash on arrival" },
+        { "at": 350, "ms": 70, "target": "card", "tween": { "scaleX": 1, "scaleY": 1 }, "ease": "settle" },
+        { "at": 290, "target": "fx", "spawn": "fx/spark", "count": 6, "spread": 14, "tint": "faction.accent" }
+      ],
+      "then": "Rites dissolve with the dither shader (220 ms). Keepers, Relics and Sites hand over to their own event."
+    },
+    "KeeperSummoned": {
+      "blocksInput": true,
+      "totalMs": 460,
+      "steps": [
+        { "at": 0, "ms": 1, "target": "keeper", "set": { "alpha": 1, "y": "-=20", "scaleX": 0.8, "scaleY": 1.25 }, "note": "start above the slot, stretched" },
+        { "at": 0, "ms": 160, "target": "keeper", "tween": { "y": "slot.y" }, "ease": "fall" },
+        { "at": 160, "ms": 70, "target": "keeper", "tween": { "scaleX": 1.25, "scaleY": 0.75 }, "ease": "power1.out", "note": "squash on landing; the pivot is the feet" },
+        { "at": 160, "target": "fx", "spawn": "fx/puff", "count": 2, "offsets": [[-10, 0], [10, 0]] },
+        { "at": 160, "target": "slot", "shader": "ripple", "ms": 300, "note": "a wave ring starts under the slot" },
+        { "at": 230, "ms": 230, "target": "keeper", "tween": { "scaleX": 1, "scaleY": 1 }, "ease": "elastic.out(1, 0.5)" },
+        { "at": 230, "target": "keeper", "play": "idle" }
+      ]
+    },
+    "KeeperDamaged": {
+      "blocksInput": false,
+      "totalMs": 380,
+      "hitStopMs": { "amount<=2": 0, "amount>=3": 60, "lethal": 80 },
+      "attacker": [
+        { "at": -260, "ms": 120, "target": "source", "tween": { "x": "-=2*dir" }, "ease": "anticipate", "note": "anticipation: the attacker moves back by 2 px" },
+        { "at": -140, "ms": 90, "target": "source", "tween": { "x": "+=12*dir", "scaleX": 1.15, "scaleY": 0.9 }, "ease": "strike", "note": "the lunge; stretch along the motion" },
+        { "at": 60, "ms": 220, "target": "source", "tween": { "x": "slot.x", "scaleX": 1, "scaleY": 1 }, "ease": "power2.out" }
+      ],
+      "steps": [
+        { "at": 0, "target": "fx", "spawn": "fx/hit", "count": 1 },
+        { "at": 0, "target": "keeper", "flash": { "colour": "white", "ms": 60 } },
+        { "at": 0, "target": "time", "hitStop": true },
+        { "at": 0, "ms": 60, "target": "keeper", "tween": { "x": "+=3*dir", "scaleX": 0.85, "scaleY": 1.12 }, "ease": "power2.out", "note": "knock back and squash" },
+        { "at": 60, "ms": 240, "target": "keeper", "tween": { "x": "slot.x", "scaleX": 1, "scaleY": 1 }, "ease": "elastic.out(1, 0.4)" },
+        { "at": 0, "target": "text", "spawn": "damageNumber", "font": "Faro", "colour": "coral", "tween": { "y": "-=14", "alpha": 0 }, "ms": 600, "ease": "power1.out" },
+        { "at": 0, "target": "camera", "shake": { "amount>=3": 1, "lethal": 2 }, "ms": 120 }
+      ]
+    },
+    "KeeperDied": {
+      "blocksInput": true,
+      "totalMs": 520,
+      "steps": [
+        { "at": 0, "target": "keeper", "stop": "idle" },
+        { "at": 0, "ms": 80, "target": "keeper", "tween": { "scaleX": 1.2, "scaleY": 0.8 }, "ease": "power1.out" },
+        { "at": 80, "ms": 440, "target": "keeper", "shader": "ditherDissolve", "uniform": { "threshold": [0, 1] }, "ease": "power1.in", "note": "4x4 Bayer pattern; the pixels vanish from top to bottom" },
+        { "at": 80, "ms": 440, "target": "keeper", "tween": { "y": "+=3" }, "ease": "drift" },
+        { "at": 120, "target": "fx", "spawn": "fx/puff", "count": 3, "spread": 10 },
+        { "at": 120, "target": "fx", "spawn": "fx/spark", "count": 5, "spread": 12, "tint": "faction.accent", "drift": [0, -10] }
+      ],
+      "then": "Remove the sprite. If EchoReturned follows, a faint copy flies to the hand (300 ms)."
+    },
+    "BeaconDamaged": {
+      "blocksInput": false,
+      "totalMs": 420,
+      "hitStopMs": { "amount<=2": 40, "amount>=3": 80 },
+      "steps": [
+        { "at": 0, "target": "fx", "spawn": "fx/hit", "count": 1, "offset": [0, -12] },
+        { "at": 0, "target": "beacon", "flash": { "colour": "white", "ms": 60 } },
+        { "at": 0, "target": "time", "hitStop": true },
+        { "at": 0, "ms": 300, "target": "beacon", "shake": { "x": 2, "decay": true } },
+        { "at": 0, "target": "camera", "shake": { "amount<=2": 1, "amount>=3": 2 }, "ms": 160 },
+        { "at": 60, "target": "beacon", "state": { "light<=5": "damaged" }, "note": "switch the animation to beacon/damaged at half Light" },
+        { "at": 60, "target": "light", "tween": { "radius": "*0.8" }, "ms": 80, "yoyo": true, "note": "the grid light flickers once" },
+        { "at": 0, "target": "text", "spawn": "damageNumber", "font": "Faro", "colour": "glow", "tween": { "y": "-=16", "alpha": 0 }, "ms": 700 }
+      ]
+    },
+    "BeaconOut": {
+      "blocksInput": true,
+      "totalMs": 1100,
+      "steps": [
+        { "at": 0, "target": "time", "hitStopMs": 80 },
+        { "at": 0, "target": "camera", "shake": 3, "ms": 260 },
+        { "at": 80, "ms": 120, "target": "light", "tween": { "radius": "*1.6", "intensity": 1.5 }, "ease": "power2.out", "note": "a last bright pulse" },
+        { "at": 200, "ms": 500, "target": "light", "tween": { "radius": 0, "intensity": 0 }, "ease": "power2.in" },
+        { "at": 200, "ms": 500, "target": "beacon", "shader": "ditherCrossfade", "to": "beacon/out", "note": "dither from the lit sprite to the dark sprite, from top to bottom" },
+        { "at": 200, "target": "fx", "spawn": "fx/spark", "count": 10, "spread": 18, "gravity": 40 },
+        { "at": 700, "target": "beacon", "play": "beacon/out" },
+        { "at": 700, "ms": 400, "target": "lane", "tween": { "tintAmount": 0.35 }, "note": "the lane on that side becomes darker" }
+      ]
+    },
+    "TideShifted": {
+      "blocksInput": false,
+      "totalMs": 600,
+      "steps": [
+        { "at": 0, "ms": 80, "target": "tideMarker", "tween": { "x": "-=2*dir", "scaleY": 0.85 }, "ease": "anticipate", "note": "anticipation against the motion" },
+        { "at": 80, "ms": 360, "target": "tideMarker", "tween": { "x": "gauge.cell(to)", "scaleY": 1 }, "ease": "back.out(1.6)", "note": "about 12 px for each step of Tide" },
+        { "at": 80, "ms": 520, "target": "sea", "shader": "waves", "uniform": { "amplitude": [1, 2.5, 1], "offsetX": "+=6*dir" }, "ease": "drift" },
+        { "at": 80, "ms": 520, "target": "waterLine", "tween": { "y": "base - to*0.6" }, "ease": "drift", "note": "the water rises on the side that the Tide favours" },
+        { "at": 440, "target": "fx", "spawn": "fx/puff", "count": 2, "at_target": "tideMarker", "when": "abs(to) >= 2 and abs(from) < 2", "note": "mark the Alta Marea and Riflusso threshold" }
+      ]
+    }
+  }
+}
