@@ -1,0 +1,83 @@
+[
+  { "id": "forge-001", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 1, "attack": 2, "hold": 1 },
+  { "id": "forge-002", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 1, "attack": 1, "hold": 1, "keywords": ["surge"] },
+  { "id": "forge-003", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 3, "hold": 1, "tidePush": 1 },
+  { "id": "forge-004", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 2, "hold": 3 },
+  { "id": "forge-005", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 1, "hold": 2, "keywords": ["reach"] },
+  { "id": "forge-006", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 3, "hold": 2, "keywords": ["surge", "wear"] },
+  { "id": "forge-007", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 4, "attack": 5, "hold": 3, "keywords": ["overrun", "wear"] },
+  {
+    "id": "forge-008", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 2, "hold": 2,
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "damage", "amount": 1, "target": "enemyBeaconSameLane" }] }]
+  },
+  { "id": "forge-009", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 3, "attack": 2, "hold": 3, "tidePush": 2 },
+  {
+    "id": "forge-010", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 2, "keywords": ["reach"],
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [{ "when": "enterPlay", "condition": { "highTide": true }, "actions": [{ "op": "damage", "amount": 2, "target": "chosen" }] }]
+  },
+  {
+    "id": "forge-011", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 5, "attack": 5, "hold": 4, "keywords": ["overrun"],
+    "effects": [{ "when": "enterPlay", "condition": { "resonance": true }, "actions": [{ "op": "buff", "attack": 1, "hold": 1, "until": "permanent", "target": "self" }] }]
+  },
+  {
+    "id": "forge-012", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 3, "hold": 2, "keywords": ["overrun"], "tidePush": 1,
+    "effects": [{ "when": "enterPlay", "condition": { "highTide": true }, "actions": [{ "op": "damage", "amount": 2, "target": "enemyBeaconSameLane" }] }]
+  },
+  { "id": "forge-013", "type": "keeper", "faction": "forge", "rarity": "rare", "cost": 7, "attack": 7, "hold": 6, "keywords": ["overrun", "surge"] },
+  {
+    "id": "forge-014", "type": "keeper", "faction": "forge", "rarity": "legendary", "cost": 6, "attack": 4, "hold": 5,
+    "effects": [
+      { "when": "enterPlay", "actions": [{ "op": "damage", "amount": 1, "target": "allEnemyBeacons" }] },
+      { "when": "dusk", "actions": [{ "op": "tide", "amount": 1 }] }
+    ]
+  },
+  {
+    "id": "forge-015", "type": "quickRite", "faction": "forge", "rarity": "common", "cost": 1,
+    "target": { "kind": "keeper", "side": "any" },
+    "effects": [{ "when": "play", "actions": [{ "op": "damage", "amount": 2, "target": "chosen" }] }]
+  },
+  {
+    "id": "forge-016", "type": "slowRite", "faction": "forge", "rarity": "common", "cost": 2,
+    "target": { "kind": "beacon", "side": "enemy" },
+    "effects": [{ "when": "play", "actions": [{ "op": "damage", "amount": 3, "target": "chosen" }] }]
+  },
+  {
+    "id": "forge-017", "type": "quickRite", "faction": "forge", "rarity": "common", "cost": 1,
+    "target": { "kind": "keeper", "side": "ally" },
+    "effects": [{ "when": "play", "actions": [{ "op": "buff", "attack": 2, "until": "dusk", "target": "chosen" }] }]
+  },
+  {
+    "id": "forge-018", "type": "slowRite", "faction": "forge", "rarity": "common", "cost": 2,
+    "effects": [{ "when": "play", "actions": [{ "op": "tide", "amount": 2 }, { "op": "draw", "amount": 1 }] }]
+  },
+  {
+    "id": "forge-019", "type": "slowRite", "faction": "forge", "rarity": "rare", "cost": 4,
+    "effects": [{ "when": "play", "actions": [{ "op": "damage", "amount": 2, "target": "allEnemyKeepers" }] }]
+  },
+  {
+    "id": "forge-020", "type": "quickRite", "faction": "forge", "rarity": "uncommon", "cost": 2,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [
+      { "when": "play", "actions": [{ "op": "damage", "amount": 1, "target": "chosen" }] },
+      { "when": "play", "condition": { "highTide": true }, "actions": [{ "op": "damage", "amount": 2, "target": "chosen" }] }
+    ]
+  },
+  {
+    "id": "forge-021", "type": "slowRite", "faction": "forge", "rarity": "uncommon", "cost": 1, "sacrifice": 1,
+    "effects": [{ "when": "play", "actions": [{ "op": "draw", "amount": 2 }, { "op": "ember", "amount": 1 }] }]
+  },
+  { "id": "forge-022", "type": "relic", "faction": "forge", "rarity": "common", "cost": 2, "attachTo": "keeper", "aura": { "attack": 2 } },
+  {
+    "id": "forge-023", "type": "relic", "faction": "forge", "rarity": "uncommon", "cost": 2, "attachTo": "beacon",
+    "effects": [{ "when": "dawn", "actions": [{ "op": "tide", "amount": 1 }] }]
+  },
+  { "id": "forge-024", "type": "site", "faction": "forge", "rarity": "uncommon", "cost": 2, "aura": { "attack": 1 } },
+  {
+    "id": "forge-025", "type": "slowRite", "faction": "forge", "rarity": "uncommon", "cost": 1,
+    "effects": [
+      { "when": "play", "actions": [{ "op": "ember", "amount": 2 }] },
+      { "when": "play", "condition": { "lowTide": true }, "actions": [{ "op": "draw", "amount": 1 }] }
+    ]
+  }
+]

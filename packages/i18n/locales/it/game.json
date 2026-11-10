@@ -1,0 +1,345 @@
+{
+  "factions": {
+    "forge": "Fucina",
+    "abyss": "Abisso",
+    "sprout": "Germoglio",
+    "gear": "Ingranaggio",
+    "vesper": "Vespro",
+    "neutral": "Neutrale"
+  },
+  "types": {
+    "keeper": "Custode",
+    "quickRite": "Rito Rapido",
+    "slowRite": "Rito Lento",
+    "relic": "Reliquia",
+    "site": "Luogo"
+  },
+  "rarities": {
+    "common": "Comune",
+    "uncommon": "Non comune",
+    "rare": "Rara",
+    "legendary": "Leggendaria"
+  },
+  "keywords": {
+    "rooted": {
+      "name": "Radici",
+      "reminder": "Non può essere spostato. Ha +1 Tenuta in Fronte."
+    },
+    "reach": {
+      "name": "Gittata",
+      "reminder": "Attacca anche dalla fila Retro."
+    },
+    "overrun": {
+      "name": "Travolgere",
+      "reminder": "Il danno in eccesso colpisce il Faro."
+    },
+    "echo": {
+      "name": "Eco",
+      "reminder": "Quando muore, una copia 1/1 torna in mano."
+    },
+    "wear": {
+      "name": "Usura",
+      "reminder": "Perde 1 Attacco a ogni Tramonto."
+    },
+    "anchor": {
+      "name": "Ancora",
+      "reminder": "La Marea non si sposta mentre è in gioco."
+    },
+    "surge": {
+      "name": "Slancio",
+      "reminder": "Attacca anche nel round del suo ingresso."
+    }
+  },
+  "conditions": {
+    "highTide": {
+      "name": "Alta Marea",
+      "reminder": "Si attiva con la Marea dal tuo lato di 2 o più."
+    },
+    "lowTide": {
+      "name": "Riflusso",
+      "reminder": "Si attiva con la Marea dal lato avversario di 2 o più."
+    },
+    "resonance": {
+      "name": "Risonanza",
+      "reminder": "Si attiva se hai già giocato una carta della stessa fazione in questo round."
+    }
+  },
+  "triggers": {
+    "enterPlay": "Entra in gioco",
+    "dawn": "Alba",
+    "dusk": "Tramonto",
+    "death": "Morte"
+  },
+  "stats": {
+    "attack": "{{value}} Attacco",
+    "hold": "{{value}} Tenuta",
+    "both": "{{attack}}/{{hold}}"
+  },
+  "targets": {
+    "keeper": {
+      "enemy": "un Custode nemico",
+      "ally": "un tuo Custode",
+      "any": "un Custode"
+    },
+    "row": {
+      "front": " in Fronte",
+      "back": " in Retro"
+    },
+    "sameLane": " in questa corsia",
+    "beacon": {
+      "enemy": "un Faro nemico",
+      "ally": "un tuo Faro"
+    },
+    "self": "questo Custode",
+    "attachedKeeper": "il Custode con questa Reliquia",
+    "attachedBeacon": "il Faro con questa Reliquia",
+    "enemyBeaconSameLane": "il Faro nemico di questa corsia",
+    "allyBeaconSameLane": "il tuo Faro di questa corsia",
+    "enemyFrontSameLane": "il Custode nemico in Fronte in questa corsia",
+    "enemyKeepersSameLane": "ogni Custode nemico in questa corsia",
+    "allyKeepersSameLane": "ogni tuo Custode in questa corsia",
+    "allEnemyKeepers": "ogni Custode nemico",
+    "allAllyKeepers": "ogni tuo Custode",
+    "allEnemyBeacons": "ogni Faro nemico",
+    "allAllyBeacons": "ogni tuo Faro",
+    "again": {
+      "keeper": "quel Custode",
+      "beacon": "quel Faro"
+    }
+  },
+  "rules": {
+    "join": ", poi ",
+    "conditionPrefix": "{{condition}}: ",
+    "triggerPrefix": "{{trigger}}: ",
+    "damage_one": "infliggi 1 danno {{target}}",
+    "damage_other": "infliggi {{count}} danni {{target}}",
+    "healBeacon": "{{target}} recupera {{count}} Luce",
+    "buff": "{{target}} ottiene {{stats}}",
+    "buffUntilDusk": "{{target}} ottiene {{stats}} fino al Tramonto",
+    "destroy": "distruggi {{target}}",
+    "grant": "{{target}} ottiene {{keyword}}",
+    "draw_one": "pesca 1 carta",
+    "draw_other": "pesca {{count}} carte",
+    "tide": "sposta la Marea di {{count}} verso di te",
+    "tideAway": "sposta la Marea di {{count}} verso l'avversario",
+    "ember": "guadagna {{count}} Brace",
+    "summon": {
+      "sameLaneFront": "crea un {{card}} {{stats}} nella fila Fronte di questa corsia",
+      "sameLaneBack": "crea un {{card}} {{stats}} nella fila Retro di questa corsia",
+      "eachLaneBack": "crea un {{card}} {{stats}} nella fila Retro di ogni corsia"
+    },
+    "tidePush": "Sposta la Marea di {{count}} verso di te.",
+    "tidePushAway": "Sposta la Marea di {{count}} verso l'avversario.",
+    "attachKeeper": "Si attacca a un tuo Custode.",
+    "attachBeacon": "Si attacca a un tuo Faro.",
+    "auraKeeper": "Il Custode ottiene {{stats}}.",
+    "auraKeeperKeywords": "Il Custode ha {{keywords}}.",
+    "auraSite": "I Custodi in questa corsia ottengono {{stats}}.",
+    "auraSiteKeywords": "I Custodi in questa corsia hanno {{keywords}}.",
+    "ability": "{{cost}} Brace: {{text}} (una volta per round).",
+    "healKeeper": "{{target}} recupera {{count}} danni",
+    "triggerWithCondition": "{{trigger}} ({{condition}}): ",
+    "sacrifice_one": "Sacrificio 1: per giocare questa carta, distruggi 1 tuo Custode.",
+    "sacrifice_other": "Sacrificio {{count}}: per giocare questa carta, distruggi {{count}} tuoi Custodi."
+  },
+  "board": {
+    "lanes": [
+      "A",
+      "B",
+      "C"
+    ],
+    "rows": {
+      "front": "Fronte",
+      "back": "Retro"
+    },
+    "slot": "{{lane}} {{row}}",
+    "beacon": "Faro {{lane}}",
+    "yourBeacon": "il tuo Faro {{lane}}",
+    "enemyBeacon": "il Faro nemico {{lane}}"
+  },
+  "events": {
+    "GameStarted": {
+      "self": "Hai l'Iniziativa nel primo round.",
+      "other": "L'avversario ha l'Iniziativa nel primo round."
+    },
+    "Mulliganed": {
+      "self_one": "Sostituisci 1 carta.",
+      "self_other": "Sostituisci {{count}} carte.",
+      "other_one": "L'avversario sostituisce 1 carta.",
+      "other_other": "L'avversario sostituisce {{count}} carte.",
+      "selfKeep": "Tieni la mano.",
+      "otherKeep": "L'avversario tiene la mano."
+    },
+    "RoundStarted": {
+      "self": "Round {{round}}. Hai l'Iniziativa.",
+      "other": "Round {{round}}. L'avversario ha l'Iniziativa."
+    },
+    "CardDrawn": {
+      "self": "Peschi {{card}}.",
+      "other": "L'avversario pesca una carta."
+    },
+    "CardBurned": {
+      "self": "La tua mano è piena: {{card}} va nel cimitero.",
+      "other": "La mano avversaria è piena: {{card}} va nel cimitero."
+    },
+    "DeckEmpty": {
+      "self": "Il tuo mazzo è vuoto: ogni tuo Faro perde 2 Luce.",
+      "other": "Il mazzo avversario è vuoto: ogni Faro nemico perde 2 Luce."
+    },
+    "EmberRefilled": {
+      "self": "Hai {{ember}} Brace.",
+      "other": "L'avversario ha {{ember}} Brace."
+    },
+    "CardPlayed": {
+      "self": "Giochi {{card}}{{target}}.",
+      "other": "L'avversario gioca {{card}}{{target}}."
+    },
+    "targetSuffix": " su {{target}}",
+    "AbilityActivated": {
+      "self": "Attivi l'abilità di {{card}}.",
+      "other": "L'avversario attiva l'abilità di {{card}}."
+    },
+    "KeeperMoveDeclared": {
+      "self": "Sposti {{card}} in {{slot}}.",
+      "other": "L'avversario sposta {{card}} in {{slot}}."
+    },
+    "Passed": {
+      "self": "Passi.",
+      "other": "L'avversario passa."
+    },
+    "ChainResolving": "La catena si risolve.",
+    "Fizzled": "{{card}} non ha effetto.",
+    "KeeperSummoned": {
+      "self": "{{card}} entra in gioco dal tuo lato, in {{slot}}.",
+      "other": "{{card}} entra in gioco dal lato avversario, in {{slot}}."
+    },
+    "KeeperMoved": "{{card}} si sposta in {{slot}}.",
+    "KeeperDamaged_one": "{{card}} subisce 1 danno.",
+    "KeeperDamaged_other": "{{card}} subisce {{count}} danni.",
+    "KeeperHealed_one": "{{card}} cura 1 danno.",
+    "KeeperHealed_other": "{{card}} cura {{count}} danni.",
+    "KeeperBuffed": "{{card}} ottiene {{stats}}.",
+    "KeeperBuffedUntilDusk": "{{card}} ottiene {{stats}} fino al Tramonto.",
+    "KeywordGranted": "{{card}} ottiene {{keyword}}.",
+    "KeeperDied": "{{card}} muore.",
+    "EchoReturned": {
+      "self": "Eco: una copia 1/1 di {{card}} torna nella tua mano.",
+      "other": "Eco: una copia 1/1 di {{card}} torna nella mano avversaria."
+    },
+    "BeaconDamaged": {
+      "self": "Il tuo Faro {{lane}} perde {{count}} Luce (ora {{light}}).",
+      "other": "Il Faro nemico {{lane}} perde {{count}} Luce (ora {{light}})."
+    },
+    "BeaconHealed": {
+      "self": "Il tuo Faro {{lane}} recupera {{count}} Luce (ora {{light}}).",
+      "other": "Il Faro nemico {{lane}} recupera {{count}} Luce (ora {{light}})."
+    },
+    "BeaconOut": {
+      "self": "Il tuo Faro {{lane}} si spegne!",
+      "other": "Il Faro nemico {{lane}} si spegne!"
+    },
+    "TideShifted": "La Marea passa da {{from}} a {{to}}.",
+    "TideAnchored": "Un'Ancora blocca la Marea.",
+    "EmberGained": {
+      "self": "Guadagni {{count}} Brace.",
+      "other": "L'avversario guadagna {{count}} Brace."
+    },
+    "RelicAttached": "{{card}} si attacca a {{target}}.",
+    "SitePlaced": "{{card}} diventa il Luogo della corsia {{lane}}.",
+    "ClashStarted": "Scontro!",
+    "DuskStarted": "Tramonto.",
+    "Worn": "Usura: {{card}} perde 1 Attacco.",
+    "GameOver": {
+      "win": "Hai vinto!",
+      "lose": "Hai perso.",
+      "draw": "La partita è pari."
+    },
+    "reasons": {
+      "beacons": "Due Fari sono spenti.",
+      "roundLimit": "La partita ha raggiunto il round 20.",
+      "concede": "Un giocatore ha abbandonato."
+    }
+  },
+  "actions": {
+    "keep": "Tieni la mano",
+    "mulligan": "Sostituisci: {{cards}}",
+    "playKeeper": "Gioca {{card}} in {{slot}}{{target}}",
+    "playSite": "Gioca {{card}} nella corsia {{lane}}",
+    "play": "Gioca {{card}}{{target}}",
+    "sacrifice": " (sacrifica {{cards}})",
+    "move": "Sposta {{card}} in {{slot}} (1 Brace)",
+    "activate": "Attiva {{card}}{{target}}",
+    "pass": "Passa",
+    "resolve": "Lascia risolvere la catena",
+    "targetSuffix": " su {{target}}"
+  },
+  "ui": {
+    "title": "Fari Sommersi",
+    "subtitle": "Interfaccia testuale. Scrivi il numero di un'azione e premi Invio.",
+    "help": "Comandi: un numero sceglie un'azione. \"c N\" mostra la carta N della mano. \"k\" mostra le parole chiave. \"q\" esce.",
+    "round": "Round {{round}}",
+    "tide": "Marea {{value}}",
+    "tideHint": "(positiva: dal tuo lato)",
+    "initiative": "Iniziativa: {{who}}",
+    "you": "Tu",
+    "opponent": "Avversario",
+    "ember": "Brace {{ember}}",
+    "reserve": "Riserva {{reserve}}",
+    "hand": "Mano {{count}}",
+    "deck": "Mazzo {{count}}",
+    "graveyard": "Cimitero {{count}}",
+    "beacons": "Fari",
+    "sites": "Luoghi",
+    "emptySlot": "·",
+    "noSite": "—",
+    "out": "spento",
+    "yourHand": "La tua mano:",
+    "chain": "Catena (dall'ultima carta alla prima):",
+    "chooseAction": "Scegli un'azione:",
+    "chooseResponse": "L'avversario ha agito. Vuoi rispondere con un Rito Rapido?",
+    "prompt": "> ",
+    "invalid": "Scelta non valida. Scrivi un numero dell'elenco.",
+    "opponentThinking": "L'avversario pensa...",
+    "mulliganTitle": "Mulligan: puoi sostituire fino a 4 carte una volta.",
+    "cost": "Costo {{cost}}",
+    "fresh": "appena entrato",
+    "relics": "Reliquie: {{list}}",
+    "keywordsTitle": "Parole chiave:",
+    "goodbye": "Arrivederci.",
+    "deckLabel": "Mazzo: {{deck}}",
+    "finalScore": "Luce totale: tu {{you}}, avversario {{opponent}}.",
+    "mulligan": "Mulligan"
+  },
+  "deckNames": {
+    "forge": "Fucina",
+    "sprout": "Germoglio",
+    "forgeSprout": "Fucina e Germoglio"
+  },
+  "targetsTo": {
+    "keeper": {
+      "enemy": "a un Custode nemico",
+      "ally": "a un tuo Custode",
+      "any": "a un Custode"
+    },
+    "beacon": {
+      "enemy": "a un Faro nemico",
+      "ally": "a un tuo Faro"
+    },
+    "self": "a questo Custode",
+    "attachedKeeper": "al Custode con questa Reliquia",
+    "attachedBeacon": "al Faro con questa Reliquia",
+    "enemyBeaconSameLane": "al Faro nemico di questa corsia",
+    "allyBeaconSameLane": "al tuo Faro di questa corsia",
+    "enemyFrontSameLane": "al Custode nemico in Fronte in questa corsia",
+    "enemyKeepersSameLane": "a ogni Custode nemico in questa corsia",
+    "allyKeepersSameLane": "a ogni tuo Custode in questa corsia",
+    "allEnemyKeepers": "a ogni Custode nemico",
+    "allAllyKeepers": "a ogni tuo Custode",
+    "allEnemyBeacons": "a ogni Faro nemico",
+    "allAllyBeacons": "a ogni tuo Faro",
+    "again": {
+      "keeper": "a quel Custode",
+      "beacon": "a quel Faro"
+    }
+  }
+}
