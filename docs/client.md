@@ -31,3 +31,21 @@ L'input resta bloccato durante le animazioni. Un clic sul campo accelera l'anima
 3. Cambia i tempi delle animazioni in `BoardView.animateEvent` secondo `assets/animations/animations.json`.
 
 Il campo usa una scala intera (×1, ×2, ×3) e il filtro `nearest`, come chiede il piano (sezione 7.2).
+
+## Tutorial
+
+Il tutorial ha cinque lezioni. Ogni lezione introduce una regola.
+
+1. Custodi e Fari.
+2. Blocco e Gittata.
+3. Brace e incantesimi.
+4. Marea.
+5. Catena e risposte.
+
+- `packages/engine/src/scenario.ts` crea una posizione fissa con `newScenario`. La partita parte in Manovra, senza mulligan e senza mescolare.
+- `packages/client/src/tutorial/lessons.ts` contiene le lezioni: scenario, avversario, obiettivo e round massimo.
+- L'avversario del tutorial usa `ScriptedAiDriver`: passa, oppure segue uno script.
+- I testi sono nelle chiavi `tutorial.*` dei file di lingua.
+- `packages/client/test/tutorial.test.ts` controlla che ogni lezione si risolva con le mosse previste.
+
+NOTA: tieni lo stato del gioco, le azioni e le lezioni in `$state.raw`. Il motore usa `structuredClone`, e questa funzione non copia i proxy di Svelte.

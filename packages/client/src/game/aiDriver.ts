@@ -1,5 +1,5 @@
 import { AiRandom, chooseAction, type AiLevel } from "@tcg/ai";
-import type { Action, GameState } from "@tcg/engine";
+import { actionKey, legalActions, type Action, type GameState } from "@tcg/engine";
 import type { AiDriver } from "./session.ts";
 
 /** Runs the AI in the same thread. Tests use it. */
@@ -56,5 +56,21 @@ export class WorkerAiDriver implements AiDriver {
 
   dispose(): void {
     this.worker.terminate();
+  }
+}
+
+/** A scripted opponent for the tutorial: the script picks the action, or null to pass. */
+export class ScriptedAiDriver implements AiDriver {
+  constructor(
+    private readonly next: (state: GameState) => Action | null,
+    private readonly delayMs = 0,
+  ) {}
+  async choose(state: GameState): Promise<Action> {
+    if (this.delayMs > 0) await new Promise((r) => setTimeout(r, this.delayMs));
+    const legal = legalActions(state);
+    const wanted = this.next(state);
+    const key = wanted ? actionKey(wanted) : null;
+    const match = key ? legal.find((a) => actionKey(a) === key) : undefined;
+    return match ?? legal.find((a) => a.type === "Pass") ?? legal[0]!;
   }
 }

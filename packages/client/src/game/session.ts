@@ -21,6 +21,8 @@ export interface SessionOptions {
   seed: number;
   deck: string;
   opponentDeck: string;
+  /** A fixed starting position (the tutorial). It replaces the decks. */
+  initial?: { state: GameState; events: GameEvent[] };
   level: AiLevel;
   ai: AiDriver;
   /** Called for every step. The session waits for the returned promise (the animation). */
@@ -44,8 +46,9 @@ export class GameSession {
 
   constructor(opts: SessionOptions) {
     this.opts = opts;
-    const decks: [string[], string[]] = [expandDeck(STARTER_DECKS[opts.deck]!), expandDeck(STARTER_DECKS[opts.opponentDeck]!)];
-    const r = newGame({ seed: opts.seed, decks });
+    const r =
+      opts.initial ??
+      newGame({ seed: opts.seed, decks: [expandDeck(STARTER_DECKS[opts.deck]!), expandDeck(STARTER_DECKS[opts.opponentDeck]!)] });
     this.state = r.state;
     this.startEvents = r.events;
   }
@@ -74,11 +77,11 @@ export class GameSession {
   private async step(action: Action): Promise<void> {
     this.busy = true;
     this.opts.onChange?.(this);
-    const before = this.state;
-    const player = before.turn;
-    const r = apply(before, action);
-    this.state = r.state;
     try {
+      const before = this.state;
+      const player = before.turn;
+      const r = apply(before, action);
+      this.state = r.state;
       await this.opts.onStep({ action, player, before, after: r.state, events: r.events });
     } finally {
       this.busy = false;

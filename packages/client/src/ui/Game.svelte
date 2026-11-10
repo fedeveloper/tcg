@@ -6,7 +6,9 @@
   import { cardRulesText, cardSummary, describeAction, describeEvent, lookupIn, type Lang, type Translator } from "@tcg/i18n";
   import type { AiLevel } from "@tcg/ai";
   import { GameSession, HUMAN, type Step } from "../game/session.ts";
-  import { WorkerAiDriver } from "../game/aiDriver.ts";
+  import { ScriptedAiDriver, WorkerAiDriver } from "../game/aiDriver.ts";
+  import { newScenario } from "@tcg/engine";
+  import { LESSONS, type Lesson } from "../tutorial/lessons.ts";
   import { highlightPlaces, narrow, optionsForCard, optionsForKeeper, stageOf } from "../game/selection.ts";
   import { BoardView, type BoardClick } from "../render/board.ts";
   import { HEIGHT, integerScale, WIDTH, type Rect } from "../render/layout.ts";
@@ -19,9 +21,12 @@
     opponentDeck: string;
     level: AiLevel;
     seed: number;
+    lesson?: Lesson | null;
+    onNext?: () => void;
+    onRetry?: () => void;
     onExit: () => void;
   }
-  let { tr, lang = $bindable(), deck, opponentDeck, level, seed, onExit }: Props = $props();
+  let { tr, lang = $bindable(), deck, opponentDeck, level, seed, lesson = null, onNext, onRetry, onExit }: Props = $props();
 
   let host: HTMLDivElement;
   let app: Application | null = null;
@@ -29,10 +34,10 @@
   let session = $state.raw<GameSession | null>(null);
 
   // Reactive copies of the session data. The session itself is a plain class.
-  let game = $state<GameState | null>(null);
+  let game = $state.raw<GameState | null>(null);
   let busy = $state(true);
   let log = $state<string[]>([]);
-  let options = $state<Action[]>([]);
+  let options = $state.raw<Action[]>([]);
   let selectedCard = $state<string | null>(null);
   let mulliganPick = $state<string[]>([]);
   const speed = { factor: 1 };
@@ -76,7 +81,10 @@
       app!.canvas.addEventListener("pointerdown", () => {
         if (busy) board?.speedUp();
       });
-      session = new GameSession({ seed, deck, opponentDeck, level, ai: new WorkerAiDriver(), onStep, onChange: refresh });
+      const plan = lesson?.opponent;
+      const ai = !lesson ? new WorkerAiDriver() : new ScriptedAiDriver(plan?.kind === "script" ? plan.next : () => null, 350);
+      const initial = lesson ? newScenario(lesson.scenario) : undefined;
+      session = new GameSession({ seed, deck, opponentDeck, level, ai, initial, onStep, onChange: refresh });
       addLog({ before: session.state, after: session.state, events: session.startEvents });
       board.sync(session.state);
       refresh(session);
@@ -181,6 +189,16 @@
     return myTurn && optionsForCard(actions, id).length > 0;
   }
 
+  /** Tutorial result: "done", "failed" or null while the lesson runs. */
+  const lessonResult = $derived.by(() => {
+    if (!lesson || !game || busy) return null;
+    if (lesson.goal(game)) return "done";
+    if (game.phase === "over" || game.round > lesson.maxRound) return "failed";
+    return null;
+  });
+  const lessonNumber = $derived(lesson ? LESSONS.indexOf(lesson) + 1 : 0);
+  const hasNext = $derived(lessonNumber > 0 && lessonNumber < LESSONS.length);
+
   const result = $derived.by(() => {
     if (!game?.outcome) return null;
     const w = game.outcome.winner;
@@ -204,6 +222,14 @@
     </select>
     <button onclick={onExit}>{tr.t("ui.menu")}</button>
   </header>
+
+  {#if lesson}
+    <section class="lesson">
+      <strong>{tr.t("tutorial.lesson", { n: lessonNumber })}: {tr.t(`tutorial.lessons.${lesson.id}.title`)}</strong>
+      <div>{tr.t(`tutorial.lessons.${lesson.id}.intro`)}</div>
+      <div class="goal">{tr.t("tutorial.goalLabel")}: {tr.t(`tutorial.lessons.${lesson.id}.goal`)}</div>
+    </section>
+  {/if}
 
   <div class="board" bind:this={host}></div>
 
@@ -254,7 +280,18 @@
       <div class="hint">{tr.t("ui.moveHint")} {tr.t("ui.speedHint")}</div>
     </section>
 
-    {#if result}
+    {#if lessonResult}
+      <div class="over">
+        <h2>{tr.t(lessonResult === "done" ? "tutorial.done" : "tutorial.failed")}</h2>
+        {#if lessonResult === "done" && hasNext}
+          <button class="primary" onclick={() => onNext?.()}>{tr.t("tutorial.next")}</button>
+        {/if}
+        {#if lessonResult === "failed"}
+          <button class="primary" onclick={() => onRetry?.()}>{tr.t("tutorial.retry")}</button>
+        {/if}
+        <button onclick={onExit}>{tr.t("tutorial.back")}</button>
+      </div>
+    {:else if result}
       <div class="over">
         <h2>{result}</h2>
         <p>{tr.t("ui.finalScore", { you: totalLight(game, 0), opponent: totalLight(game, 1) })}</p>
@@ -282,6 +319,8 @@
   .card .title { font-weight: bold; margin-bottom: 4px; }
   .card .rules { color: var(--muted); }
   .chain, .log { width: 100%; max-width: 1440px; background: var(--panel); border-radius: 4px; padding: 6px 10px; font-size: 12px; }
+  .lesson { width: 100%; max-width: 1440px; background: #1d2f22; border: 1px solid #4f9d69; border-radius: 4px; padding: 8px 10px; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+  .lesson .goal { color: var(--accent); }
   .over { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
   .over h2 { color: var(--accent); text-align: center; padding: 0 16px; }
 </style>

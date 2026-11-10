@@ -25,3 +25,4 @@ export { newGame, apply, isOver, OPENING_HAND, type NewGameOptions, type ApplyOp
 export { legalActions, actionKey, isLegal, targetsFor } from "./legal.ts";
 export { viewFor, eventsFor, HIDDEN_CARD } from "./view.ts";
 export { checkInvariants, countRealCards } from "./invariants.ts";
+export { newScenario, type Scenario, type ScenarioSide, type ScenarioKeeper } from "./scenario.ts";
