@@ -51,7 +51,19 @@
   let options = $state.raw<Action[]>([]);
   let selectedCard = $state<string | null>(null);
   let mulliganPick = $state<string[]>([]);
-  const speed = { factor: 1 };
+  const MOTION_KEY = "tcg.reducedMotion";
+  function initialReducedMotion(): boolean {
+    const saved = localStorage.getItem(MOTION_KEY);
+    if (saved !== null) return saved === "1";
+    // First visit: follow the setting of the operating system.
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+  let reducedMotion = $state(initialReducedMotion());
+  const speed: { factor: number; reduced: boolean } = { factor: 1, reduced: false };
+  $effect(() => {
+    speed.reduced = reducedMotion;
+    localStorage.setItem(MOTION_KEY, reducedMotion ? "1" : "0");
+  });
 
   const actions = $derived(session && game && !busy ? session.humanActions() : []);
   const myTurn = $derived(!!game && game.turn === HUMAN && !busy && game.phase !== "over");
@@ -235,6 +247,7 @@
       <span class="status">{busy ? tr.t("ui.waiting") : myTurn ? tr.t("ui.yourTurn") : ""}</span>
     {/if}
     <span class="spacer"></span>
+    <label class="motion"><input type="checkbox" bind:checked={reducedMotion} /> {tr.t("ui.reducedMotion")}</label>
     <select bind:value={lang} aria-label={tr.t("ui.language")}>
       <option value="it">IT</option>
       <option value="en">EN</option>
@@ -325,6 +338,7 @@
   .game { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 8px 16px; }
   header, .me { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; width: 100%; max-width: 1440px; font-size: 13px; }
   .spacer { flex: 1; }
+  .motion { display: flex; align-items: center; gap: 4px; cursor: pointer; }
   .status { color: var(--accent); }
   .hint { color: var(--muted); font-size: 12px; }
   .board { line-height: 0; max-width: 100%; overflow: hidden; }

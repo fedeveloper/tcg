@@ -34,6 +34,8 @@ export type BoardClick =
 /** Animation speed. The player can speed up the queue with a click (plan, section 6.5). */
 export interface Speed {
   factor: number;
+  /** "Reduce animations" (plan, section 7.4): no shake, no hit stop, no squash, fewer particles, half the time. */
+  reduced?: boolean;
 }
 
 /**
@@ -50,6 +52,7 @@ export class BoardView {
   private readonly keeperLayer = new Container();
   private tideMarker: Container;
   private current: gsap.core.Timeline | null = null;
+  private fxCount = 0;
   private state: GameState | null = null;
   onClick: (c: BoardClick) => void = () => {};
 
@@ -217,6 +220,8 @@ export class BoardView {
   /** Adds an effect sprite to the timeline. Themes without effects skip it. */
   private spawn(tl: gsap.core.Timeline, pos: number, kind: FxKind, x: number, y: number, tint?: number, drift?: { x: number; y: number }): void {
     if (!this.theme.fx) return;
+    // Reduced motion keeps 3 particles out of 10.
+    if (this.speed.reduced && this.fxCount++ % 10 % 3 !== 0) return;
     tl.call(
       () => {
         const s = this.theme.fx!(kind, tint);
@@ -242,7 +247,7 @@ export class BoardView {
 
   /** Camera shake: at most 3 pixels (docs/animazioni.md). */
   private shake(tl: gsap.core.Timeline, pos: number, amount: number, duration: number): void {
-    if (amount <= 0) return;
+    if (amount <= 0 || this.speed.reduced) return;
     const n = Math.max(2, Math.round(duration / 0.04));
     for (let i = 0; i < n; i++) {
       const k = amount * (1 - i / n) * (i % 2 ? -1 : 1);
@@ -253,7 +258,12 @@ export class BoardView {
 
   /** Hit stop: the timeline waits. Only the effect sprites keep moving. */
   private hitStop(tl: gsap.core.Timeline, seconds: number): void {
-    if (seconds > 0) tl.to({}, { duration: seconds });
+    if (seconds > 0 && !this.speed.reduced) tl.to({}, { duration: seconds });
+  }
+
+  /** Squash and stretch: a scale tween. Reduced motion skips it. */
+  private squash(tl: gsap.core.Timeline, scale: object, vars: gsap.TweenVars, pos?: number): void {
+    if (!this.speed.reduced) tl.to(scale, vars, pos);
   }
 
   /** Builds the animation of one event. The timings follow assets/animations/animations.json. */
@@ -275,10 +285,10 @@ export class BoardView {
         // Anticipation: the card lifts and stretches. Then it flies, lands with a squash and dissolves.
         tl.set(ghost, { visible: true }, pos);
         tl.to(ghost, { y: from.y - 6, duration: 0.09, ease: "power2.out" }, pos);
-        tl.to(ghost.scale, { x: 0.92, y: 1.08, duration: 0.09, ease: "power2.out" }, pos);
+        this.squash(tl, ghost.scale, { x: 0.92, y: 1.08, duration: 0.09, ease: "power2.out" }, pos);
         tl.to(ghost, { x: to.x, y: to.y - 10, duration: 0.2, ease: "power3.out" }, pos + 0.09);
-        tl.to(ghost.scale, { x: 1.12, y: 0.9, duration: 0.06, ease: "power1.out" }, pos + 0.29);
-        tl.to(ghost.scale, { x: 1, y: 1, duration: 0.07, ease: "back.out(2)" }, pos + 0.35);
+        this.squash(tl, ghost.scale, { x: 1.12, y: 0.9, duration: 0.06, ease: "power1.out" }, pos + 0.29);
+        this.squash(tl, ghost.scale, { x: 1, y: 1, duration: 0.07, ease: "back.out(2)" }, pos + 0.35);
         this.burst(tl, pos + 0.29, to.x, to.y - 10, 6, 14, FACTION_GLOW[CARDS[e.cardId]?.faction ?? "neutral"]);
         const dissolve = this.theme.dissolve?.(ghost);
         if (dissolve) tl.to(dissolve, { threshold: 1, duration: 0.22, ease: "power1.in" }, pos + 0.42);
@@ -293,16 +303,16 @@ export class BoardView {
         const c = center(r);
         const body = view.body ?? view;
         view.position.set(c.x, c.y - 20);
-        body.scale.set(0.8, 1.25);
+        if (!this.speed.reduced) body.scale.set(0.8, 1.25);
         view.alpha = 0;
         const pos = tl.duration();
         // The keeper falls stretched, lands with a squash, then springs back (plan, section 7.2).
         tl.set(view, { alpha: 1 }, pos);
         tl.to(view, { y: c.y, duration: 0.16, ease: "power2.in" }, pos);
-        tl.to(body.scale, { x: 1.25, y: 0.75, duration: 0.07, ease: "power1.out" }, pos + 0.16);
+        this.squash(tl, body.scale, { x: 1.25, y: 0.75, duration: 0.07, ease: "power1.out" }, pos + 0.16);
         this.spawn(tl, pos + 0.16, "puff", c.x - 10, c.y + 17, undefined, { x: -5, y: -2 });
         this.spawn(tl, pos + 0.16, "puff", c.x + 10, c.y + 17, undefined, { x: 5, y: -2 });
-        tl.to(body.scale, { x: 1, y: 1, duration: 0.23, ease: "elastic.out(1, 0.5)" }, pos + 0.23);
+        this.squash(tl, body.scale, { x: 1, y: 1, duration: 0.23, ease: "elastic.out(1, 0.5)" }, pos + 0.23);
         return;
       }
       case "KeeperMoved": {
@@ -312,7 +322,7 @@ export class BoardView {
         const body = view.body ?? view;
         const pos = tl.duration();
         tl.to(view, { x: c.x, y: c.y, duration: 0.25, ease: "power2.inOut" }, pos);
-        tl.to(body.scale, { x: 1.1, y: 0.92, duration: 0.12, yoyo: true, repeat: 1, ease: "sine.inOut" }, pos);
+        this.squash(tl, body.scale, { x: 1.1, y: 0.92, duration: 0.12, yoyo: true, repeat: 1, ease: "sine.inOut" }, pos);
         return;
       }
       case "KeeperDamaged": {
@@ -331,9 +341,9 @@ export class BoardView {
         const hit = tl.duration();
         // Knock back and squash, then an elastic return.
         tl.to(view, { x: x + 3 * dir, duration: 0.06, ease: "power2.out" }, hit);
-        tl.to(body.scale, { x: 0.85, y: 1.12, duration: 0.06, ease: "power2.out" }, hit);
+        this.squash(tl, body.scale, { x: 0.85, y: 1.12, duration: 0.06, ease: "power2.out" }, hit);
         tl.to(view, { x, duration: 0.24, ease: "elastic.out(1, 0.4)" }, hit + 0.06);
-        tl.to(body.scale, { x: 1, y: 1, duration: 0.24, ease: "elastic.out(1, 0.4)" }, hit + 0.06);
+        this.squash(tl, body.scale, { x: 1, y: 1, duration: 0.24, ease: "elastic.out(1, 0.4)" }, hit + 0.06);
         return;
       }
       case "KeeperDied":
@@ -343,7 +353,7 @@ export class BoardView {
         const body = view.body ?? view;
         const pos = tl.duration();
         const tint = FACTION_GLOW[CARDS[e.cardId]?.faction ?? "neutral"];
-        tl.to(body.scale, { x: 1.2, y: 0.8, duration: 0.08, ease: "power1.out" }, pos);
+        this.squash(tl, body.scale, { x: 1.2, y: 0.8, duration: 0.08, ease: "power1.out" }, pos);
         // Dither dissolve: the pixels vanish with a 4x4 Bayer pattern.
         const dissolve = this.theme.dissolve?.(view);
         if (dissolve) tl.to(dissolve, { threshold: 1, duration: 0.44, ease: "power1.in" }, pos + 0.08);
@@ -414,9 +424,9 @@ export class BoardView {
         const pos = tl.duration();
         // Anticipation against the motion, then the buoy slides and overshoots a little.
         tl.to(this.tideMarker, { x: from - 2 * dir, duration: 0.08, ease: "power2.out" }, pos);
-        tl.to(this.tideMarker.scale, { y: 0.85, duration: 0.08 }, pos);
+        this.squash(tl, this.tideMarker.scale, { y: 0.85, duration: 0.08 }, pos);
         tl.to(this.tideMarker, { x: to, duration: 0.36, ease: "back.out(1.6)" }, pos + 0.08);
-        tl.to(this.tideMarker.scale, { y: 1, duration: 0.2, ease: "back.out(2)" }, pos + 0.08);
+        this.squash(tl, this.tideMarker.scale, { y: 1, duration: 0.2, ease: "back.out(2)" }, pos + 0.08);
         if (Math.abs(e.to) >= 2 && Math.abs(e.from) < 2) {
           // The tide crossed the threshold of Alta Marea or Riflusso.
           this.spawn(tl, pos + 0.44, "puff", to - 5, 12, undefined, { x: -4, y: -3 });
@@ -438,9 +448,9 @@ export class BoardView {
           const body = v.body ?? v;
           tl.to(v, { x: x - 2 * dir, duration: 0.12, ease: "power2.out" }, pos);
           tl.to(v, { x: x + 10 * dir, duration: 0.09, ease: "power4.in" }, pos + 0.12);
-          tl.to(body.scale, { x: 1.15, y: 0.9, duration: 0.09, ease: "power4.in" }, pos + 0.12);
+          this.squash(tl, body.scale, { x: 1.15, y: 0.9, duration: 0.09, ease: "power4.in" }, pos + 0.12);
           tl.to(v, { x, duration: 0.22, ease: "power2.out" }, pos + 0.27);
-          tl.to(body.scale, { x: 1, y: 1, duration: 0.22, ease: "power2.out" }, pos + 0.27);
+          this.squash(tl, body.scale, { x: 1, y: 1, duration: 0.22, ease: "power2.out" }, pos + 0.27);
         }
         tl.to({}, { duration: 0.21 }, pos);
         return;
@@ -453,7 +463,7 @@ export class BoardView {
   /** Makes the running animation faster (a click during the animation). */
   speedUp(): void {
     this.speed.factor = 4;
-    this.current?.timeScale(4);
+    this.current?.timeScale(4 * (this.speed.reduced ? 2 : 1));
   }
 
   /** Plays the animations of a step, then shows the exact state "after". */
@@ -461,7 +471,7 @@ export class BoardView {
     const tl = gsap.timeline({ paused: true });
     for (const e of step.events) this.animateEvent(e, step, tl);
     if (tl.duration() > 0) {
-      tl.timeScale(this.speed.factor);
+      tl.timeScale(this.speed.factor * (this.speed.reduced ? 2 : 1));
       this.current = tl;
       await new Promise<void>((resolve) => {
         tl.eventCallback("onComplete", () => resolve());

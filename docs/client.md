@@ -37,7 +37,9 @@ Il campo usa il tema `SpriteTheme` (`src/render/spriteTheme.ts`). Il tema implem
 Tre metodi di `Theme` sono opzionali: `fx` (scintille, sbuffi, colpi), `cardGhost` (illustrazione della carta giocata) e `dissolve` (dissolvenza a dithering).
 `BoardView.animateEvent` applica i tempi di `assets/animations/animations.json`. Vedi [animazioni.md](animazioni.md).
 
-NOTA: l'opzione "Riduci le animazioni" non esiste ancora nel client.
+L'opzione "Riduci le animazioni" è nell'intestazione della partita. Il client salva la scelta in `localStorage`.
+Alla prima visita il client segue l'impostazione `prefers-reduced-motion` del sistema operativo.
+Con l'opzione attiva, `BoardView` dimezza i tempi, disattiva la scossa, l'hit stop e lo squash and stretch, e genera 3 particelle su 10.
 
 Il campo usa una scala intera (×1, ×2, ×3) e il filtro `nearest`, come chiede il piano (sezione 7.2).
 
