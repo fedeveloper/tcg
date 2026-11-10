@@ -1,0 +1,36 @@
+GIMP Palette
+Name: Fari 32
+Columns: 8
+#
+ 26  20  35	ink
+ 35  42  77	abyss
+ 47  74 115	deep
+ 63 115 150	sea
+127 176 196	mist
+201 228 227	foam
+246 243 228	white
+ 61  58  79	slate
+102 100 121	stone
+155 154 166	ash
+ 74  32  48	soot
+143  59  46	rust
+217  90  43	ember
+242 154  46	flame
+251 211  90	glow
+181 104  63	copper
+ 31  74  60	kelp_dark
+ 47 122  79	kelp
+106 168  74	moss
+181 214 101	sprout
+232 118 106	coral
+ 42 107 106	verd_dark
+ 79 168 154	verd
+155 214 189	verd_light
+ 78  53  40	wood_dark
+125  82  54	wood
+185 138  90	tan
+227 196 140	sand
+ 75  55 102	dusk
+123  90 166	violet
+185 155 214	lilac
+168  63  90	coral_dark
