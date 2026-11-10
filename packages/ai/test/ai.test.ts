@@ -27,4 +27,16 @@ describe("easy AI", () => {
     }
     expect(wins).toBeGreaterThanOrEqual(6);
   });
+
+  it("medium AI picks legal actions and finishes a game", () => {
+    let s = newGame({ seed: 2, decks: [FORGE, FORGE] }).state;
+    const rng = new AiRandom(2);
+    while (s.phase !== "over") {
+      const level = s.turn === 0 ? "medium" : "easy";
+      const a = chooseAction(s, level, rng);
+      expect(legalActions(s).map(actionKey)).toContain(actionKey(a));
+      s = apply(s, a).state;
+    }
+    expect(s.outcome).not.toBeNull();
+  });
 });

@@ -49,12 +49,6 @@ function adjacentSlots(slot: Slot): Slot[] {
   return out;
 }
 
-function emptySlots(state: GameState, player: PlayerId): Slot[] {
-  const out: Slot[] = [];
-  for (const lane of LANES) for (const row of ROWS) if (!keeperAt(state, player, { lane, row })) out.push({ lane, row });
-  return out;
-}
-
 function notSacrificed(targets: Target[], sacrifice: string[]): Target[] {
   return targets.filter((t) => t.kind !== "keeper" || !sacrifice.includes(t.id));
 }
@@ -70,12 +64,9 @@ function playCardActions(state: GameState, player: PlayerId, cardId: string, res
     const base = def.sacrifice ? { sacrifice } : {};
     switch (def.type) {
       case "keeper": {
-        const slots = [...emptySlots(state, player)];
-        for (const id of sacrifice) {
-          const s = slotOf(state, id);
-          if (s) slots.push(s);
-        }
-        for (const slot of slots) {
+        // Every own slot: an empty slot, or a slot with a keeper that the new keeper replaces.
+        for (const lane of LANES) for (const row of ROWS) {
+          const slot: Slot = { lane, row };
           const options = def.target ? notSacrificed(targetsFor(state, player, def.target, slot.lane), sacrifice) : [];
           // A keeper's chosen target is optional: with no valid target, the effect does nothing.
           if (options.length === 0) out.push({ type: "PlayCard", card: cardId, slot, targets: [], ...base });

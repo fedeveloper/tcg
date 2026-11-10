@@ -1,7 +1,7 @@
 /**
  * Simulator: plays many games AI against AI and checks the rules invariants after every action.
  *
- * Usage: pnpm sim [--games 500] [--ai random|easy] [--seed 1] [--decks random|starter]
+ * Usage: pnpm sim [--games 500] [--ai random|easy|medium] [--seed 1] [--decks random|starter]
  */
 import { parseArgs } from "node:util";
 import { AiRandom, chooseAction, type AiLevel } from "@tcg/ai";
@@ -116,7 +116,7 @@ function main(): void {
   });
   const opts: SimOptions = {
     games: Number(values.games),
-    ai: values.ai === "easy" ? "easy" : "random",
+    ai: values.ai === "easy" || values.ai === "medium" ? values.ai : "random",
     seed: Number(values.seed),
     decks: values.decks === "starter" ? "starter" : "random",
   };

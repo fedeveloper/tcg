@@ -4,7 +4,9 @@ import {
   beaconsOut,
   defOf,
   holdOf,
+  keeperAt,
   keepersOf,
+  keywordsOf,
   legalActions,
   other,
   tideFor,
@@ -13,7 +15,7 @@ import {
   type PlayerId,
 } from "@tcg/engine";
 
-export type AiLevel = "random" | "easy";
+export type AiLevel = "random" | "easy" | "medium";
 
 /** A small seeded generator for the AI. It does not touch the game generator. */
 export class AiRandom {
@@ -47,7 +49,7 @@ export function evaluate(state: GameState, me: PlayerId): number {
   const side = (p: PlayerId): number => {
     const ps = state.players[p];
     let v = 0;
-    for (const b of ps.beacons) v += b.light > 0 ? b.light + 6 : 0;
+    for (const b of ps.beacons) v += beaconValue(b.light);
     // A player with one beacon out is in danger: the next beacon decides the game.
     if (beaconsOut(state, p) === 1) v -= 10;
     for (const id of keepersOf(state, p)) {
@@ -58,7 +60,41 @@ export function evaluate(state: GameState, me: PlayerId): number {
     v += ps.relics.length * 0.5;
     return v;
   };
-  return side(me) - side(other(me)) + tideFor(state, me) * 0.4;
+  return side(me) - side(other(me)) + tideFor(state, me) * 0.4 + THREAT_WEIGHT * (threat(state, me) - threat(state, other(me)));
+}
+
+/** Concave value: a point of Light on a weak beacon is worth more than on a full one. */
+function beaconValue(light: number): number {
+  return light > 0 ? 8 + 6.3 * Math.sqrt(light) : 0;
+}
+
+/** Weight of the projected damage of the next Clash. It gives the AI a view beyond the current round. */
+export const THREAT_WEIGHT = 0.6;
+
+/**
+ * Projected beacon damage of a player in the next Clash, if every keeper can attack.
+ * Keepers in the back row without Reach do not attack, and front keepers block.
+ */
+function threat(state: GameState, p: PlayerId): number {
+  const q = other(p);
+  let value = 0;
+  for (const lane of [0, 1, 2] as const) {
+    const front = keeperAt(state, p, { lane, row: "front" });
+    const back = keeperAt(state, p, { lane, row: "back" });
+    const blocker = keeperAt(state, q, { lane, row: "front" });
+    let damage = 0;
+    for (const k of [front, back]) {
+      if (!k) continue;
+      const kw = keywordsOf(state, k);
+      if (k === back && !kw.includes("reach")) continue;
+      const atk = attackOf(state, k);
+      if (!blocker) damage += atk;
+      else if (kw.includes("overrun")) damage += Math.max(0, atk - holdOf(state, blocker));
+    }
+    const light = state.players[q].beacons[lane].light;
+    value += beaconValue(light) - beaconValue(Math.max(0, light - damage));
+  }
+  return value;
 }
 
 /** Plays the game forward with passes until the round ends, so every option is compared after the Clash. */
@@ -90,6 +126,61 @@ function actionPenalty(a: Action): number {
   }
 }
 
+/** Greedy score: the action, then passes until the round ends. */
+function greedyScore(state: GameState, a: Action, me: PlayerId): number {
+  return evaluate(settle(apply(state, a, { trusted: true }).state), me) - actionPenalty(a);
+}
+
+/** Search options for the medium AI. */
+export const MEDIUM_BEAM = 5;
+export const MEDIUM_DEPTH = 2;
+
+/** Applies an action and lets the chain resolve, with no response from the opponent. */
+function resolveQuietly(state: GameState, action: Action): GameState {
+  let s = apply(state, action, { trusted: true }).state;
+  for (let i = 0; i < 4 && s.phase !== "over" && s.chain.length > 0; i++) {
+    s = apply(s, { type: "Pass" }, { trusted: true }).state;
+  }
+  return s;
+}
+
+/**
+ * Medium AI (plan, section 8): a depth-limited search over sequences of the player's own actions.
+ * It finds combinations, for example a keeper and then a relic on it.
+ * The search assumes that the opponent passes, so it never looks at hidden cards.
+ */
+function searchValue(state: GameState, me: PlayerId, depth: number): number {
+  const round = state.round;
+  let s = state;
+  // The opponent passes: the turn returns to me in the same Maneuver phase.
+  if (s.phase === "maneuver" && s.turn !== me && s.chain.length === 0 && s.passes === 0) {
+    s = apply(s, { type: "Pass" }, { trusted: true }).state;
+  }
+  if (depth === 0 || s.phase !== "maneuver" || s.turn !== me || s.round !== round) return evaluate(settle(s), me);
+  const scored = legalActions(s, me).map((a) => ({ a, v: greedyScore(s, a, me) }));
+  scored.sort((x, y) => y.v - x.v);
+  let best = -Infinity;
+  for (const { a, v } of scored.slice(0, MEDIUM_BEAM)) {
+    const value = a.type === "Pass" ? v : searchValue(resolveQuietly(s, a), me, depth - 1) - actionPenalty(a);
+    if (value > best) best = value;
+  }
+  return best;
+}
+
+function mediumChoice(state: GameState, ranked: { a: Action; v: number }[], me: PlayerId, rng: AiRandom): Action {
+  if (state.chain.length > 0) return ranked[0]!.a;
+  let best = ranked[0]!.a;
+  let bestValue = -Infinity;
+  for (const c of ranked.slice(0, MEDIUM_BEAM)) {
+    const value = c.a.type === "Pass" ? c.v : searchValue(resolveQuietly(state, c.a), me, MEDIUM_DEPTH - 1) - actionPenalty(c.a) + rng.next() * 0.01;
+    if (value > bestValue) {
+      bestValue = value;
+      best = c.a;
+    }
+  }
+  return best;
+}
+
 /** Chooses an action for the player who must act now. */
 export function chooseAction(state: GameState, level: AiLevel, rng: AiRandom): Action {
   const me = state.turn;
@@ -99,15 +190,9 @@ export function chooseAction(state: GameState, level: AiLevel, rng: AiRandom): A
   if (state.phase === "mulligan") return level === "random" ? (actions[rng.int(actions.length)] as Action) : mulliganChoice(state, actions, me);
   if (level === "random") return actions[rng.int(actions.length)] as Action;
 
-  let best: Action = actions[actions.length - 1] as Action;
-  let bestScore = -Infinity;
-  for (const a of actions) {
-    const after = settle(apply(state, a, { trusted: true }).state);
-    const score = evaluate(after, me) - actionPenalty(a) + rng.next() * 0.01;
-    if (score > bestScore) {
-      bestScore = score;
-      best = a;
-    }
-  }
-  return best;
+  const scored = actions.map((a) => ({ a, v: greedyScore(state, a, me) + rng.next() * 0.01 }));
+  scored.sort((x, y) => y.v - x.v);
+  if (level === "easy") return scored[0]!.a;
+
+  return mediumChoice(state, scored, me, rng);
 }

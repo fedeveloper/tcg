@@ -63,8 +63,8 @@ describe("card effects and keywords", () => {
 
   it("Rooted keepers cannot move and get +1 Hold in the front row", () => {
     const s = blank();
-    const wall = put(s, 0, "sprout-003", 0); // 1/4 Rooted
-    expect(holdOf(s, wall)).toBe(5);
+    const wall = put(s, 0, "sprout-003", 0); // 1/3 Rooted
+    expect(holdOf(s, wall)).toBe(4);
     expect(legalActions(s).some((a) => a.type === "Move" && a.keeper === wall)).toBe(false);
   });
 
@@ -189,5 +189,19 @@ describe("card effects and keywords", () => {
     expect(plays.every((a) => a.type === "PlayCard" && a.targets[0]?.kind === "beacon" && a.targets[0].lane !== 1)).toBe(true);
     const st = run(s, findPlay(s, garden, (a) => a.targets[0]?.kind === "beacon" && a.targets[0].lane === 0), PASS).state;
     expect(st.players[0].beacons[0].light).toBe(10);
+  });
+
+  it("a new keeper replaces one of your keepers: no Death effect and no Echo", () => {
+    const s = blank();
+    const crab = put(s, 0, "sprout-015", 1); // 3/3 Echo
+    const relic = give(s, 0, "forge-022");
+    let st = run(s, findPlay(s, relic), PASS).state;
+    st = run(st, PASS).state;
+    const fresh = give(st, 0, "forge-004");
+    const { state, events } = run(st, findPlay(st, fresh, (a) => a.slot?.lane === 1 && a.slot.row === "front"), PASS);
+    expect(state.players[0].board[1][0]).toBe(fresh);
+    expect(state.players[0].graveyard).toContain(crab);
+    expect(state.players[0].graveyard).toContain(relic);
+    expect(events.some((e) => e.type === "EchoReturned" || e.type === "KeeperDied")).toBe(false);
   });
 });

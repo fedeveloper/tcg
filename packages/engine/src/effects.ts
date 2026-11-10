@@ -246,6 +246,14 @@ function removeFromBoard(state: GameState, id: string): Slot | null {
   return slot;
 }
 
+/** Removes a keeper that a new keeper replaces. It is not a death: no Death effect and no Echo. */
+export function replaceKeeper(state: GameState, id: string, events: GameEvent[]): void {
+  const inst = instanceOf(state, id);
+  removeFromBoard(state, id);
+  events.push({ type: "KeeperReplaced", keeper: id, cardId: inst.cardId, player: inst.owner });
+  toGraveyard(state, id);
+}
+
 /** Destroys a keeper now: death triggers, Echo, then the graveyard. */
 export function killKeeper(state: GameState, id: string, events: GameEvent[]): void {
   const inst = instanceOf(state, id);

@@ -139,6 +139,7 @@ export type GameEvent =
   | { type: "KeeperBuffed"; keeper: string; attack: number; hold: number; until: "dusk" | "permanent" }
   | { type: "KeywordGranted"; keeper: string; keyword: Keyword }
   | { type: "KeeperDied"; keeper: string; cardId: string; player: PlayerId }
+  | { type: "KeeperReplaced"; keeper: string; cardId: string; player: PlayerId }
   | { type: "EchoReturned"; player: PlayerId; card: string; cardId: string }
   | { type: "BeaconDamaged"; player: PlayerId; lane: Lane; amount: number; light: number }
   | { type: "BeaconHealed"; player: PlayerId; lane: Lane; amount: number; light: number }
