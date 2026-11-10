@@ -258,7 +258,8 @@
       "beacons": "Two Beacons are out.",
       "roundLimit": "The game reached round 20.",
       "concede": "A player conceded."
-    }
+    },
+    "KeeperReplaced": "{{card}} makes room and goes to the graveyard."
   },
   "actions": {
     "keep": "Keep your hand",
@@ -271,7 +272,8 @@
     "activate": "Activate {{card}}{{target}}",
     "pass": "Pass",
     "resolve": "Let the chain resolve",
-    "targetSuffix": " on {{target}}"
+    "targetSuffix": " on {{target}}",
+    "replaces": " (replaces {{old}})"
   },
   "ui": {
     "title": "Sunken Beacons",

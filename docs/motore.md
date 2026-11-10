@@ -59,6 +59,7 @@ Il piano lascia aperti alcuni dettagli. Il motore usa queste scelte. Ogni scelta
 3. La Risonanza si controlla quando il giocatore dichiara la carta.
 4. Uno spostamento costa 1 Brace e porta il Custode in uno slot vicino e vuoto: l'altra fila della stessa corsia, o la stessa fila di una corsia vicina.
 5. Chiunque può sostituire un Luogo. Gli effetti di Alba e Tramonto di un Luogo valgono per il giocatore che lo ha giocato.
+6. Un giocatore può giocare un Custode su un suo slot occupato. Il vecchio Custode va nel cimitero con le sue Reliquie. Questa sostituzione non è una morte: nessun effetto di Morte e nessuna Eco.
 
 ### 3.3 Scontro
 
@@ -78,7 +79,19 @@ Il piano lascia aperti alcuni dettagli. Il motore usa queste scelte. Ogni scelta
 5. Una cura non supera 10 Luce e non riaccende un Faro spento.
 6. Una copia di Eco e un Custode creato da un effetto sono **token**: escono dal gioco quando lasciano il campo.
 
-## 4. Test
+## 4. Intelligenza artificiale
+
+| Livello | Tecnica | Risultato misurato |
+|---|---|---|
+| Casuale | Sceglie un'azione legale a caso. | Usato solo dal simulatore. |
+| Facile | Valuta ogni azione dopo lo Scontro del round. | Vince 30 partite su 30 contro il giocatore casuale. |
+| Media | Cerca sequenze di 2 azioni proprie (5 candidati per livello). | Vince il 60% delle partite decise contro la facile (177 partite). |
+
+La funzione di valutazione considera la Luce (con valore concavo: un punto vale di più su un Faro debole), il campo, la mano, la Marea e il danno previsto del prossimo Scontro.
+L'IA media non guarda le carte nascoste: la ricerca suppone che l'avversario passi.
+Il comando `pnpm duel --a medium --b easy --games 30` confronta due livelli.
+
+## 5. Test
 
 | Tipo | File |
 |---|---|

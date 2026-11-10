@@ -46,7 +46,11 @@ export function describeAction(tr: Translator, state: GameState, action: Action,
     case "PlayCard": {
       const card = nameOf(tr, lookup, action.card);
       let text: string;
-      if (action.slot) text = tr.t("actions.playKeeper", { card, slot: slotName(tr, action.slot), target: target(action.targets) });
+      if (action.slot) {
+        text = tr.t("actions.playKeeper", { card, slot: slotName(tr, action.slot), target: target(action.targets) });
+        const old = state.players[viewer].board[action.slot.lane][action.slot.row === "front" ? 0 : 1];
+        if (old && !action.sacrifice?.includes(old)) text += tr.t("actions.replaces", { old: nameOf(tr, lookup, old) });
+      }
       else if (action.lane !== undefined) text = tr.t("actions.playSite", { card, lane: laneName(tr, action.lane) });
       else text = tr.t("actions.play", { card, target: target(action.targets) });
       if (action.sacrifice?.length) {
@@ -116,6 +120,8 @@ export function describeEvent(tr: Translator, e: GameEvent, viewer: PlayerId, lo
       return tr.t("events.KeywordGranted", { card: card(e.keeper), keyword: keywordName(tr, e.keyword) });
     case "KeeperDied":
       return tr.t("events.KeeperDied", { card: cardName(tr, e.cardId) });
+    case "KeeperReplaced":
+      return tr.t("events.KeeperReplaced", { card: cardName(tr, e.cardId) });
     case "EchoReturned":
       return tr.t(`events.EchoReturned.${who(e.player)}`, { card: cardName(tr, e.cardId) });
     case "BeaconDamaged":

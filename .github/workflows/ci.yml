@@ -29,3 +29,5 @@ jobs:
         run: pnpm sim --games 500 --ai random
       - name: Simulation with the easy AI
         run: pnpm sim --games 30 --ai easy --decks starter
+      - name: Simulation with the medium AI
+        run: pnpm sim --games 10 --ai medium --decks starter
