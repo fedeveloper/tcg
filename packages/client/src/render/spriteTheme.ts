@@ -193,6 +193,8 @@ export class SpriteTheme implements Theme {
   constructor(
     private readonly art: Art,
     public resolution: number,
+    /** True while "Reduce animations" is on: the sea moves 4 times slower. */
+    private readonly reduced: () => boolean = () => false,
   ) {}
 
   private anim(source: Spritesheet, name: string, loop = true): AnimatedSprite {
@@ -209,7 +211,37 @@ export class SpriteTheme implements Theme {
   }
 
   background(): Container {
-    return new Sprite(this.art.board);
+    const c = new Container();
+    c.addChild(new Sprite(this.art.board));
+    // Wave glints: short light lines that drift and blink at the frame rate of the sprites.
+    const glints = new Graphics();
+    c.addChild(glints);
+    const spots = Array.from({ length: 46 }, (_, i) => ({
+      x: (i * 97 + 31) % 470,
+      y: 34 + ((i * 53) % 138),
+      phase: (i * 7) % 12,
+      w: 3 + (i % 3),
+    }));
+    let step = 0;
+    const draw = () => {
+      glints.clear();
+      for (const g of spots) {
+        const t = (step + g.phase) % 12;
+        if (t > 5) continue;
+        // The glint grows, slides 1 pixel for each frame and fades.
+        const w = t < 3 ? g.w : g.w - (t - 2);
+        glints.rect(g.x + t, g.y, Math.max(w, 1), 1).fill({ color: g.y < 80 ? PAL.foam : 0x7fb0c4, alpha: t === 0 || t === 5 ? 0.35 : 0.7 });
+      }
+    };
+    draw();
+    let slow = 0;
+    const timer = setInterval(() => {
+      if (this.reduced() && slow++ % 4 !== 0) return;
+      step++;
+      draw();
+    }, 180);
+    c.on("destroyed", () => clearInterval(timer));
+    return c;
   }
 
   /** The board picture already shows the slots. The empty container only takes the clicks. */

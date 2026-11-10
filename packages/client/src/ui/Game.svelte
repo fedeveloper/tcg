@@ -89,7 +89,7 @@
       // The pixel art theme needs the spritesheets. The shape theme is the fallback.
       let theme: Theme;
       try {
-        theme = new SpriteTheme(await loadArt(), scale);
+        theme = new SpriteTheme(await loadArt(), scale, () => speed.reduced);
       } catch (err) {
         console.warn("Sprites not loaded, using shapes", err);
         theme = new ShapeTheme(scale);
@@ -120,7 +120,7 @@
 
   onDestroy(() => {
     session?.dispose();
-    app?.destroy(true);
+    app?.destroy(true, { children: true });
   });
 
   $effect(() => {

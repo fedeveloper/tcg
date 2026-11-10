@@ -147,7 +147,7 @@ export async function drawCard(canvas: HTMLCanvasElement, face: CardFace): Promi
   const name = wrap(a, face.name, 54).slice(0, 2);
   name.forEach((line, i) => text(ctx, a, line, 32, (name.length === 1 ? 50 : 46) + i * 7, INK, 0.5));
   text(ctx, a, String(face.cost), 8, 3, GLOW, 0.5);
-  text(ctx, a, wrap(a, face.lines[0] ?? "", 56)[0] ?? "", 32, 64, INK, 0.5);
+  text(ctx, a, (wrap(a, face.lines[0] ?? "", 56)[0] ?? "").replace(/,$/, ""), 32, 64, INK, 0.5);
   if (face.stats) {
     text(ctx, a, String(face.stats.attack), 9, 76, WHITE, 0.5);
     text(ctx, a, String(face.stats.hold), 56, 76, WHITE, 0.5);
