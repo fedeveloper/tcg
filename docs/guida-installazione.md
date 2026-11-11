@@ -36,7 +36,7 @@ Controlla la versione di Node.js con `node -v`.
 Il gioco online ha bisogno del server PvP.
 
 1. Avvia il server in un secondo terminale: `pnpm server`
-2. Controlla il server: apri `http://localhost:8787/health`. La pagina mostra `ok` e il numero di partite aperte.
+2. Controlla il server: apri `http://localhost:8787/health`. La pagina mostra `ok`, il numero di partite aperte (`matches`) e la memoria del server (`rss`).
 3. Apri il gioco in una finestra normale del browser.
 4. Apri il gioco in una finestra privata (anonima) dello stesso browser.
 
@@ -58,6 +58,7 @@ NOTA: le due finestre devono avere account diversi. Il browser salva il token de
 - Esegui tutti i controlli della CI: `pnpm check`
 - Esegui il test di 100 partite PvP: `pnpm soak:pvp --games 100`
 - Controlla il bilanciamento dei mazzi: `pnpm balance --games 20`
+- Prova il server in funzione con 10 partite insieme: `pnpm smoke --matches 10`
 
 ## 2. Il gioco sul Raspberry Pi 3B o sul ThinkPad T480
 
@@ -84,12 +85,13 @@ Sul ThinkPad con Linux (Debian o Ubuntu), esegui i passi da 4 a 9 nello stesso m
 
 Esegui questi passi sul tuo computer, nella cartella `tcg`.
 
-1. Copia i file di configurazione: `scp deploy/systemd/tcg-server.service deploy/caddy/Caddyfile.lan pi@raspberrypi.local:/tmp/`
+1. Copia i file di configurazione: `scp deploy/systemd/tcg-* deploy/caddy/Caddyfile.lan pi@raspberrypi.local:/tmp/`
 2. Entra nel Raspberry Pi: `ssh pi@raspberrypi.local`
-3. Installa il servizio: `sudo mv /tmp/tcg-server.service /etc/systemd/system/`
+3. Installa il servizio e il backup: `sudo mv /tmp/tcg-server.service /tmp/tcg-backup.service /tmp/tcg-backup.timer /etc/systemd/system/`
 4. Installa la configurazione di Caddy: `sudo mv /tmp/Caddyfile.lan /etc/caddy/Caddyfile`
 5. Attiva il servizio: `sudo systemctl daemon-reload && sudo systemctl enable tcg-server`
-6. Ricarica Caddy: `sudo systemctl reload caddy`
+6. Attiva il backup giornaliero: `sudo systemctl enable tcg-backup.timer`
+7. Ricarica Caddy: `sudo systemctl reload caddy`
 
 `Caddyfile.lan` serve il gioco nella rete locale con HTTP, senza dominio.
 Per un dominio pubblico con HTTPS, usa `deploy/caddy/Caddyfile` e scrivi il nome del tuo dominio.
@@ -111,10 +113,18 @@ Lo script fa queste operazioni:
 ### 2.4 Controlla il Raspberry Pi
 
 1. Apri `http://raspberrypi.local/` dal browser di un dispositivo nella stessa rete.
-2. Apri `http://raspberrypi.local/health`. La pagina mostra `ok`.
+2. Apri `http://raspberrypi.local/health`. La pagina mostra `ok`, le partite aperte e la memoria del server.
 3. Controlla lo stato del servizio: `systemctl status tcg-server`
 4. Leggi i messaggi del server: `journalctl -u tcg-server -f`
-5. Controlla la memoria: `free -h`. Il server deve usare meno di 200 MB con 10 partite.
+5. Dal tuo computer, gioca una partita automatica sul Raspberry Pi: `pnpm smoke --url ws://raspberrypi.local/ws`
+6. Dal tuo computer, prova il carico di 10 partite insieme: `pnpm smoke --url ws://raspberrypi.local/ws --matches 10`
+7. Leggi la riga `health after`. Il valore `rss` deve restare sotto 200 MB.
+
+`pnpm smoke` mostra le partite finite, le partite fallite e il tempo di risposta del server (mediana e p95).
+In una prova su un computer x86-64, 10 partite insieme usano circa 105 MB e la risposta mediana è di 8 ms.
+Sul Raspberry Pi la CPU è più lenta: una risposta mediana sotto 100 ms è un buon risultato.
+
+NOTA: le partite di `pnpm smoke` creano account ospite di prova nel database.
 
 Se `raspberrypi.local` non funziona, usa l'indirizzo IP del Raspberry Pi.
 
@@ -122,9 +132,31 @@ Se `raspberrypi.local` non funziona, usa l'indirizzo IP del Raspberry Pi.
 
 - Il database è il file `/var/lib/tcg/tcg.sqlite`.
 - Il database contiene gli account ospite, le partite e i replay.
-- Per un backup, ferma il servizio e copia il file: `sudo systemctl stop tcg-server && sudo cp /var/lib/tcg/tcg.sqlite ~/backup.sqlite && sudo systemctl start tcg-server`
+- Il timer `tcg-backup.timer` crea una copia ogni giorno alle 04:00 nella cartella `/var/lib/tcg/backups`. Il timer tiene le ultime 14 copie.
+- La copia funziona anche con il server attivo.
+- Per un backup subito, esegui: `sudo systemctl start tcg-backup.service`
+- Controlla le copie: `sudo ls /var/lib/tcg/backups`
+
+Per ripristinare una copia:
+
+1. Ferma il servizio: `sudo systemctl stop tcg-server`
+2. Copia il backup sul database: `sudo cp /var/lib/tcg/backups/<file>.sqlite /var/lib/tcg/tcg.sqlite`
+3. Elimina i file temporanei: `sudo rm -f /var/lib/tcg/tcg.sqlite-wal /var/lib/tcg/tcg.sqlite-shm`
+4. Avvia il servizio: `sudo systemctl start tcg-server`
 
 NOTA: la collezione, i mazzi e le corse di Spedizione e Draft restano nel browser di ogni giocatore, non sul server.
+
+### 2.6 Hosting pubblico con Docker (dopo i test)
+
+Il Raspberry Pi non usa Docker. L'immagine Docker serve per un VPS o un servizio di container.
+
+1. Crea l'immagine dalla cartella `tcg`: `docker build -f deploy/docker/Dockerfile -t tcg-server .`
+2. Avvia il server: `docker run -d --name tcg -p 8787:8787 -v tcg-data:/data -e ALLOWED_ORIGIN=https://tuo-dominio tcg-server`
+3. Controlla lo stato: `docker ps`. La colonna STATUS mostra `healthy`.
+4. Per un backup, esegui: `docker exec tcg node backup.mjs /data/tcg.sqlite /data/backups 14`
+
+Il client statico (`packages/client/dist`) va su un CDN, per esempio Cloudflare Pages.
+Crea il client con `VITE_SERVER_URL=wss://tuo-server/ws pnpm build` quando il server ha un dominio diverso dal client.
 
 ## 3. Prove da fare
 

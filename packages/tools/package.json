@@ -8,6 +8,7 @@
     "@tcg/cards": "workspace:*",
     "@tcg/engine": "workspace:*",
     "@tcg/i18n": "workspace:*",
+    "@tcg/protocol": "workspace:*",
     "@tcg/server": "workspace:*"
   }
 }

@@ -104,3 +104,20 @@ Ogni quinta partita, un giocatore perde la connessione e riprende la partita.
 Alla fine di ogni partita, il comando ricostruisce la partita dal replay e confronta ogni vista ricevuta.
 Il comando fallisce quando il server rifiuta un'azione legale o quando una vista è diversa dal replay.
 La CI esegue questo comando.
+
+## Prova del server installato
+
+`pnpm smoke --url ws://<host>/ws --matches 10` gioca partite complete sul server installato, tramite WebSocket.
+Il comando mostra le partite finite, il tempo di risposta (mediana e p95) e la memoria del server prima e dopo.
+Ogni giocatore attende 260 ms tra due azioni, perché il server accetta al massimo 40 messaggi in 10 s.
+`GET /health` risponde con `ok`, le partite aperte, la memoria (RSS) e il tempo di attività.
+
+## Backup
+
+`deploy/backup.mjs` copia il database con `VACUUM INTO`. La copia è coerente anche con il server attivo.
+Il timer systemd `tcg-backup.timer` esegue la copia ogni giorno e tiene le ultime 14 copie.
+
+## Docker
+
+`deploy/docker/Dockerfile` crea l'immagine del server per l'hosting pubblico. Il Raspberry Pi non usa Docker.
+L'immagine contiene solo il bundle del server e lo script di backup. Il database è nel volume `/data`.

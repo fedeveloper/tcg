@@ -1,0 +1,9 @@
+# Daily backup of the PvP database. Started by tcg-backup.timer.
+[Unit]
+Description=Fari Sommersi database backup
+
+[Service]
+Type=oneshot
+User=tcg
+Group=tcg
+ExecStart=/usr/bin/node --disable-warning=ExperimentalWarning /opt/tcg/server/backup.mjs /var/lib/tcg/tcg.sqlite /var/lib/tcg/backups 14

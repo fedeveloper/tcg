@@ -38,6 +38,7 @@ Il server PvP e il deploy sul Raspberry Pi sono in [docs/server.md](docs/server.
 | `pnpm sim --games 500` | Simula 500 partite e controlla le regole dopo ogni azione. |
 | `pnpm soak:pvp --games 100` | Gioca 100 partite PvP tramite il server e controlla la sincronizzazione. |
 | `pnpm server` | Avvia il server PvP (porta 8787). |
+| `pnpm smoke --url ws://host/ws --matches 10` | Gioca partite complete su un server installato e misura i tempi. |
 | `pnpm build:server` | Crea il server in un solo file: `dist/server/server.mjs`. |
 
 I mazzi disponibili per `--deck` e `--opponent` sono `forge`, `sprout`, `forgeSprout`, `abyss`, `gear` e `vesper`.
