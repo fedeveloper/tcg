@@ -344,7 +344,8 @@
     "difficulty": "Difficulty",
     "levels": {
       "easy": "Easy",
-      "medium": "Medium"
+      "medium": "Medium",
+      "hard": "Hard"
     },
     "yourDeck": "Your deck",
     "opponentDeck": "Opponent deck",

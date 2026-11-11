@@ -344,7 +344,8 @@
     "difficulty": "Difficoltà",
     "levels": {
       "easy": "Facile",
-      "medium": "Media"
+      "medium": "Media",
+      "hard": "Difficile"
     },
     "yourDeck": "Il tuo mazzo",
     "opponentDeck": "Mazzo avversario",

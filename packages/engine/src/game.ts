@@ -364,18 +364,23 @@ function declare(state: GameState, player: PlayerId, action: Action, events: Gam
 export interface ApplyOptions {
   /** Skip the legality check. Use it only with actions from legalActions(). */
   trusted?: boolean;
+  /**
+   * Change the input state instead of a copy. The AI search uses it on its own copies, because the copy is the
+   * slowest part of apply(). Never use it on a state that someone else reads.
+   */
+  inPlace?: boolean;
 }
 
 /**
  * The transition function: apply(state, action) -> { state, events }.
- * The function does not change the input state.
+ * The function does not change the input state, unless options.inPlace is true.
  */
 export function apply(state: GameState, action: Action, options: ApplyOptions = {}): Result {
   if (state.phase === "over") throw new RulesError("The game is over");
   if (!options.trusted && !isLegal(state, action)) {
     throw new RulesError(`Illegal action for player ${state.turn}: ${JSON.stringify(action)}`);
   }
-  const s: GameState = structuredClone(state);
+  const s: GameState = options.inPlace ? state : structuredClone(state);
   const events: GameEvent[] = [];
   const player = s.turn;
 

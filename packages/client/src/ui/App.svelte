@@ -208,6 +208,7 @@
       <select bind:value={level}>
         <option value="easy">{tr.t("ui.levels.easy")}</option>
         <option value="medium">{tr.t("ui.levels.medium")}</option>
+        <option value="hard">{tr.t("ui.levels.hard")}</option>
       </select>
     </label>
     <button class="primary" onclick={startFree} disabled={playable.length === 0}>{tr.t("ui.start")}</button>
