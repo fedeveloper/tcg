@@ -73,6 +73,12 @@ export const EffectAction = z.discriminatedUnion("op", [
   z.object({ op: z.literal("draw"), amount }),
   z.object({ op: z.literal("tide"), amount: signed }),
   z.object({ op: z.literal("ember"), amount }),
+  /** Returns a keeper to the hand of its owner. A token leaves the game. */
+  z.object({ op: z.literal("bounce"), target: TargetRef }),
+  /** The opponent discards random cards from the hand. */
+  z.object({ op: z.literal("discard"), amount }),
+  /** Returns the last keepers of your graveyard to your hand. */
+  z.object({ op: z.literal("recall"), amount }),
   z.object({
     op: z.literal("summon"),
     card: z.string(),
@@ -81,7 +87,8 @@ export const EffectAction = z.discriminatedUnion("op", [
 ]);
 export type EffectAction = z.infer<typeof EffectAction>;
 
-export const TRIGGERS = ["play", "enterPlay", "dawn", "dusk", "death"] as const;
+/** tideTurn: the tide crosses the center (it changes side). */
+export const TRIGGERS = ["play", "enterPlay", "dawn", "dusk", "death", "tideTurn"] as const;
 export const Trigger = z.enum(TRIGGERS);
 export type Trigger = z.infer<typeof Trigger>;
 
@@ -90,9 +97,15 @@ export const Condition = z
     highTide: z.boolean().optional(),
     lowTide: z.boolean().optional(),
     resonance: z.boolean().optional(),
+    /** You have at least one relic in play. */
+    armed: z.boolean().optional(),
+    /** Your graveyard has at least 5 cards. */
+    haunted: z.boolean().optional(),
   })
   .strict();
 export type Condition = z.infer<typeof Condition>;
+export const CONDITIONS = ["highTide", "lowTide", "resonance", "armed", "haunted"] as const;
+export const HAUNTED_GRAVEYARD = 5;
 
 export const Effect = z.object({
   when: Trigger,

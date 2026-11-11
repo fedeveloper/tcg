@@ -1,6 +1,9 @@
 import forgeData from "../data/forge.json" with { type: "json" };
 import sproutData from "../data/sprout.json" with { type: "json" };
 import neutralData from "../data/neutral.json" with { type: "json" };
+import abyssData from "../data/abyss.json" with { type: "json" };
+import gearData from "../data/gear.json" with { type: "json" };
+import vesperData from "../data/vesper.json" with { type: "json" };
 import { CardFile, type CardDef } from "./schema.ts";
 
 export * from "./schema.ts";
@@ -13,6 +16,9 @@ export const RAW_CARD_FILES: Readonly<Record<string, unknown>> = {
   "forge.json": forgeData,
   "sprout.json": sproutData,
   "neutral.json": neutralData,
+  "abyss.json": abyssData,
+  "gear.json": gearData,
+  "vesper.json": vesperData,
 };
 
 function buildDb(): CardDB {

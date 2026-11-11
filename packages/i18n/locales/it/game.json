@@ -62,13 +62,22 @@
     "resonance": {
       "name": "Risonanza",
       "reminder": "Si attiva se hai già giocato una carta della stessa fazione in questo round."
+    },
+    "armed": {
+      "name": "Armato",
+      "reminder": "Si attiva se hai almeno una Reliquia in gioco."
+    },
+    "haunted": {
+      "name": "Infestato",
+      "reminder": "Si attiva se il tuo cimitero ha almeno 5 carte."
     }
   },
   "triggers": {
     "enterPlay": "Entra in gioco",
     "dawn": "Alba",
     "dusk": "Tramonto",
-    "death": "Morte"
+    "death": "Morte",
+    "tideTurn": "Cambio di Marea"
   },
   "stats": {
     "attack": "{{value}} Attacco",
@@ -140,7 +149,12 @@
     "healKeeper": "{{target}} recupera {{count}} danni",
     "triggerWithCondition": "{{trigger}} ({{condition}}): ",
     "sacrifice_one": "Sacrificio 1: per giocare questa carta, distruggi 1 tuo Custode.",
-    "sacrifice_other": "Sacrificio {{count}}: per giocare questa carta, distruggi {{count}} tuoi Custodi."
+    "sacrifice_other": "Sacrificio {{count}}: per giocare questa carta, distruggi {{count}} tuoi Custodi.",
+    "bounce": "riporta {{target}} nella mano del proprietario",
+    "discard_one": "l'avversario scarta 1 carta a caso",
+    "discard_other": "l'avversario scarta {{count}} carte a caso",
+    "recall_one": "riprendi in mano l'ultimo Custode del tuo cimitero",
+    "recall_other": "riprendi in mano gli ultimi {{count}} Custodi del tuo cimitero"
   },
   "board": {
     "lanes": [
@@ -259,7 +273,17 @@
       "roundLimit": "La partita ha raggiunto il round 20.",
       "concede": "Un giocatore ha abbandonato."
     },
-    "KeeperReplaced": "{{card}} lascia il posto e va nel cimitero."
+    "KeeperReplaced": "{{card}} lascia il posto e va nel cimitero.",
+    "KeeperBounced": "{{card}} torna nella mano.",
+    "CardDiscarded": {
+      "self": "Scarti {{card}}.",
+      "other": "L'avversario scarta {{card}}."
+    },
+    "CardRecalled": {
+      "self": "Riprendi in mano {{card}}.",
+      "other": "L'avversario riprende in mano {{card}}."
+    },
+    "TideTurned": "La Marea cambia lato."
   },
   "actions": {
     "keep": "Tieni la mano",
@@ -337,7 +361,10 @@
   "deckNames": {
     "forge": "Fucina",
     "sprout": "Germoglio",
-    "forgeSprout": "Fucina e Germoglio"
+    "forgeSprout": "Fucina e Germoglio",
+    "abyss": "Abisso",
+    "gear": "Ingranaggio",
+    "vesper": "Vespro"
   },
   "targetsTo": {
     "keeper": {
@@ -402,5 +429,68 @@
         "goal": "Salva il tuo Custode e vinci la partita."
       }
     }
+  },
+  "meta": {
+    "continue": "Continua",
+    "collection": "Collezione",
+    "cardsOwned_one": "1 carta",
+    "cardsOwned_other": "{{count}} carte",
+    "shards_one": "1 Frammento",
+    "shards_other": "{{count}} Frammenti",
+    "breakExtras_one": "Rompi 1 doppione",
+    "breakExtras_other": "Rompi {{count}} doppioni",
+    "faction": "Fazione",
+    "allFactions": "Tutte le fazioni",
+    "search": "Cerca per nome",
+    "ownedOnly": "Solo le mie carte",
+    "copies_one": "Hai 1 copia.",
+    "copies_other": "Hai {{count}} copie.",
+    "craft": "Crea ({{cost}} Frammenti)",
+    "break": "Rompi (+{{value}} Frammenti)",
+    "copyOf": "Copia di {{name}}",
+    "newDeck": "Nuovo mazzo",
+    "deckName": "Nome del mazzo",
+    "save": "Salva",
+    "deckList": "Carte del mazzo",
+    "editorHint": "Clic su una carta per aggiungerla. Clic su una riga del mazzo per toglierla.",
+    "decks": "Mazzi",
+    "invalid": "non valido",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "problems": {
+      "size": "Il mazzo ha {{size}} carte. Servono 30 carte.",
+      "invalidCard": "La carta {{card}} non è valida.",
+      "tooManyCopies": "{{card}}: {{copies}} copie. Il limite è 2 (1 per una Leggendaria).",
+      "tooManyFactions": "Il mazzo usa troppe fazioni: {{factions}}. Il limite è 2.",
+      "notOwned": "{{card}}: il mazzo usa {{copies}} copie, ma ne hai {{owned}}."
+    },
+    "expedition": "Spedizione",
+    "draft": "Draft",
+    "reward": "Ricompensa",
+    "shardsGained_one": "Ottieni 1 Frammento.",
+    "shardsGained_other": "Ottieni {{count}} Frammenti.",
+    "otherRunActive": "Hai già una corsa in corso: {{mode}}. Finiscila o abbandonala.",
+    "abandon": "Abbandona la corsa",
+    "expeditionIntro": "Scegli una fazione. Parti con un mazzo di 20 carte e affronti 6 avversari. Dopo ogni vittoria scegli una carta nuova. Hai 2 vite.",
+    "draftIntro": "Scegli due fazioni, poi costruisci un mazzo di 30 carte: a ogni passo scegli 1 carta su 3. Giochi fino a 7 vittorie o 3 sconfitte.",
+    "startDraft": "Inizia il Draft",
+    "record": "Vittorie {{wins}}, sconfitte {{losses}}",
+    "lives_one": "1 vita",
+    "lives_other": "{{count}} vite",
+    "stage": "Avversario {{n}} di {{total}}",
+    "draftLimits": "fino a {{wins}} vittorie o {{losses}} sconfitte",
+    "runWon": "Hai completato la corsa!",
+    "runLost": "La corsa è finita.",
+    "claim": "Ritira la ricompensa",
+    "chooseFactions": "Scegli le due fazioni del mazzo.",
+    "draftPick": "Scelta {{n}} di {{total}}: prendi una carta.",
+    "chooseCard": "Scegli una carta per il tuo mazzo.",
+    "skip": "Non prendere nessuna carta",
+    "nextBoss": "Avversario finale: {{deck}}",
+    "nextOpponent": "Prossimo avversario: {{deck}}",
+    "runDeck_one": "Il tuo mazzo (1 carta)",
+    "runDeck_other": "Il tuo mazzo ({{count}} carte)",
+    "freeMatch": "Sfida libera",
+    "modes": "Modalità"
   }
 }

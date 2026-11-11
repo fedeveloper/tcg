@@ -1,4 +1,4 @@
-import { CARDS, type CardDef, type Effect, type EffectAction, type Keyword, type TargetRef, type TargetSpec } from "@tcg/cards";
+import { CARDS, CONDITIONS, type CardDef, type Effect, type EffectAction, type Keyword, type TargetRef, type TargetSpec } from "@tcg/cards";
 import type { Translator } from "./index.ts";
 
 export function cardName(tr: Translator, cardId: string): string {
@@ -81,6 +81,12 @@ function actionText(tr: Translator, a: EffectAction, def: CardDef, spec: TargetS
       return a.amount >= 0 ? tr.t("rules.tide", { count: a.amount }) : tr.t("rules.tideAway", { count: -a.amount });
     case "ember":
       return tr.t("rules.ember", { count: a.amount });
+    case "bounce":
+      return tr.t("rules.bounce", { target: subject(a.target) });
+    case "discard":
+      return tr.t("rules.discard", { count: a.amount });
+    case "recall":
+      return tr.t("rules.recall", { count: a.amount });
     case "summon": {
       const token = CARDS[a.card];
       const stats = `${token?.attack ?? 0}/${token?.hold ?? 1}`;
@@ -102,7 +108,7 @@ function sentence(
 }
 
 function effectText(tr: Translator, e: Effect, def: CardDef, ts: TextState): string {
-  const conds = (["highTide", "lowTide", "resonance"] as const)
+  const conds = CONDITIONS
     .filter((c) => e.condition?.[c])
     .map((c) => tr.t(`conditions.${c}.name`))
     .join(", ");

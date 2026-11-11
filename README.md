@@ -30,6 +30,7 @@ Le specifiche di animazione sono in [docs/animazioni.md](docs/animazioni.md).
 | `pnpm check:i18n` | Controlla che ogni testo esista in italiano e in inglese. |
 | `pnpm build` | Crea il client statico in `packages/client/dist`. |
 | `pnpm duel --a medium --b easy` | Confronta due livelli di IA. |
+| `pnpm balance --games 20` | Gioca tutte le coppie di mazzi base e mostra le percentuali di vittoria. |
 | `pnpm sim --games 500` | Simula 500 partite e controlla le regole dopo ogni azione. |
 
 I mazzi disponibili per `--deck` e `--opponent` sono `forge`, `sprout` e `forgeSprout`.

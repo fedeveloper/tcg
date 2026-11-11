@@ -8,7 +8,7 @@
 import { createInterface } from "node:readline";
 import { parseArgs } from "node:util";
 import { AiRandom, chooseAction, type AiLevel } from "@tcg/ai";
-import { CARDS, expandDeck, STARTER_DECKS, KEYWORDS } from "@tcg/cards";
+import { CARDS, CONDITIONS, expandDeck, STARTER_DECKS, KEYWORDS } from "@tcg/cards";
 import { apply, eventsFor, legalActions, newGame, totalLight, viewFor, type Action, type GameEvent, type GameState, type PlayerId } from "@tcg/engine";
 import {
   cardFlavor,
@@ -37,7 +37,7 @@ function printEvents(tr: Translator, events: GameEvent[], before: GameState, aft
 function keywordHelp(tr: Translator): string {
   const lines = [tr.t("ui.keywordsTitle")];
   for (const k of KEYWORDS) lines.push(`  ${tr.t(`keywords.${k}.name`)}: ${tr.t(`keywords.${k}.reminder`)}`);
-  for (const c of ["highTide", "lowTide", "resonance"]) lines.push(`  ${tr.t(`conditions.${c}.name`)}: ${tr.t(`conditions.${c}.reminder`)}`);
+  for (const c of CONDITIONS) lines.push(`  ${tr.t(`conditions.${c}.name`)}: ${tr.t(`conditions.${c}.reminder`)}`);
   return lines.join("\n");
 }
 

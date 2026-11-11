@@ -87,5 +87,10 @@
       { "when": "play", "condition": { "highTide": true }, "actions": [{ "op": "buff", "attack": 1, "hold": 1, "until": "permanent", "target": "allAllyKeepers" }] }
     ]
   },
+  {
+    "id": "sprout-026", "type": "slowRite", "faction": "sprout", "rarity": "common", "cost": 1,
+    "target": { "kind": "keeper", "side": "ally" },
+    "effects": [{ "when": "play", "actions": [{ "op": "heal", "amount": 3, "target": "chosen" }, { "op": "buff", "hold": 1, "until": "permanent", "target": "chosen" }] }]
+  },
   { "id": "sprout-t01", "type": "keeper", "faction": "sprout", "rarity": "common", "cost": 0, "attack": 1, "hold": 1, "token": true }
 ]

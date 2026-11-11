@@ -50,10 +50,10 @@ export function validateDeck(
 /** Starter decks for the text interface, the AI and the simulator. */
 export const STARTER_DECKS: Readonly<Record<string, DeckList>> = {
   forge: {
-    "forge-001": 2, "forge-002": 2, "forge-003": 2, "forge-004": 2, "forge-005": 2,
-    "forge-006": 2, "forge-007": 2, "forge-008": 2, "forge-009": 1, "forge-012": 2,
+    "forge-001": 2, "forge-003": 2, "forge-004": 2, "forge-005": 1, "forge-006": 2,
+    "forge-007": 2, "forge-008": 2, "forge-009": 2, "forge-011": 1, "forge-012": 2,
     "forge-013": 1, "forge-014": 1, "forge-015": 2, "forge-016": 2, "forge-017": 1,
-    "forge-019": 1, "forge-020": 2, "forge-022": 1,
+    "forge-019": 1, "forge-020": 2, "forge-026": 2,
   },
   sprout: {
     "sprout-001": 2, "sprout-002": 2, "sprout-003": 2, "sprout-004": 2, "sprout-005": 2,
@@ -66,6 +66,18 @@ export const STARTER_DECKS: Readonly<Record<string, DeckList>> = {
     "forge-013": 1, "forge-015": 1, "forge-016": 2,
     "sprout-004": 2, "sprout-008": 2, "sprout-009": 2, "sprout-011": 1, "sprout-012": 2,
     "sprout-013": 2, "sprout-016": 2, "sprout-017": 2, "sprout-025": 1,
+  },
+  abyss: {
+    "abyss-001": 2, "abyss-002": 2, "abyss-003": 2, "abyss-004": 2, "abyss-005": 2, "abyss-006": 2, "abyss-007": 2, "abyss-008": 2, "abyss-009": 2, "abyss-010": 1,
+    "abyss-011": 1, "abyss-012": 1, "abyss-013": 1, "abyss-014": 1, "abyss-015": 2, "abyss-016": 1, "abyss-017": 2, "abyss-018": 1, "abyss-021": 1,
+  },
+  gear: {
+    "gear-001": 2, "gear-002": 2, "gear-003": 2, "gear-004": 2, "gear-005": 1, "gear-006": 2, "gear-007": 1, "gear-008": 2, "gear-009": 2, "gear-010": 1,
+    "gear-011": 1, "gear-012": 1, "gear-013": 1, "gear-015": 2, "gear-016": 2, "gear-021": 2, "gear-023": 2, "gear-026": 2,
+  },
+  vesper: {
+    "vesper-001": 2, "vesper-002": 2, "vesper-003": 2, "vesper-004": 2, "vesper-005": 2, "vesper-006": 2, "vesper-007": 2, "vesper-008": 2, "vesper-009": 2, "vesper-010": 1,
+    "vesper-011": 1, "vesper-012": 1, "vesper-013": 1, "vesper-014": 1, "vesper-015": 1, "vesper-016": 1, "vesper-017": 2, "vesper-018": 1, "vesper-019": 1, "vesper-024": 1,
   },
 };
 

@@ -26,9 +26,9 @@ Il motore non contiene testi per il giocatore. Il pacchetto `@tcg/i18n` traduce 
 Ogni carta è un oggetto JSON in `packages/cards/data/`. Lo schema Zod è in `packages/cards/src/schema.ts`.
 
 - `effects`: elenco di effetti. Ogni effetto ha un momento (`when`), una condizione opzionale e una lista di azioni.
-- Momenti: `play` (Riti), `enterPlay`, `dawn`, `dusk`, `death`.
-- Condizioni: `highTide` (Alta Marea), `lowTide` (Riflusso), `resonance` (Risonanza).
-- Azioni: `damage`, `heal`, `buff`, `destroy`, `grant`, `draw`, `tide`, `ember`, `summon`.
+- Momenti: `play` (Riti), `enterPlay`, `dawn`, `dusk`, `death`, `tideTurn` (Cambio di Marea).
+- Condizioni: `highTide` (Alta Marea), `lowTide` (Riflusso), `resonance` (Risonanza), `armed` (Armato: hai almeno una Reliquia in gioco), `haunted` (Infestato: il tuo cimitero ha almeno 5 carte).
+- Azioni: `damage`, `heal`, `buff`, `destroy`, `grant`, `draw`, `tide`, `ember`, `summon`, `bounce` (riporta un Custode in mano), `discard` (l'avversario scarta carte a caso), `recall` (riprendi in mano gli ultimi Custodi del cimitero).
 - `target`: il bersaglio che il giocatore sceglie. Le azioni usano questo bersaglio con il riferimento `chosen`.
 - `aura`: bonus di una Reliquia per il suo Custode, o bonus di un Luogo per tutti i Custodi della corsia.
 - `abilities`: abilità attivate (una volta per round). Il motore supporta le abilità. Le prime 50 carte non le usano.
@@ -78,6 +78,9 @@ Il piano lascia aperti alcuni dettagli. Il motore usa queste scelte. Ogni scelta
 4. Il mulligan pesca le nuove carte e poi rimescola nel mazzo le carte sostituite.
 5. Una cura non supera 10 Luce e non riaccende un Faro spento.
 6. Una copia di Eco e un Custode creato da un effetto sono **token**: escono dal gioco quando lasciano il campo.
+7. Il **Cambio di Marea** avviene quando la Marea passa da un lato all'altro, oppure lascia lo 0. Gli effetti `tideTurn` di tutte le carte in gioco si attivano, prima quelli del giocatore con l'Iniziativa.
+8. Un Cambio di Marea dentro un altro Cambio di Marea non attiva di nuovo gli effetti. Questa regola evita i cicli infiniti.
+9. Un Custode che torna in mano perde danni e modifiche. Con la mano piena va nel cimitero. Un token esce dal gioco.
 
 ## 4. Intelligenza artificiale
 

@@ -122,6 +122,14 @@ export function describeEvent(tr: Translator, e: GameEvent, viewer: PlayerId, lo
       return tr.t("events.KeeperDied", { card: cardName(tr, e.cardId) });
     case "KeeperReplaced":
       return tr.t("events.KeeperReplaced", { card: cardName(tr, e.cardId) });
+    case "KeeperBounced":
+      return tr.t("events.KeeperBounced", { card: cardName(tr, e.cardId) });
+    case "CardDiscarded":
+      return tr.t(`events.CardDiscarded.${who(e.player)}`, { card: cardName(tr, e.cardId) });
+    case "CardRecalled":
+      return tr.t(`events.CardRecalled.${who(e.player)}`, { card: cardName(tr, e.cardId) });
+    case "TideTurned":
+      return tr.t("events.TideTurned");
     case "EchoReturned":
       return tr.t(`events.EchoReturned.${who(e.player)}`, { card: cardName(tr, e.cardId) });
     case "BeaconDamaged":

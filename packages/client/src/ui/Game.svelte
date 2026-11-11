@@ -2,7 +2,7 @@
   import { onDestroy, onMount } from "svelte";
   import { Application, TextureStyle } from "pixi.js";
   import { CARDS } from "@tcg/cards";
-  import { eventsFor, tideFor, totalLight, type Action, type GameState } from "@tcg/engine";
+  import { eventsFor, tideFor, totalLight, type Action, type GameState, type PlayerId } from "@tcg/engine";
   import { cardRulesText, cardSummary, describeAction, describeEvent, lookupIn, type Lang, type Translator } from "@tcg/i18n";
   import type { AiLevel } from "@tcg/ai";
   import { GameSession, HUMAN, type Step } from "../game/session.ts";
@@ -25,11 +25,15 @@
     level: AiLevel;
     seed: number;
     lesson?: Lesson | null;
+    /** Explicit card lists for both players. They replace the deck names. */
+    decks?: [string[], string[]];
+    /** Called by the button of the result screen. Without it, the button goes back to the menu. */
+    onFinish?: (winner: PlayerId | null) => void;
     onNext?: () => void;
     onRetry?: () => void;
     onExit: () => void;
   }
-  let { tr, lang = $bindable(), deck, opponentDeck, level, seed, lesson = null, onNext, onRetry, onExit }: Props = $props();
+  let { tr, lang = $bindable(), deck, opponentDeck, level, seed, lesson = null, decks, onFinish, onNext, onRetry, onExit }: Props = $props();
 
   let host: HTMLDivElement;
   let app: Application | null = null;
@@ -107,7 +111,7 @@
       const plan = lesson?.opponent;
       const ai = !lesson ? new WorkerAiDriver() : new ScriptedAiDriver(plan?.kind === "script" ? plan.next : () => null, 350);
       const initial = lesson ? newScenario(lesson.scenario) : undefined;
-      session = new GameSession({ seed, deck, opponentDeck, level, ai, initial, onStep, onChange: refresh });
+      session = new GameSession({ seed, deck, opponentDeck, decks, level, ai, initial, onStep, onChange: refresh });
       addLog({ before: session.state, after: session.state, events: session.startEvents });
       board.sync(session.state);
       refresh(session);
@@ -332,7 +336,11 @@
       <div class="over">
         <h2>{result}</h2>
         <p>{tr.t("ui.finalScore", { you: totalLight(game, 0), opponent: totalLight(game, 1) })}</p>
-        <button class="primary" onclick={onExit}>{tr.t("ui.newGame")}</button>
+        {#if onFinish}
+          <button class="primary" onclick={() => onFinish(game?.outcome?.winner ?? null)}>{tr.t("meta.continue")}</button>
+        {:else}
+          <button class="primary" onclick={onExit}>{tr.t("ui.newGame")}</button>
+        {/if}
       </div>
     {/if}
   {/if}

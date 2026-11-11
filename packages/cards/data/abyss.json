@@ -1,0 +1,103 @@
+[
+  { "id": "abyss-001", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 1, "attack": 1, "hold": 2, "tidePush": -1 },
+  { "id": "abyss-002", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 1, "attack": 2, "hold": 1, "keywords": ["reach"] },
+  {
+    "id": "abyss-003", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 2, "attack": 2, "hold": 2,
+    "effects": [{ "when": "enterPlay", "condition": { "lowTide": true }, "actions": [{ "op": "draw", "amount": 1 }] }]
+  },
+  { "id": "abyss-004", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 2, "attack": 2, "hold": 3 },
+  {
+    "id": "abyss-005", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 2, "attack": 1, "hold": 2,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "buff", "attack": -2, "until": "dusk", "target": "chosen" }] }]
+  },
+  {
+    "id": "abyss-006", "type": "keeper", "faction": "abyss", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 3,
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "discard", "amount": 1 }] }]
+  },
+  { "id": "abyss-007", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 3, "attack": 3, "hold": 3, "tidePush": -1 },
+  {
+    "id": "abyss-008", "type": "keeper", "faction": "abyss", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 3,
+    "effects": [{ "when": "enterPlay", "condition": { "lowTide": true }, "actions": [{ "op": "damage", "amount": 2, "target": "enemyFrontSameLane" }] }]
+  },
+  { "id": "abyss-009", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 4, "attack": 3, "hold": 4, "keywords": ["reach"] },
+  {
+    "id": "abyss-010", "type": "keeper", "faction": "abyss", "rarity": "uncommon", "cost": 4, "attack": 2, "hold": 3,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "bounce", "target": "chosen" }] }]
+  },
+  {
+    "id": "abyss-011", "type": "keeper", "faction": "abyss", "rarity": "uncommon", "cost": 4, "attack": 4, "hold": 4,
+    "effects": [{ "when": "dawn", "condition": { "lowTide": true }, "actions": [{ "op": "draw", "amount": 1 }] }]
+  },
+  {
+    "id": "abyss-012", "type": "keeper", "faction": "abyss", "rarity": "rare", "cost": 5, "attack": 4, "hold": 5,
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "damage", "amount": 2, "target": "enemyKeepersSameLane" }] }]
+  },
+  {
+    "id": "abyss-013", "type": "keeper", "faction": "abyss", "rarity": "rare", "cost": 6, "attack": 5, "hold": 6, "keywords": ["overrun"],
+    "effects": [{ "when": "enterPlay", "condition": { "lowTide": true }, "actions": [{ "op": "destroy", "target": "enemyFrontSameLane" }] }]
+  },
+  {
+    "id": "abyss-014", "type": "keeper", "faction": "abyss", "rarity": "legendary", "cost": 7, "attack": 5, "hold": 7,
+    "effects": [
+      { "when": "enterPlay", "actions": [{ "op": "bounce", "target": "enemyKeepersSameLane" }] },
+      { "when": "dusk", "actions": [{ "op": "tide", "amount": -1 }] }
+    ]
+  },
+  {
+    "id": "abyss-015", "type": "quickRite", "faction": "abyss", "rarity": "common", "cost": 1,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [{ "when": "play", "actions": [{ "op": "buff", "attack": -3, "until": "dusk", "target": "chosen" }] }]
+  },
+  {
+    "id": "abyss-016", "type": "quickRite", "faction": "abyss", "rarity": "common", "cost": 2,
+    "target": { "kind": "keeper", "side": "any" },
+    "effects": [{ "when": "play", "actions": [{ "op": "bounce", "target": "chosen" }] }]
+  },
+  {
+    "id": "abyss-017", "type": "quickRite", "faction": "abyss", "rarity": "uncommon", "cost": 3,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [
+      { "when": "play", "actions": [{ "op": "damage", "amount": 2, "target": "chosen" }] },
+      { "when": "play", "condition": { "lowTide": true }, "actions": [{ "op": "draw", "amount": 1 }] }
+    ]
+  },
+  {
+    "id": "abyss-018", "type": "slowRite", "faction": "abyss", "rarity": "rare", "cost": 4,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [{ "when": "play", "actions": [{ "op": "destroy", "target": "chosen" }] }]
+  },
+  {
+    "id": "abyss-019", "type": "slowRite", "faction": "abyss", "rarity": "common", "cost": 2,
+    "effects": [
+      { "when": "play", "actions": [{ "op": "draw", "amount": 1 }] },
+      { "when": "play", "condition": { "lowTide": true }, "actions": [{ "op": "draw", "amount": 1 }] }
+    ]
+  },
+  {
+    "id": "abyss-020", "type": "slowRite", "faction": "abyss", "rarity": "uncommon", "cost": 3,
+    "effects": [{ "when": "play", "actions": [{ "op": "discard", "amount": 2 }] }]
+  },
+  {
+    "id": "abyss-021", "type": "slowRite", "faction": "abyss", "rarity": "common", "cost": 2,
+    "effects": [{ "when": "play", "actions": [{ "op": "tide", "amount": -2 }, { "op": "draw", "amount": 1 }] }]
+  },
+  {
+    "id": "abyss-022", "type": "slowRite", "faction": "abyss", "rarity": "rare", "cost": 4,
+    "effects": [
+      { "when": "play", "actions": [{ "op": "damage", "amount": 2, "target": "allEnemyKeepers" }] },
+      { "when": "play", "condition": { "lowTide": true }, "actions": [{ "op": "damage", "amount": 1, "target": "allEnemyKeepers" }] }
+    ]
+  },
+  { "id": "abyss-023", "type": "relic", "faction": "abyss", "rarity": "common", "cost": 2, "attachTo": "keeper", "aura": { "hold": 1, "keywords": ["reach"] } },
+  {
+    "id": "abyss-024", "type": "relic", "faction": "abyss", "rarity": "uncommon", "cost": 3, "attachTo": "beacon",
+    "effects": [{ "when": "dawn", "condition": { "lowTide": true }, "actions": [{ "op": "draw", "amount": 1 }] }]
+  },
+  { "id": "abyss-025", "type": "site", "faction": "abyss", "rarity": "uncommon", "cost": 2, "aura": { "keywords": ["reach"] } },
+  {
+    "id": "abyss-026", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 3, "attack": 3, "hold": 2,
+    "effects": [{ "when": "enterPlay", "condition": { "lowTide": true }, "actions": [{ "op": "buff", "attack": 1, "hold": 1, "until": "permanent", "target": "self" }] }]
+  }
+]

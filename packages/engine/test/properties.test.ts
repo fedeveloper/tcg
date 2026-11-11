@@ -8,7 +8,7 @@ import { eventsFor, HIDDEN_CARD, viewFor } from "../src/view.ts";
 import type { Action, GameState } from "../src/types.ts";
 import { FORGE, SPROUT } from "./helpers.ts";
 
-const FACTIONS = [["forge"], ["sprout"], ["forge", "sprout"]] as const;
+const FACTIONS = [["forge"], ["sprout"], ["abyss"], ["gear"], ["vesper"], ["forge", "sprout"], ["abyss", "vesper"], ["gear", "sprout"]] as const;
 
 /** Plays a game with the given choices: each number picks one legal action. */
 function playOut(seed: number, choices: number[], decks: [string[], string[]]): { states: GameState[]; actions: Action[] } {
