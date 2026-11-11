@@ -141,6 +141,10 @@ export type GameEvent =
   | { type: "KeeperDied"; keeper: string; cardId: string; player: PlayerId }
   | { type: "KeeperReplaced"; keeper: string; cardId: string; player: PlayerId }
   | { type: "EchoReturned"; player: PlayerId; card: string; cardId: string }
+  | { type: "KeeperBounced"; keeper: string; cardId: string; player: PlayerId }
+  | { type: "CardDiscarded"; player: PlayerId; card: string; cardId: string }
+  | { type: "CardRecalled"; player: PlayerId; card: string; cardId: string }
+  | { type: "TideTurned"; to: number }
   | { type: "BeaconDamaged"; player: PlayerId; lane: Lane; amount: number; light: number }
   | { type: "BeaconHealed"; player: PlayerId; lane: Lane; amount: number; light: number }
   | { type: "BeaconOut"; player: PlayerId; lane: Lane }

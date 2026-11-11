@@ -262,6 +262,14 @@ export function toGraveyard(state: GameState, id: string): void {
     delete state.cards[id];
     return;
   }
+  resetInstance(state, id);
+  state.players[inst.owner].graveyard.push(id);
+}
+
+/** Clears every change on a card that leaves play. */
+export function resetInstance(state: GameState, id: string): void {
+  const inst = inst_(state, id);
+  inst.attachedTo = null;
   inst.damage = 0;
   inst.attackMod = 0;
   inst.holdMod = 0;
@@ -270,7 +278,6 @@ export function toGraveyard(state: GameState, id: string): void {
   inst.extraKeywords = [];
   inst.doomed = false;
   inst.abilityRounds = [];
-  state.players[inst.owner].graveyard.push(id);
 }
 
 /** Ends the game if a player has 2 or more beacons out. Returns true if the game is over. */

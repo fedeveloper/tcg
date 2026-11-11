@@ -1,0 +1,99 @@
+[
+  { "id": "vesper-001", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 1, "attack": 1, "hold": 1, "keywords": ["echo"] },
+  {
+    "id": "vesper-002", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 1, "attack": 1, "hold": 2,
+    "effects": [{ "when": "death", "actions": [{ "op": "draw", "amount": 1 }] }]
+  },
+  { "id": "vesper-003", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 2, "attack": 2, "hold": 2, "keywords": ["echo"] },
+  {
+    "id": "vesper-004", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 2, "attack": 2, "hold": 1,
+    "effects": [{ "when": "tideTurn", "actions": [{ "op": "buff", "attack": 1, "hold": 1, "until": "permanent", "target": "self" }] }]
+  },
+  {
+    "id": "vesper-005", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 2, "attack": 1, "hold": 3,
+    "effects": [{ "when": "death", "actions": [{ "op": "damage", "amount": 1, "target": "enemyBeaconSameLane" }] }]
+  },
+  {
+    "id": "vesper-006", "type": "keeper", "faction": "vesper", "rarity": "uncommon", "cost": 3, "attack": 3, "hold": 2,
+    "effects": [{ "when": "death", "actions": [{ "op": "recall", "amount": 1 }] }]
+  },
+  {
+    "id": "vesper-007", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 3, "attack": 2, "hold": 3,
+    "effects": [{ "when": "tideTurn", "actions": [{ "op": "draw", "amount": 1 }] }]
+  },
+  {
+    "id": "vesper-008", "type": "keeper", "faction": "vesper", "rarity": "uncommon", "cost": 3, "attack": 3, "hold": 3,
+    "effects": [{ "when": "enterPlay", "condition": { "haunted": true }, "actions": [{ "op": "buff", "attack": 2, "hold": 2, "until": "permanent", "target": "self" }] }]
+  },
+  { "id": "vesper-009", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 4, "attack": 4, "hold": 4, "keywords": ["echo"] },
+  {
+    "id": "vesper-010", "type": "keeper", "faction": "vesper", "rarity": "uncommon", "cost": 4, "attack": 3, "hold": 4,
+    "effects": [{ "when": "tideTurn", "actions": [{ "op": "damage", "amount": 2, "target": "enemyBeaconSameLane" }] }]
+  },
+  { "id": "vesper-011", "type": "keeper", "faction": "vesper", "rarity": "rare", "cost": 4, "attack": 6, "hold": 5, "sacrifice": 1 },
+  {
+    "id": "vesper-012", "type": "keeper", "faction": "vesper", "rarity": "rare", "cost": 5, "attack": 4, "hold": 5,
+    "effects": [{ "when": "death", "actions": [{ "op": "summon", "card": "vesper-t01", "where": "sameLaneFront" }] }]
+  },
+  {
+    "id": "vesper-013", "type": "keeper", "faction": "vesper", "rarity": "legendary", "cost": 6, "attack": 5, "hold": 6,
+    "effects": [
+      { "when": "enterPlay", "actions": [{ "op": "recall", "amount": 2 }] },
+      { "when": "enterPlay", "condition": { "haunted": true }, "actions": [{ "op": "buff", "attack": 1, "hold": 1, "until": "permanent", "target": "allAllyKeepers" }] }
+    ]
+  },
+  { "id": "vesper-014", "type": "keeper", "faction": "vesper", "rarity": "rare", "cost": 5, "attack": 6, "hold": 6, "keywords": ["overrun"], "sacrifice": 2 },
+  {
+    "id": "vesper-015", "type": "quickRite", "faction": "vesper", "rarity": "uncommon", "cost": 1,
+    "target": { "kind": "keeper", "side": "ally" },
+    "effects": [{ "when": "play", "actions": [{ "op": "destroy", "target": "chosen" }, { "op": "draw", "amount": 2 }] }]
+  },
+  {
+    "id": "vesper-016", "type": "slowRite", "faction": "vesper", "rarity": "common", "cost": 2,
+    "effects": [{ "when": "play", "actions": [{ "op": "recall", "amount": 2 }] }]
+  },
+  {
+    "id": "vesper-017", "type": "quickRite", "faction": "vesper", "rarity": "uncommon", "cost": 2,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [{ "when": "play", "actions": [{ "op": "buff", "attack": -2, "hold": -2, "until": "dusk", "target": "chosen" }] }]
+  },
+  {
+    "id": "vesper-018", "type": "slowRite", "faction": "vesper", "rarity": "uncommon", "cost": 3, "sacrifice": 1,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [{ "when": "play", "actions": [{ "op": "destroy", "target": "chosen" }] }]
+  },
+  {
+    "id": "vesper-019", "type": "slowRite", "faction": "vesper", "rarity": "common", "cost": 1,
+    "effects": [
+      { "when": "play", "actions": [{ "op": "tide", "amount": 2 }] },
+      { "when": "play", "condition": { "haunted": true }, "actions": [{ "op": "draw", "amount": 1 }] }
+    ]
+  },
+  {
+    "id": "vesper-020", "type": "slowRite", "faction": "vesper", "rarity": "rare", "cost": 4,
+    "effects": [
+      { "when": "play", "actions": [{ "op": "damage", "amount": 2, "target": "allEnemyKeepers" }] },
+      { "when": "play", "condition": { "haunted": true }, "actions": [{ "op": "damage", "amount": 1, "target": "allEnemyBeacons" }] }
+    ]
+  },
+  { "id": "vesper-021", "type": "relic", "faction": "vesper", "rarity": "common", "cost": 2, "attachTo": "keeper", "aura": { "attack": 1, "keywords": ["echo"] } },
+  {
+    "id": "vesper-022", "type": "relic", "faction": "vesper", "rarity": "uncommon", "cost": 2, "attachTo": "beacon",
+    "effects": [{ "when": "tideTurn", "actions": [{ "op": "heal", "amount": 2, "target": "attached" }] }]
+  },
+  { "id": "vesper-023", "type": "site", "faction": "vesper", "rarity": "uncommon", "cost": 3, "aura": { "keywords": ["echo"] } },
+  {
+    "id": "vesper-024", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 2, "attack": 2, "hold": 2,
+    "effects": [{ "when": "tideTurn", "actions": [{ "op": "heal", "amount": 1, "target": "allyBeaconSameLane" }] }]
+  },
+  {
+    "id": "vesper-025", "type": "slowRite", "faction": "vesper", "rarity": "uncommon", "cost": 4,
+    "effects": [{ "when": "play", "actions": [{ "op": "summon", "card": "vesper-t01", "where": "eachLaneBack" }] }]
+  },
+  {
+    "id": "vesper-026", "type": "quickRite", "faction": "vesper", "rarity": "common", "cost": 1,
+    "target": { "kind": "keeper", "side": "ally" },
+    "effects": [{ "when": "play", "actions": [{ "op": "grant", "keyword": "echo", "target": "chosen" }, { "op": "buff", "attack": 1, "until": "dusk", "target": "chosen" }] }]
+  },
+  { "id": "vesper-t01", "type": "keeper", "faction": "vesper", "rarity": "common", "cost": 0, "attack": 1, "hold": 1, "token": true }
+]

@@ -17,10 +17,11 @@ describe("card data", () => {
     expect(validateCardFiles(RAW_CARD_FILES).problems).toEqual([]);
   });
 
-  it("has 25 Forge and 25 Sprout collectible cards", () => {
+  it("has the first set of the plan: 26 cards per faction and 20 neutral cards", () => {
     const by = (f: string) => collectibleCards().filter((c) => c.faction === f).length;
-    expect(by("forge")).toBe(25);
-    expect(by("sprout")).toBe(25);
+    for (const f of ["forge", "sprout", "abyss", "gear", "vesper"]) expect(by(f)).toBe(26);
+    expect(by("neutral")).toBe(20);
+    expect(collectibleCards()).toHaveLength(150);
   });
 
   it("gives every card at most 2 keywords", () => {

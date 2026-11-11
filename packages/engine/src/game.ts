@@ -18,14 +18,13 @@ import {
   ROUND_LIMIT,
   RulesError,
   setSlot,
-  shiftTide,
   slotOf,
   toGraveyard,
   totalLight,
   BEACON_LIGHT,
   damageBeacon,
 } from "./core.ts";
-import { killKeeper, placeKeeper, replaceKeeper, processDeaths, runEffectList, runEffects, runRoundTrigger, targetStillValid } from "./effects.ts";
+import { killKeeper, moveTide, placeKeeper, replaceKeeper, processDeaths, runEffectList, runEffects, runRoundTrigger, targetStillValid } from "./effects.ts";
 import { isLegal } from "./legal.ts";
 import { randomInt, shuffle } from "./rng.ts";
 import {
@@ -259,14 +258,14 @@ function resolveLink(state: GameState, link: ChainLink, events: GameEvent[]): vo
       const old = keeperAt(state, player, a.slot);
       if (old) replaceKeeper(state, old, events);
       placeKeeper(state, player, a.card, a.slot, events);
-      shiftTide(state, player, def.tidePush ?? 0, events);
+      moveTide(state, player, def.tidePush ?? 0, events);
       runEffects(state, "enterPlay", { controller: player, source: a.card, lane: a.slot.lane, chosen, resonance: link.resonance }, events);
       return;
     }
     case "quickRite":
     case "slowRite": {
       if (def.target && (!chosen || !targetStillValid(state, chosen))) return fizzle(state, a.card, events);
-      shiftTide(state, player, def.tidePush ?? 0, events);
+      moveTide(state, player, def.tidePush ?? 0, events);
       runEffects(state, "play", { controller: player, source: a.card, lane: null, chosen, resonance: link.resonance }, events);
       toGraveyard(state, a.card);
       return;
@@ -278,7 +277,7 @@ function resolveLink(state: GameState, link: ChainLink, events: GameEvent[]): vo
       instanceOf(state, a.card).attachedTo = chosen;
       state.players[player].relics.push(a.card);
       events.push({ type: "RelicAttached", player, relic: a.card, to: chosen });
-      shiftTide(state, player, def.tidePush ?? 0, events);
+      moveTide(state, player, def.tidePush ?? 0, events);
       const lane = chosen.kind === "beacon" ? chosen.lane : (slotOf(state, chosen.id)?.lane ?? null);
       runEffects(state, "enterPlay", { controller: player, source: a.card, lane, chosen, resonance: link.resonance }, events);
       return;
@@ -289,7 +288,7 @@ function resolveLink(state: GameState, link: ChainLink, events: GameEvent[]): vo
       if (replaced) toGraveyard(state, replaced);
       state.sites[lane] = a.card;
       events.push({ type: "SitePlaced", player, site: a.card, cardId: def.id, lane, replaced });
-      shiftTide(state, player, def.tidePush ?? 0, events);
+      moveTide(state, player, def.tidePush ?? 0, events);
       runEffects(state, "enterPlay", { controller: player, source: a.card, lane, chosen: null, resonance: link.resonance }, events);
       return;
     }

@@ -4,13 +4,13 @@
   { "id": "forge-003", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 3, "hold": 2, "tidePush": 1 },
   { "id": "forge-004", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 3, "hold": 3 },
   { "id": "forge-005", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 2, "hold": 2, "keywords": ["reach"] },
-  { "id": "forge-006", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 4, "hold": 2, "keywords": ["surge", "wear"] },
+  { "id": "forge-006", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 4, "hold": 3, "keywords": ["surge", "wear"] },
   { "id": "forge-007", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 4, "attack": 5, "hold": 4, "keywords": ["overrun", "wear"] },
   {
     "id": "forge-008", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 2, "attack": 2, "hold": 2,
     "effects": [{ "when": "enterPlay", "actions": [{ "op": "damage", "amount": 2, "target": "enemyBeaconSameLane" }] }]
   },
-  { "id": "forge-009", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 3, "attack": 3, "hold": 3, "tidePush": 2 },
+  { "id": "forge-009", "type": "keeper", "faction": "forge", "rarity": "common", "cost": 3, "attack": 3, "hold": 4, "tidePush": 2 },
   {
     "id": "forge-010", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 2, "keywords": ["reach"],
     "target": { "kind": "keeper", "side": "enemy" },
@@ -79,5 +79,9 @@
       { "when": "play", "actions": [{ "op": "ember", "amount": 2 }] },
       { "when": "play", "condition": { "lowTide": true }, "actions": [{ "op": "draw", "amount": 1 }] }
     ]
+  },
+  {
+    "id": "forge-026", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 4, "attack": 3, "hold": 3, "keywords": ["surge"],
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "damage", "amount": 1, "target": "enemyBeaconSameLane" }] }]
   }
 ]

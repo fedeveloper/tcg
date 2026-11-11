@@ -62,13 +62,22 @@
     "resonance": {
       "name": "Risonanza",
       "reminder": "Si attiva se hai già giocato una carta della stessa fazione in questo round."
+    },
+    "armed": {
+      "name": "Armato",
+      "reminder": "Si attiva se hai almeno una Reliquia in gioco."
+    },
+    "haunted": {
+      "name": "Infestato",
+      "reminder": "Si attiva se il tuo cimitero ha almeno 5 carte."
     }
   },
   "triggers": {
     "enterPlay": "Entra in gioco",
     "dawn": "Alba",
     "dusk": "Tramonto",
-    "death": "Morte"
+    "death": "Morte",
+    "tideTurn": "Cambio di Marea"
   },
   "stats": {
     "attack": "{{value}} Attacco",
@@ -140,7 +149,12 @@
     "healKeeper": "{{target}} recupera {{count}} danni",
     "triggerWithCondition": "{{trigger}} ({{condition}}): ",
     "sacrifice_one": "Sacrificio 1: per giocare questa carta, distruggi 1 tuo Custode.",
-    "sacrifice_other": "Sacrificio {{count}}: per giocare questa carta, distruggi {{count}} tuoi Custodi."
+    "sacrifice_other": "Sacrificio {{count}}: per giocare questa carta, distruggi {{count}} tuoi Custodi.",
+    "bounce": "riporta {{target}} nella mano del proprietario",
+    "discard_one": "l'avversario scarta 1 carta a caso",
+    "discard_other": "l'avversario scarta {{count}} carte a caso",
+    "recall_one": "riprendi in mano l'ultimo Custode del tuo cimitero",
+    "recall_other": "riprendi in mano gli ultimi {{count}} Custodi del tuo cimitero"
   },
   "board": {
     "lanes": [
@@ -259,7 +273,17 @@
       "roundLimit": "La partita ha raggiunto il round 20.",
       "concede": "Un giocatore ha abbandonato."
     },
-    "KeeperReplaced": "{{card}} lascia il posto e va nel cimitero."
+    "KeeperReplaced": "{{card}} lascia il posto e va nel cimitero.",
+    "KeeperBounced": "{{card}} torna nella mano.",
+    "CardDiscarded": {
+      "self": "Scarti {{card}}.",
+      "other": "L'avversario scarta {{card}}."
+    },
+    "CardRecalled": {
+      "self": "Riprendi in mano {{card}}.",
+      "other": "L'avversario riprende in mano {{card}}."
+    },
+    "TideTurned": "La Marea cambia lato."
   },
   "actions": {
     "keep": "Tieni la mano",
@@ -336,7 +360,10 @@
   "deckNames": {
     "forge": "Fucina",
     "sprout": "Germoglio",
-    "forgeSprout": "Fucina e Germoglio"
+    "forgeSprout": "Fucina e Germoglio",
+    "abyss": "Abisso",
+    "gear": "Ingranaggio",
+    "vesper": "Vespro"
   },
   "targetsTo": {
     "keeper": {

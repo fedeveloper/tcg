@@ -1,4 +1,4 @@
-import type { Condition, Effect, EffectAction, TargetRef, Trigger } from "@tcg/cards";
+import { HAUNTED_GRAVEYARD, type Condition, type Effect, type EffectAction, type TargetRef, type Trigger } from "@tcg/cards";
 import {
   allKeepers,
   createInstance,
@@ -14,11 +14,13 @@ import {
   keepersOf,
   HAND_LIMIT,
   other,
+  resetInstance,
   setSlot,
   shiftTide,
   slotOf,
   toGraveyard,
 } from "./core.ts";
+import { randomInt } from "./rng.ts";
 import { LANES, PLAYERS, type GameEvent, type GameState, type Lane, type PlayerId, type Slot, type Target } from "./types.ts";
 
 export interface EffectContext {
@@ -36,6 +38,8 @@ export function conditionHolds(state: GameState, ctx: EffectContext, cond: Condi
   if (cond.highTide && !isHighTide(state, ctx.controller)) return false;
   if (cond.lowTide && !isLowTide(state, ctx.controller)) return false;
   if (cond.resonance && !ctx.resonance) return false;
+  if (cond.armed && state.players[ctx.controller].relics.length === 0) return false;
+  if (cond.haunted && state.players[ctx.controller].graveyard.length < HAUNTED_GRAVEYARD) return false;
   return true;
 }
 
@@ -120,7 +124,13 @@ export function runAction(state: GameState, ctx: EffectContext, action: EffectAc
       drawCards(state, ctx.controller, action.amount, events);
       return;
     case "tide":
-      shiftTide(state, ctx.controller, action.amount, events);
+      moveTide(state, ctx.controller, action.amount, events);
+      return;
+    case "discard":
+      discardRandom(state, other(ctx.controller), action.amount, events);
+      return;
+    case "recall":
+      recallKeepers(state, ctx.controller, action.amount, events);
       return;
     case "ember":
       state.players[ctx.controller].ember += action.amount;
@@ -179,6 +189,9 @@ export function runAction(state: GameState, ctx: EffectContext, action: EffectAc
         if (!k.extraKeywords.includes(action.keyword)) k.extraKeywords.push(action.keyword);
         events.push({ type: "KeywordGranted", keeper: t.id, keyword: action.keyword });
         break;
+      case "bounce":
+        bounceKeeper(state, t.id, events);
+        break;
     }
   }
 }
@@ -203,11 +216,71 @@ function relicLane(state: GameState, relicId: string): Lane | null {
   return slotOf(state, at.id)?.lane ?? null;
 }
 
+/** The opponent discards random cards. */
+function discardRandom(state: GameState, player: PlayerId, n: number, events: GameEvent[]): void {
+  const hand = state.players[player].hand;
+  for (let i = 0; i < n && hand.length > 0; i++) {
+    const [id] = hand.splice(randomInt(state, hand.length), 1);
+    const inst = instanceOf(state, id!);
+    events.push({ type: "CardDiscarded", player, card: id!, cardId: inst.cardId });
+    toGraveyard(state, id!);
+  }
+}
+
+/** Returns the last keeper cards of the graveyard to the hand. */
+function recallKeepers(state: GameState, player: PlayerId, n: number, events: GameEvent[]): void {
+  const ps = state.players[player];
+  let left = n;
+  for (let i = ps.graveyard.length - 1; i >= 0 && left > 0 && ps.hand.length < HAND_LIMIT; i--) {
+    const id = ps.graveyard[i]!;
+    if (defOf(state, id).type !== "keeper") continue;
+    ps.graveyard.splice(i, 1);
+    ps.hand.push(id);
+    left--;
+    events.push({ type: "CardRecalled", player, card: id, cardId: instanceOf(state, id).cardId });
+  }
+}
+
+/** Returns a keeper to the hand of its owner. A token leaves the game; with a full hand the card goes to the graveyard. */
+export function bounceKeeper(state: GameState, id: string, events: GameEvent[]): void {
+  const inst = instanceOf(state, id);
+  removeFromBoard(state, id);
+  events.push({ type: "KeeperBounced", keeper: id, cardId: inst.cardId, player: inst.owner });
+  const hand = state.players[inst.owner].hand;
+  if (inst.token || hand.length >= HAND_LIMIT) {
+    toGraveyard(state, id);
+    return;
+  }
+  resetInstance(state, id);
+  hand.push(id);
+}
+
+let tideTurnDepth = 0;
+
 /**
- * Runs a round trigger (Dawn or Dusk) on every card in play.
+ * Moves the tide. When the tide crosses the center, the "tideTurn" effects of the cards in play run.
+ * A tide turn inside a tide turn does not trigger again: this rule stops endless loops.
+ */
+export function moveTide(state: GameState, player: PlayerId, amount: number, events: GameEvent[]): void {
+  const from = state.tide;
+  shiftTide(state, player, amount, events);
+  const to = state.tide;
+  const crossed = (from <= 0 && to > 0) || (from >= 0 && to < 0);
+  if (!crossed || tideTurnDepth > 0) return;
+  events.push({ type: "TideTurned", to });
+  tideTurnDepth++;
+  try {
+    runRoundTrigger(state, "tideTurn", events);
+  } finally {
+    tideTurnDepth--;
+  }
+}
+
+/**
+ * Runs a board trigger (Dawn, Dusk or Tide Turn) on every card in play.
  * Order: the player with the Initiative first, then the opponent (plan, section 6.4).
  */
-export function runRoundTrigger(state: GameState, when: "dawn" | "dusk", events: GameEvent[]): void {
+export function runRoundTrigger(state: GameState, when: "dawn" | "dusk" | "tideTurn", events: GameEvent[]): void {
   const order: PlayerId[] = [state.initiative, other(state.initiative)];
   for (const p of order) {
     for (const id of keepersOf(state, p)) {

@@ -4,11 +4,11 @@ import { expandDeck, STARTER_DECKS, validateDeck } from "./decks.ts";
 /** Rules that the Zod schema cannot express. Each problem is a readable English message. */
 
 const TRIGGERS_BY_TYPE: Record<CardDef["type"], readonly Trigger[]> = {
-  keeper: ["enterPlay", "dawn", "dusk", "death"],
+  keeper: ["enterPlay", "dawn", "dusk", "death", "tideTurn"],
   quickRite: ["play"],
   slowRite: ["play"],
-  relic: ["enterPlay", "dawn", "dusk"],
-  site: ["enterPlay", "dawn", "dusk"],
+  relic: ["enterPlay", "dawn", "dusk", "tideTurn"],
+  site: ["enterPlay", "dawn", "dusk", "tideTurn"],
 };
 
 const LANE_REFS: readonly TargetRef[] = [

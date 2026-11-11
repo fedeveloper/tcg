@@ -62,13 +62,22 @@
     "resonance": {
       "name": "Resonance",
       "reminder": "Active if you already played a card of the same faction this round."
+    },
+    "armed": {
+      "name": "Armed",
+      "reminder": "Works if you have at least one Relic in play."
+    },
+    "haunted": {
+      "name": "Haunted",
+      "reminder": "Works if your graveyard has at least 5 cards."
     }
   },
   "triggers": {
     "enterPlay": "Enters play",
     "dawn": "Dawn",
     "dusk": "Dusk",
-    "death": "Death"
+    "death": "Death",
+    "tideTurn": "Tide Turn"
   },
   "stats": {
     "attack": "{{value}} Attack",
@@ -140,7 +149,12 @@
     "healKeeper": "{{target}} heals {{count}} damage",
     "triggerWithCondition": "{{trigger}} ({{condition}}): ",
     "sacrifice_one": "Sacrifice 1: to play this card, destroy 1 of your Keepers.",
-    "sacrifice_other": "Sacrifice {{count}}: to play this card, destroy {{count}} of your Keepers."
+    "sacrifice_other": "Sacrifice {{count}}: to play this card, destroy {{count}} of your Keepers.",
+    "bounce": "return {{target}} to its owner's hand",
+    "discard_one": "the opponent discards 1 random card",
+    "discard_other": "the opponent discards {{count}} random cards",
+    "recall_one": "return the last Keeper of your graveyard to your hand",
+    "recall_other": "return the last {{count}} Keepers of your graveyard to your hand"
   },
   "board": {
     "lanes": [
@@ -259,7 +273,17 @@
       "roundLimit": "The game reached round 20.",
       "concede": "A player conceded."
     },
-    "KeeperReplaced": "{{card}} makes room and goes to the graveyard."
+    "KeeperReplaced": "{{card}} makes room and goes to the graveyard.",
+    "KeeperBounced": "{{card}} returns to the hand.",
+    "CardDiscarded": {
+      "self": "You discard {{card}}.",
+      "other": "The opponent discards {{card}}."
+    },
+    "CardRecalled": {
+      "self": "You return {{card}} to your hand.",
+      "other": "The opponent returns {{card}} to their hand."
+    },
+    "TideTurned": "The Tide changes side."
   },
   "actions": {
     "keep": "Keep your hand",
@@ -336,7 +360,10 @@
   "deckNames": {
     "forge": "Forge",
     "sprout": "Sprout",
-    "forgeSprout": "Forge and Sprout"
+    "forgeSprout": "Forge and Sprout",
+    "abyss": "Abyss",
+    "gear": "Gear",
+    "vesper": "Vesper"
   },
   "targetsTo": {
     "keeper": {

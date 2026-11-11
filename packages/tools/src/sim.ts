@@ -27,7 +27,10 @@ export interface SimReport {
   errors: string[];
 }
 
-const DECK_CHOICES: readonly (readonly string[])[] = [["forge"], ["sprout"], ["forge", "sprout"]];
+const DECK_CHOICES: readonly (readonly string[])[] = [
+  ["forge"], ["sprout"], ["abyss"], ["gear"], ["vesper"],
+  ["forge", "sprout"], ["abyss", "vesper"], ["gear", "forge"], ["sprout", "gear"], ["vesper", "forge"],
+];
 const MAX_ACTIONS = 5_000;
 
 function pickDecks(opts: SimOptions, game: number, rng: AiRandom): { names: [string, string]; decks: [string[], string[]] } {

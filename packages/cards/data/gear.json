@@ -1,0 +1,93 @@
+[
+  {
+    "id": "gear-001", "type": "keeper", "faction": "gear", "rarity": "common", "cost": 1, "attack": 1, "hold": 1,
+    "effects": [{ "when": "enterPlay", "condition": { "armed": true }, "actions": [{ "op": "buff", "attack": 1, "hold": 1, "until": "permanent", "target": "self" }] }]
+  },
+  { "id": "gear-002", "type": "keeper", "faction": "gear", "rarity": "common", "cost": 2, "attack": 2, "hold": 3, "keywords": ["reach"] },
+  { "id": "gear-003", "type": "keeper", "faction": "gear", "rarity": "common", "cost": 2, "attack": 1, "hold": 3, "keywords": ["anchor"] },
+  { "id": "gear-004", "type": "keeper", "faction": "gear", "rarity": "common", "cost": 2, "attack": 2, "hold": 3 },
+  {
+    "id": "gear-005", "type": "keeper", "faction": "gear", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 3,
+    "abilities": [{ "cost": 1, "actions": [{ "op": "buff", "attack": 2, "until": "dusk", "target": "self" }] }]
+  },
+  {
+    "id": "gear-006", "type": "keeper", "faction": "gear", "rarity": "common", "cost": 3, "attack": 3, "hold": 3,
+    "effects": [{ "when": "enterPlay", "condition": { "armed": true }, "actions": [{ "op": "draw", "amount": 1 }] }]
+  },
+  { "id": "gear-007", "type": "keeper", "faction": "gear", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 4, "keywords": ["anchor", "rooted"] },
+  {
+    "id": "gear-008", "type": "keeper", "faction": "gear", "rarity": "common", "cost": 4, "attack": 3, "hold": 4,
+    "abilities": [{ "cost": 2, "target": { "kind": "keeper", "side": "enemy" }, "actions": [{ "op": "damage", "amount": 1, "target": "chosen" }] }]
+  },
+  {
+    "id": "gear-009", "type": "keeper", "faction": "gear", "rarity": "uncommon", "cost": 4, "attack": 4, "hold": 4,
+    "effects": [{ "when": "enterPlay", "condition": { "armed": true }, "actions": [{ "op": "damage", "amount": 2, "target": "enemyFrontSameLane" }] }]
+  },
+  {
+    "id": "gear-010", "type": "keeper", "faction": "gear", "rarity": "rare", "cost": 5, "attack": 4, "hold": 5, "keywords": ["anchor"],
+    "effects": [{ "when": "dawn", "actions": [{ "op": "buff", "hold": 1, "until": "dusk", "target": "allAllyKeepers" }] }]
+  },
+  { "id": "gear-011", "type": "keeper", "faction": "gear", "rarity": "uncommon", "cost": 5, "attack": 5, "hold": 5, "keywords": ["overrun"] },
+  {
+    "id": "gear-012", "type": "keeper", "faction": "gear", "rarity": "rare", "cost": 6, "attack": 5, "hold": 6,
+    "effects": [{ "when": "enterPlay", "condition": { "armed": true }, "actions": [{ "op": "buff", "attack": 2, "hold": 2, "until": "permanent", "target": "self" }] }]
+  },
+  {
+    "id": "gear-013", "type": "keeper", "faction": "gear", "rarity": "legendary", "cost": 7, "attack": 5, "hold": 6, "keywords": ["anchor"],
+    "effects": [{ "when": "dawn", "actions": [{ "op": "draw", "amount": 1 }] }]
+  },
+  {
+    "id": "gear-014", "type": "keeper", "faction": "gear", "rarity": "common", "cost": 1, "attack": 1, "hold": 2,
+    "abilities": [{ "cost": 1, "actions": [{ "op": "heal", "amount": 1, "target": "allyBeaconSameLane" }] }]
+  },
+  { "id": "gear-015", "type": "relic", "faction": "gear", "rarity": "common", "cost": 1, "attachTo": "keeper", "aura": { "attack": 1 } },
+  { "id": "gear-016", "type": "relic", "faction": "gear", "rarity": "common", "cost": 2, "attachTo": "keeper", "aura": { "attack": 1, "hold": 1 } },
+  { "id": "gear-017", "type": "relic", "faction": "gear", "rarity": "uncommon", "cost": 3, "attachTo": "keeper", "aura": { "attack": 1, "keywords": ["overrun"] } },
+  {
+    "id": "gear-018", "type": "relic", "faction": "gear", "rarity": "uncommon", "cost": 2, "attachTo": "beacon",
+    "effects": [{ "when": "dusk", "actions": [{ "op": "damage", "amount": 1, "target": "enemyBeaconSameLane" }] }]
+  },
+  {
+    "id": "gear-019", "type": "relic", "faction": "gear", "rarity": "rare", "cost": 3, "attachTo": "beacon",
+    "effects": [{ "when": "dawn", "actions": [{ "op": "ember", "amount": 1 }] }]
+  },
+  {
+    "id": "gear-020", "type": "relic", "faction": "gear", "rarity": "uncommon", "cost": 2, "attachTo": "keeper",
+    "aura": { "keywords": ["anchor"] },
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "draw", "amount": 1 }] }]
+  },
+  {
+    "id": "gear-021", "type": "quickRite", "faction": "gear", "rarity": "common", "cost": 1,
+    "target": { "kind": "keeper", "side": "ally" },
+    "effects": [
+      { "when": "play", "actions": [{ "op": "buff", "attack": 2, "until": "dusk", "target": "chosen" }] },
+      { "when": "play", "condition": { "armed": true }, "actions": [{ "op": "buff", "hold": 2, "until": "dusk", "target": "chosen" }] }
+    ]
+  },
+  {
+    "id": "gear-022", "type": "slowRite", "faction": "gear", "rarity": "common", "cost": 2,
+    "effects": [
+      { "when": "play", "actions": [{ "op": "draw", "amount": 1 }] },
+      { "when": "play", "condition": { "armed": true }, "actions": [{ "op": "draw", "amount": 1 }] }
+    ]
+  },
+  {
+    "id": "gear-023", "type": "quickRite", "faction": "gear", "rarity": "common", "cost": 2,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [
+      { "when": "play", "actions": [{ "op": "damage", "amount": 2, "target": "chosen" }] },
+      { "when": "play", "condition": { "armed": true }, "actions": [{ "op": "damage", "amount": 1, "target": "chosen" }] }
+    ]
+  },
+  {
+    "id": "gear-024", "type": "slowRite", "faction": "gear", "rarity": "uncommon", "cost": 3,
+    "target": { "kind": "keeper", "side": "enemy" },
+    "effects": [{ "when": "play", "actions": [{ "op": "damage", "amount": 3, "target": "chosen" }] }]
+  },
+  { "id": "gear-025", "type": "site", "faction": "gear", "rarity": "uncommon", "cost": 3, "aura": { "attack": 1, "hold": 1 } },
+  {
+    "id": "gear-026", "type": "keeper", "faction": "gear", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 2,
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "summon", "card": "gear-t01", "where": "sameLaneBack" }] }]
+  },
+  { "id": "gear-t01", "type": "keeper", "faction": "gear", "rarity": "common", "cost": 0, "attack": 1, "hold": 2, "token": true }
+]
