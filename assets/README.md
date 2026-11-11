@@ -32,7 +32,6 @@ Il file `palette/fari-32.gpl` permette di ritoccare un PNG in Aseprite.
 | `cards.py` | Sfondi e scene di Fucina e Germoglio (56 × 40) |
 | `scenes_set.py` | Sfondi e scene di Abisso, Ingranaggio, Vespro e carte neutrali |
 | `roster.py` | Elenco completo: 92 Custodi e 154 illustrazioni |
-| `preview-cards.json` | Nomi e numeri per le anteprime delle carte che i dati non contengono ancora |
 | `ui.py` | Cornici delle carte, retro, icone, indicatore della Marea, effetti |
 | `beacon.py` | Faro: acceso, danneggiato, spento |
 | `board.py` | Tabellone 480 × 270 e coordinate |

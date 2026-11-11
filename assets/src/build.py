@@ -153,18 +153,10 @@ def build_fonts():
             fh.write(fnt)
 
 
-def load_fallback():
-    """Names and numbers for the previews of the cards that the card data does not contain yet."""
-    with open(os.path.join(HERE, "preview-cards.json")) as fh:
-        return json.load(fh)
-
-
 def load_names():
     path = os.path.join(os.path.dirname(ROOT), "packages", "i18n", "locales", "it", "cards.json")
-    names = {k: v[0] for k, v in load_fallback().items()}
     with open(path) as fh:
-        names.update({k: v["name"] for k, v in json.load(fh).items()})
-    return names
+        return {k: v["name"] for k, v in json.load(fh).items()}
 
 
 def full_card(cid, arts, names, keeper, stats=None):
@@ -188,7 +180,7 @@ def full_card(cid, arts, names, keeper, stats=None):
 
 def build_previews(arts, b):
     names = load_names()
-    data = {k: {"cost": v[1], "attack": v[2], "hold": v[3]} for k, v in load_fallback().items()}
+    data = {}
     data_dir = os.path.join(os.path.dirname(ROOT), "packages", "cards", "data")
     for file in sorted(os.listdir(data_dir)):
         if file.endswith(".json"):
