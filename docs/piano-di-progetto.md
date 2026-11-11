@@ -1,4 +1,4 @@
-# Piano di progetto: "Fari Sommersi" (titolo provvisorio)
+# Piano di progetto: "High Tides"
 
 Questo documento descrive il piano per un gioco di carte collezionabili (TCG) nel browser.
 Il documento ha due parti: le meccaniche di gioco e l'implementazione software.
@@ -568,12 +568,13 @@ Il motore viene prima della grafica. Questo ordine permette di testare le regole
 | RAM insufficiente sul Raspberry Pi 3B | Basso | Budget di memoria, test automatico della RAM, ThinkPad come alternativa. |
 | Desincronizzazione nel PvP | Alto | Motore deterministico, server autoritativo, test di replay. |
 
-## 12. Decisioni aperte
+## 12. Decisioni prese
 
-Queste decisioni richiedono una scelta del proprietario del progetto:
+Il proprietario del progetto ha risposto alle decisioni aperte l'11 novembre 2026:
 
-1. **Nome del gioco.** "Fari Sommersi" è un titolo provvisorio.
-2. **Priorità del PvP.** Il piano mette il PvP nella fase 4. Il PvP può avere una priorità più alta.
-3. **Modello economico.** Il piano non usa denaro reale. Un modello futuro (esempio: espansioni a pagamento) cambia la progettazione della collezione.
-4. **Produzione della grafica.** Grafica interna, artista esterno o asset con licenza libera come base temporanea.
-5. **Piattaforme.** Solo browser, oppure anche app desktop o mobile con un wrapper (esempio: Tauri o Capacitor).
+1. **Nome del gioco.** Il gioco si chiama **"High Tides"**, in inglese in tutte le lingue. "Fari Sommersi" era il titolo provvisorio.
+2. **Priorità del PvP.** Il PvP è nella fase 4, già completa.
+3. **Modello economico.** Il gioco è gratuito, anche le espansioni future. La monetizzazione arriva solo dopo un certo numero di giocatori.
+4. **Produzione della grafica.** La grafica resta interna.
+5. **Piattaforme.** Il gioco funziona solo nel browser, anche sul telefono.
+6. **Plancia verticale.** La plancia resta orizzontale. A fine progetto una nuova versione grafica verticale permette il confronto. Il gioco può anche offrire le due plance come opzione del giocatore.

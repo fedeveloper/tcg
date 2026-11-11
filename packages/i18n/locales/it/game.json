@@ -302,7 +302,7 @@
     "replaces": " (sostituisce {{old}})"
   },
   "ui": {
-    "title": "Fari Sommersi",
+    "title": "High Tides",
     "subtitle": "Interfaccia testuale. Scrivi il numero di un'azione e premi Invio.",
     "help": "Comandi: un numero sceglie un'azione. \"c N\" mostra la carta N della mano. \"k\" mostra le parole chiave. \"q\" esce.",
     "round": "Round {{round}}",

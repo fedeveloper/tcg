@@ -1,6 +1,6 @@
 # Daily backup of the PvP database. Started by tcg-backup.timer.
 [Unit]
-Description=Fari Sommersi database backup
+Description=High Tides database backup
 
 [Service]
 Type=oneshot

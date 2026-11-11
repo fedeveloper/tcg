@@ -1,7 +1,7 @@
 # systemd unit for the PvP server (plan, section 6.7).
 # Copy to /etc/systemd/system/, then: sudo systemctl enable --now tcg-server
 [Unit]
-Description=Fari Sommersi PvP server
+Description=High Tides PvP server
 After=network.target
 
 [Service]

@@ -1,6 +1,6 @@
 # Guida: installare e provare il gioco
 
-Questa guida spiega come installare "Fari Sommersi" e come provare tutte le funzioni.
+Questa guida spiega come installare "High Tides" e come provare tutte le funzioni.
 La guida ha tre parti:
 
 1. Il gioco sul tuo computer (sviluppo e prova veloce).
