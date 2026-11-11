@@ -982,7 +982,7 @@
   }
  },
  "meta": {
-  "app": "fari-sommersi/assets/src/build.py",
+  "app": "high-tides/assets/src/build.py",
   "image": "ui.png",
   "format": "RGBA8888",
   "size": {

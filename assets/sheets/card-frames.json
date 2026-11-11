@@ -262,7 +262,7 @@
   }
  },
  "meta": {
-  "app": "fari-sommersi/assets/src/build.py",
+  "app": "high-tides/assets/src/build.py",
   "image": "card-frames.png",
   "format": "RGBA8888",
   "size": {

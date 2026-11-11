@@ -1,4 +1,4 @@
-"""Builds every asset of Fari Sommersi.
+"""Builds every asset of High Tides.
 
 Run:  python3 assets/src/build.py
 Output: assets/sheets (PNG + PixiJS JSON), assets/fonts, assets/palette, assets/preview.
@@ -57,7 +57,7 @@ def pack(name, items, cols, animations=None, extra=None):
     im.save(out("sheets", f"{name}.png"))
     data = {
         "frames": frames,
-        "meta": {"app": "fari-sommersi/assets/src/build.py", "image": f"{name}.png", "format": "RGBA8888",
+        "meta": {"app": "high-tides/assets/src/build.py", "image": f"{name}.png", "format": "RGBA8888",
                  "size": {"w": width, "h": height}, "scale": "1"},
     }
     if animations:
