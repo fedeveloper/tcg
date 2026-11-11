@@ -87,3 +87,4 @@ La schermata **Online** gioca contro altri giocatori tramite il server PvP (vedi
 Game.svelte usa l'interfaccia `PlaySession`. `GameSession` esegue il motore nel browser; `RemoteSession` riceve le viste dal server.
 Il giocatore locale è `me`. Online, `me` può essere il posto 1: la plancia mostra sempre il giocatore locale a sinistra.
 Il client calcola le azioni legali solo per l'interfaccia. Il server controlla di nuovo ogni azione.
+- `src/online/replaySession.ts`: il replay di una partita online finita. Il client ricostruisce la partita da seed, mazzi e azioni, e la mostra dal posto del giocatore: le carte nascoste restano nascoste. Il pulsante "Pausa" ferma il replay.

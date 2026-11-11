@@ -46,6 +46,7 @@
   const foe = $derived<PlayerId>(me === 0 ? 1 : 0);
   let names = $state.raw<[string, string] | null>(null);
   let deadline = $state<number | null>(null);
+  let progress = $state.raw<{ position: number; total: number; paused: boolean } | null>(null);
   let now = $state(Date.now());
   const secondsLeft = $derived(deadline === null ? null : Math.max(0, Math.ceil((deadline - now) / 1000)));
 
@@ -78,6 +79,7 @@
     busy = s.busy;
     names = s.names ?? null;
     deadline = s.deadline ?? null;
+    progress = s.progress ?? null;
   }
 
   function addLog(step: { before: GameState; after: GameState; events: Step["events"] }) {
@@ -271,7 +273,7 @@
       <span>{game.phase === "mulligan" ? tr.t("ui.mulligan") : tr.t("ui.round", { round: game.round })}</span>
       <span>{tr.t("ui.tide", { value: tideFor(game, me) > 0 ? `+${tideFor(game, me)}` : tideFor(game, me) })}</span>
       <span>{names ? names[foe] : tr.t("ui.opponent")}: {tr.t("ui.ember", { ember: game.players[foe].ember })} · {tr.t("ui.hand", { count: game.players[foe].hand.length })} · {tr.t("ui.deck", { count: game.players[foe].deck.length })}</span>
-      <span class="status">{busy ? tr.t("ui.waiting") : myTurn ? tr.t("ui.yourTurn") : names && game.phase !== "over" ? tr.t("online.opponentTurn") : ""}</span>
+      <span class="status">{progress ? "" : busy ? tr.t("ui.waiting") : myTurn ? tr.t("ui.yourTurn") : names && game.phase !== "over" ? tr.t("online.opponentTurn") : ""}</span>
       {#if secondsLeft !== null && game.phase !== "over"}<span class="timer" class:low={secondsLeft <= 20}>{tr.t("online.timer", { seconds: secondsLeft })}</span>{/if}
     {/if}
     <span class="spacer"></span>
@@ -280,6 +282,10 @@
       <option value="it">IT</option>
       <option value="en">EN</option>
     </select>
+    {#if progress}
+      <span>{tr.t("replay.step", { n: progress.position, total: progress.total })}</span>
+      <button onclick={() => session?.togglePause?.()}>{progress.paused ? tr.t("replay.play") : tr.t("replay.pause")}</button>
+    {/if}
     {#if session?.concede && game && game.phase !== "over"}
       <button onclick={() => confirm(tr.t("online.concedeConfirm")) && session?.concede?.()}>{tr.t("online.concede")}</button>
     {/if}

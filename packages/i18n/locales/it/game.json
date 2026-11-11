@@ -532,5 +532,15 @@
       "rateLimited": "Mandi troppi messaggi. Attendi qualche secondo.",
       "version": "Il server usa una versione nuova. Ricarica la pagina."
     }
+  },
+  "replay": {
+    "title": "Replay delle partite finite",
+    "watch": "Guarda",
+    "won": "vittoria",
+    "lost": "sconfitta",
+    "draw": "pareggio",
+    "step": "Passo {{n}} di {{total}}",
+    "play": "Riprendi",
+    "pause": "Pausa"
   }
 }

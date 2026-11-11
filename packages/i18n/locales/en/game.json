@@ -532,5 +532,15 @@
       "rateLimited": "You send too many messages. Wait a few seconds.",
       "version": "The server uses a new version. Reload the page."
     }
+  },
+  "replay": {
+    "title": "Replays of finished matches",
+    "watch": "Watch",
+    "won": "win",
+    "lost": "loss",
+    "draw": "draw",
+    "step": "Step {{n}} of {{total}}",
+    "play": "Play",
+    "pause": "Pause"
   }
 }

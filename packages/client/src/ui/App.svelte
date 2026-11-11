@@ -11,7 +11,8 @@
   import Online from "./Online.svelte";
   import { OnlineClient } from "../online/connection.ts";
   import { RemoteSession } from "../online/remoteSession.ts";
-  import type { ServerMessage } from "@tcg/protocol";
+  import { ReplaySession } from "../online/replaySession.ts";
+  import type { Replay, ServerMessage } from "@tcg/protocol";
   import CardTile from "./CardTile.svelte";
   import { deckLabel } from "./deckText.ts";
   import { profileStore } from "../meta/profileStore.svelte.ts";
@@ -27,7 +28,7 @@
 
   type Screen = "menu" | "collection" | "decks" | "expedition" | "draft" | "online" | "game";
   /** What the current match is for: a free match, a match of a run, or a tutorial lesson. */
-  type Match = { kind: "free" } | { kind: "run"; mode: "expedition" | "draft" } | { kind: "lesson" } | { kind: "online"; session: RemoteSession };
+  type Match = { kind: "free" } | { kind: "run"; mode: "expedition" | "draft" } | { kind: "lesson" } | { kind: "online"; session: RemoteSession } | { kind: "replay"; session: ReplaySession };
 
   let lang = $state<Lang>(savedLang());
   let tr = $derived(createTranslator(lang));
@@ -97,6 +98,13 @@
     screen = "game";
   }
 
+  function startReplay(replay: Replay, seat: PlayerId) {
+    lesson = null;
+    seed = newSeed();
+    match = { kind: "replay", session: new ReplaySession(replay, seat) };
+    screen = "game";
+  }
+
   function retryLesson() {
     const l = lesson;
     screen = "menu";
@@ -125,6 +133,7 @@
   /** Leaving a run match before the end counts as a loss. */
   function exitGame() {
     if (match.kind === "run") finish(1);
+    else if (match.kind === "replay") screen = "online";
     else if (match.kind === "online") {
       // The match goes on in the server: the Online screen can resume it.
       if (match.session.over) finish(match.session.state.outcome?.winner ?? null);
@@ -144,8 +153,8 @@
       {seed}
       {lesson}
       {decks}
-      createSession={match.kind === "online" ? (hooks) => (match as { session: RemoteSession }).session.attach(hooks) : undefined}
-      onFinish={match.kind === "lesson" ? undefined : finish}
+      createSession={match.kind === "online" || match.kind === "replay" ? (hooks) => (match as { session: RemoteSession | ReplaySession }).session.attach(hooks) : undefined}
+      onFinish={match.kind === "lesson" || match.kind === "replay" ? undefined : finish}
       onNext={nextLesson}
       onRetry={retryLesson}
       onExit={exitGame}
@@ -156,7 +165,7 @@
 {:else if screen === "decks"}
   <Decks {tr} onBack={() => (screen = "menu")} />
 {:else if screen === "online"}
-  <Online {tr} client={onlineClient()} onMatch={startOnline} onBack={() => (screen = "menu")} />
+  <Online {tr} client={onlineClient()} onMatch={startOnline} onReplay={startReplay} onBack={() => (screen = "menu")} />
 {:else if screen === "expedition" || screen === "draft"}
   {@const mode = screen}
   <RunScreen {tr} kind={mode} onPlay={(deck, foe) => startRunMatch(mode, deck, foe)} onBack={() => (screen = "menu")} />

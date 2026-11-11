@@ -53,6 +53,10 @@ export interface PlaySession {
   humanActions(): Action[];
   humanAct(action: Action): Promise<void>;
   start(): Promise<void>;
+  /** Position of a replay. */
+  readonly progress?: { position: number; total: number; paused: boolean };
+  /** Pauses or resumes a replay. */
+  togglePause?(): void;
   /** Gives up the match (online only). */
   concede?(): void;
   dispose(): void;
