@@ -262,6 +262,8 @@
     "SitePlaced": "{{card}} diventa il Luogo della corsia {{lane}}.",
     "ClashStarted": "Scontro!",
     "DuskStarted": "Tramonto.",
+    "RisingTide_one": "Marea crescente: ogni Faro acceso perde 1 Luce.",
+    "RisingTide_other": "Marea crescente: ogni Faro acceso perde {{count}} Luce.",
     "Worn": "Usura: {{card}} perde 1 Attacco.",
     "GameOver": {
       "win": "Hai vinto!",

@@ -17,6 +17,9 @@ export const TIDE_LIMIT = 5;
 export const MAX_EMBER = 10;
 export const MAX_RESERVE = 2;
 export const ROUND_LIMIT = 20;
+/** Rising Tide: from this round, every lit beacon loses light at the end of Dusk. Long games end sooner. */
+export const RISING_TIDE_ROUND = 14;
+export const RISING_TIDE_DAMAGE = 1;
 export const BEACONS_TO_WIN = 2;
 export const CHAIN_LIMIT = 4;
 export const DECK_OUT_DAMAGE = 2;
@@ -294,6 +297,8 @@ export function checkWin(state: GameState, events: GameEvent[]): boolean {
 export function endGame(state: GameState, winner: PlayerId | null, reason: "beacons" | "roundLimit" | "concede", events: GameEvent[]): void {
   state.outcome = { winner, reason };
   state.phase = "over";
+  // The cards still on the chain do not resolve: they go to the graveyard, so no card is lost.
+  for (const link of state.chain) if (link.action.type === "PlayCard" && state.cards[link.action.card]) toGraveyard(state, link.action.card);
   state.chain = [];
   events.push({ type: "GameOver", winner, reason });
 }

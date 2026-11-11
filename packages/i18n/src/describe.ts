@@ -157,6 +157,8 @@ export function describeEvent(tr: Translator, e: GameEvent, viewer: PlayerId, lo
       return null;
     case "DuskStarted":
       return tr.t("events.DuskStarted");
+    case "RisingTide":
+      return tr.t("events.RisingTide", { count: e.amount });
     case "Worn":
       return tr.t("events.Worn", { card: card(e.keeper) });
     case "GameOver": {

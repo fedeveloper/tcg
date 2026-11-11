@@ -81,6 +81,7 @@ Il piano lascia aperti alcuni dettagli. Il motore usa queste scelte. Ogni scelta
 7. Il **Cambio di Marea** avviene quando la Marea passa da un lato all'altro, oppure lascia lo 0. Gli effetti `tideTurn` di tutte le carte in gioco si attivano, prima quelli del giocatore con l'Iniziativa.
 8. Un Cambio di Marea dentro un altro Cambio di Marea non attiva di nuovo gli effetti. Questa regola evita i cicli infiniti.
 9. Un Custode che torna in mano perde danni e modifiche. Con la mano piena va nel cimitero. Un token esce dal gioco.
+10. **Marea crescente.** Dal round 14, alla fine del Tramonto, ogni Faro acceso di entrambi i giocatori perde 1 Luce. Un Faro a 1 Luce si spegne. Il motore controlla la vittoria subito dopo. Questa regola riduce le partite che arrivano al round 20 (dal 15% al 4% circa con l'IA facile). Il numero del round è la costante `RISING_TIDE_ROUND`.
 
 ## 4. Intelligenza artificiale
 

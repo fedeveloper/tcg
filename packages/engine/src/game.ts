@@ -16,6 +16,8 @@ import {
   MAX_RESERVE,
   other,
   ROUND_LIMIT,
+  RISING_TIDE_DAMAGE,
+  RISING_TIDE_ROUND,
   RulesError,
   setSlot,
   slotOf,
@@ -198,6 +200,16 @@ function dusk(state: GameState, events: GameEvent[]): void {
     ps.ember = 0;
   }
   processDeaths(state, events);
+  risingTide(state, events);
+}
+
+/** Rising Tide: from RISING_TIDE_ROUND, every lit beacon of both players loses 1 light. */
+function risingTide(state: GameState, events: GameEvent[]): void {
+  if (state.round < RISING_TIDE_ROUND) return;
+  events.push({ type: "RisingTide", amount: RISING_TIDE_DAMAGE });
+  for (const p of [state.initiative, other(state.initiative)]) {
+    for (const lane of LANES) damageBeacon(state, p, lane, RISING_TIDE_DAMAGE, events);
+  }
 }
 
 function endRound(state: GameState, events: GameEvent[]): void {
