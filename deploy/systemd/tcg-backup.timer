@@ -1,0 +1,11 @@
+# Runs tcg-backup.service every day at 04:00 (or at boot, if the Pi was off).
+# Install: copy both files to /etc/systemd/system/, then: sudo systemctl enable --now tcg-backup.timer
+[Unit]
+Description=Daily backup of the Fari Sommersi database
+
+[Timer]
+OnCalendar=*-*-* 04:00:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

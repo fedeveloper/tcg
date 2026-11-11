@@ -157,6 +157,9 @@ importers:
       '@tcg/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@tcg/protocol':
+        specifier: workspace:*
+        version: link:../protocol
       '@tcg/server':
         specifier: workspace:*
         version: link:../server

@@ -19,7 +19,7 @@ export interface RunningServer {
 
 /**
  * Starts the HTTP and WebSocket server. Caddy serves the static client and forwards /ws here (plan, section 6.7).
- * GET /health answers "ok" for the monitoring.
+ * GET /health answers "ok", the open matches and the memory (RSS) for the monitoring.
  */
 export function startServer(config: ServerConfig): Promise<RunningServer> {
   const store = new Store(config.dbPath);
@@ -27,7 +27,8 @@ export function startServer(config: ServerConfig): Promise<RunningServer> {
   const http = createServer((req, res) => {
     if (req.url === "/health") {
       res.writeHead(200, { "content-type": "text/plain" });
-      res.end(`ok ${game.liveMatches}\n`);
+      const rss = Math.round(process.memoryUsage().rss / 1048576);
+      res.end(`ok matches=${game.liveMatches} rss=${rss}MB uptime=${Math.round(process.uptime())}s\n`);
       return;
     }
     res.writeHead(404);

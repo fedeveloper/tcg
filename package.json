@@ -23,7 +23,8 @@
     "check:client": "pnpm --filter @tcg/client check",
     "server": "tsx packages/server/src/main.ts",
     "build:server": "node packages/server/scripts/build.mjs",
-    "soak:pvp": "tsx packages/tools/src/pvp-soak.ts"
+    "soak:pvp": "tsx packages/tools/src/pvp-soak.ts",
+    "smoke": "tsx packages/tools/src/smoke.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

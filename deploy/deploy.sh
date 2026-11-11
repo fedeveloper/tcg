@@ -11,4 +11,5 @@ pnpm build:server
 
 rsync -az --delete packages/client/dist/ "$target:/opt/tcg/client/"
 rsync -az --delete dist/server/ "$target:/opt/tcg/server/"
+rsync -az deploy/backup.mjs "$target:/opt/tcg/server/backup.mjs"
 ssh -t "$target" "sudo systemctl restart tcg-server && systemctl --no-pager --lines=3 status tcg-server"
