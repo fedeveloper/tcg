@@ -104,3 +104,17 @@ Il client calcola le azioni legali solo per l'interfaccia. Il server controlla d
 - Le carte della mano sono piccole. Il testo delle regole appare solo nella scheda della carta.
 - La plancia resta orizzontale e si adatta alla larghezza. Una plancia verticale richiede nuova grafica.
 - Un test e2e controlla il layout su un telefono di 412 × 915 px: mano su una riga, pulsante visibile, nessuno scorrimento orizzontale.
+
+## Prestazioni (sezione 7.5 del piano)
+
+- L'obiettivo è 60 fotogrammi al secondo su un telefono di fascia media del 2022.
+- `PixelCard` disegna una carta solo quando la carta cambia. Una cache tiene le carte già disegnate (al massimo 300).
+- Prima di questa cache, ogni aggiornamento dello stato ridisegnava tutte le carte della mano, con circa 10 canvas per carta.
+- `PERF=1 pnpm e2e perf` misura una partita su un telefono con la CPU rallentata 4 volte. Il test fallisce sotto 50 fps.
+- Il test non è nella CI, perché il risultato dipende dalla macchina.
+
+| Misura (CPU 4× più lenta, 412 × 915) | Prima | Dopo |
+|---|---|---|
+| Fotogrammi al secondo | 57,7 | 58,8 |
+| Fotogramma p99 | 49,9 ms | 33,3 ms |
+| Task lunghi (oltre 50 ms) | 13 | 3 |

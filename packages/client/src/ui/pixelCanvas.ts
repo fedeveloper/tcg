@@ -125,13 +125,37 @@ export interface CardFace {
   lines: string[];
 }
 
+/** A key that changes only when the drawing of the card changes. */
+export function faceKey(face: CardFace): string {
+  return JSON.stringify(face);
+}
+
+/** Cards already drawn, by face key. A state update redraws a card with one drawImage, not with ~10 text canvases. */
+const drawn = new Map<string, HTMLCanvasElement>();
+const MAX_DRAWN = 300;
+
 /** Draws a full card (64x88) on the canvas: illustration, frame, name, cost and stats. */
 export async function drawCard(canvas: HTMLCanvasElement, face: CardFace): Promise<void> {
   const a = await load();
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
+  const key = faceKey(face);
+  let card = drawn.get(key);
+  if (!card) {
+    card = document.createElement("canvas");
+    card.width = CARD_W;
+    card.height = CARD_H;
+    paint(card.getContext("2d")!, a, face);
+    if (drawn.size >= MAX_DRAWN) drawn.delete(drawn.keys().next().value!);
+    drawn.set(key, card);
+  }
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, CARD_W, CARD_H);
+  ctx.drawImage(card, 0, 0);
+}
+
+function paint(ctx: CanvasRenderingContext2D, a: CardArt, face: CardFace): void {
+  ctx.imageSmoothingEnabled = false;
   const kind = face.stats ? "keeper" : "spell";
   const frames = framesData.frames as Frames;
   const frame = (frames[`frame/${face.faction}/${kind}`] ?? frames[`frame/neutral/${kind}`])!.frame;
