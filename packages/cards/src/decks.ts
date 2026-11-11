@@ -52,8 +52,8 @@ export const STARTER_DECKS: Readonly<Record<string, DeckList>> = {
   forge: {
     "forge-001": 2, "forge-003": 2, "forge-004": 2, "forge-005": 1, "forge-006": 2,
     "forge-007": 2, "forge-008": 2, "forge-009": 2, "forge-011": 1, "forge-012": 2,
-    "forge-013": 1, "forge-014": 1, "forge-015": 2, "forge-016": 2, "forge-017": 1,
-    "forge-019": 1, "forge-020": 2, "forge-026": 2,
+    "forge-013": 1, "forge-014": 1, "forge-015": 2, "forge-016": 2,
+    "forge-019": 2, "forge-020": 2, "forge-026": 2,
   },
   sprout: {
     "sprout-001": 2, "sprout-002": 2, "sprout-003": 2, "sprout-004": 2, "sprout-005": 2,
