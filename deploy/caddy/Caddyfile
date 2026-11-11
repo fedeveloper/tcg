@@ -1,0 +1,22 @@
+# Caddy for the Raspberry Pi (plan, section 6.7).
+# Replace tcg.example.org with your host name. Caddy gets the HTTPS certificate.
+# For a test in the local network, use ":80" in place of the host name.
+tcg.example.org {
+	encode zstd gzip
+
+	# WebSocket and health check go to the Node server.
+	handle /ws {
+		reverse_proxy 127.0.0.1:8787
+	}
+	handle /health {
+		reverse_proxy 127.0.0.1:8787
+	}
+
+	# Static client (output of "pnpm build").
+	handle {
+		root * /opt/tcg/client
+		try_files {path} /index.html
+		file_server
+		header /assets/* Cache-Control "public, max-age=31536000, immutable"
+	}
+}

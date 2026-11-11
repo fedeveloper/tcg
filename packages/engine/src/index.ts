@@ -21,7 +21,7 @@ export {
   ROUND_LIMIT,
   CHAIN_LIMIT,
 } from "./core.ts";
-export { newGame, apply, isOver, OPENING_HAND, type NewGameOptions, type ApplyOptions } from "./game.ts";
+export { newGame, apply, concede, isOver, OPENING_HAND, type NewGameOptions, type ApplyOptions } from "./game.ts";
 export { legalActions, actionKey, isLegal, targetsFor } from "./legal.ts";
 export { viewFor, eventsFor, HIDDEN_CARD } from "./view.ts";
 export { checkInvariants, countRealCards } from "./invariants.ts";

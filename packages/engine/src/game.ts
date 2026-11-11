@@ -400,6 +400,15 @@ export function apply(state: GameState, action: Action, options: ApplyOptions = 
   return { state: s, events };
 }
 
+/** A player gives up, also outside their turn (online matches). */
+export function concede(state: GameState, player: PlayerId): Result {
+  if (state.phase === "over") throw new RulesError("The game is over");
+  const s: GameState = structuredClone(state);
+  const events: GameEvent[] = [];
+  endGame(s, other(player), "concede", events);
+  return { state: s, events };
+}
+
 export function isOver(state: GameState): boolean {
   return state.phase === "over";
 }

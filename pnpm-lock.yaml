@@ -103,6 +103,37 @@ importers:
         specifier: ^4.1.0
         version: 4.6.7
 
+  packages/protocol:
+    dependencies:
+      '@tcg/engine':
+        specifier: workspace:*
+        version: link:../engine
+      zod:
+        specifier: ^4.1.0
+        version: 4.6.7
+
+  packages/server:
+    dependencies:
+      '@tcg/cards':
+        specifier: workspace:*
+        version: link:../cards
+      '@tcg/engine':
+        specifier: workspace:*
+        version: link:../engine
+      '@tcg/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+      ws:
+        specifier: ^8.18.0
+        version: 8.22.2
+    devDependencies:
+      '@types/ws':
+        specifier: ^8.5.12
+        version: 8.18.2
+      esbuild:
+        specifier: 0.25.12
+        version: 0.25.12
+
   packages/tools:
     dependencies:
       '@tcg/ai':
@@ -625,6 +656,9 @@ packages:
   '@types/node@22.20.5':
     resolution: {integrity: sha512-U2+DNr+wSjpsTS/wZGYHq7GcwfuSmKiKvoPvK22zwTlRhU91yOniN4qRR5KhIjvif7ysw/dz/hKmfDH0Ris4aA==}
 
+  '@types/ws@8.18.2':
+    resolution: {integrity: sha512-67MQl+fpWKVTT1NYdnmo3U4sc/xPo/zQBncVnI74qmQa0z/b+1g6iYqNmGCPbxO+zz2aklb08a0oHfegiVd0/w==}
+
   '@vitest/expect@3.2.7':
     resolution: {integrity: sha512-E8eBXaKibuvH2pSZErOjdVb5vF4PbKYcrnluBTYxEk1l/VhhwZg1kZQsdtjq+CsF5CFydf2Rdkz7jDHKSisi3w==}
 
@@ -1057,6 +1091,18 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
+  ws@8.22.2:
+    resolution: {integrity: sha512-/rEZ2ejown2N5gxVTHUu9bVVC7ttu0/Tgzf5hbTOixR3Fs7mbbXgn2DbdbcKgJOmpQMtrIUWivtYuVMnp/W/yA==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   zimmerframe@1.1.5:
     resolution: {integrity: sha512-msJxIvYDYcoNL+PJsu+7qmpDWsYmAxTY+2TNYXXF0hzBzBk0BMecOqDOG/EckUoKCuKwObfbugIl8QpqHDXeFA==}
 
@@ -1366,6 +1412,10 @@ snapshots:
   '@types/node@22.20.5':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/ws@8.18.2':
+    dependencies:
+      '@types/node': 22.20.5
 
   '@vitest/expect@3.2.7':
     dependencies:
@@ -1811,6 +1861,8 @@ snapshots:
     dependencies:
       siginfo: 2.0.0
       stackback: 0.0.2
+
+  ws@8.22.2: {}
 
   zimmerframe@1.1.5: {}
 

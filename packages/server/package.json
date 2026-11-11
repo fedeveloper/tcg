@@ -1,0 +1,19 @@
+{
+  "name": "@tcg/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@tcg/cards": "workspace:*",
+    "@tcg/engine": "workspace:*",
+    "@tcg/protocol": "workspace:*",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.12",
+    "esbuild": "0.25.12"
+  }
+}
