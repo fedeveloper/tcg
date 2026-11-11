@@ -358,7 +358,16 @@
     "log": "Log",
     "menu": "Menu",
     "stats": "{{attack}}/{{hold}}",
-    "moveHint": "Click one of your Keepers to move it (1 Ember)."
+    "moveHint": "Click one of your Keepers to move it (1 Ember).",
+    "chooseTarget": "Choose where",
+    "field": "Board (list for the keyboard)",
+    "yourKeepers": "Your Keepers",
+    "enemyKeepers": "Enemy Keepers",
+    "keeperActions": "Actions",
+    "details": "Details",
+    "close": "Close",
+    "current": "now",
+    "keysHint": "Keyboard: Tab to move, Enter to choose, P to pass or confirm, Esc to cancel, I (or right click) for the card sheet."
   },
   "deckNames": {
     "forge": "Forge",

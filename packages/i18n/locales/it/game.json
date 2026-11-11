@@ -358,7 +358,16 @@
     "log": "Cronaca",
     "menu": "Menu",
     "stats": "{{attack}}/{{hold}}",
-    "moveHint": "Clic su un tuo Custode per spostarlo (1 Brace)."
+    "moveHint": "Clic su un tuo Custode per spostarlo (1 Brace).",
+    "chooseTarget": "Scegli dove",
+    "field": "Campo (elenco per la tastiera)",
+    "yourKeepers": "I tuoi Custodi",
+    "enemyKeepers": "Custodi avversari",
+    "keeperActions": "Azioni",
+    "details": "Dettagli",
+    "close": "Chiudi",
+    "current": "ora",
+    "keysHint": "Tastiera: Tab per spostarti, Invio per scegliere, P per passare o confermare, Esc per annullare, I (o clic destro) per la scheda della carta."
   },
   "deckNames": {
     "forge": "Fucina",
