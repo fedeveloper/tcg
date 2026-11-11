@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { expandDeck, STARTER_DECKS } from "@tcg/cards";
 import { apply, legalActions, newGame, actionKey } from "@tcg/engine";
-import { AiRandom, chooseAction } from "../src/index.ts";
+import { AiRandom, chooseAction, HARD_HOOKS } from "../src/index.ts";
+import { ismctsChoose } from "../src/ismcts.ts";
 
 const FORGE = expandDeck(STARTER_DECKS.forge!);
 
@@ -38,5 +39,46 @@ describe("easy AI", () => {
       s = apply(s, a).state;
     }
     expect(s.outcome).not.toBeNull();
+  });
+});
+
+describe("hard AI (ISMCTS)", () => {
+  it("picks legal actions and finishes a game", () => {
+    let s = newGame({ seed: 4, decks: [FORGE, FORGE] }).state;
+    const rng = new AiRandom(4);
+    while (s.phase !== "over") {
+      const a = s.turn === 0 ? chooseAction(s, "hard", rng, { iterations: 60 }) : chooseAction(s, "easy", rng);
+      expect(legalActions(s).map(actionKey)).toContain(actionKey(a));
+      s = apply(s, a).state;
+    }
+    expect(s.outcome).not.toBeNull();
+  });
+
+  it("does not depend on the opponent's hidden cards", () => {
+    let s = newGame({ seed: 9, decks: [FORGE, FORGE] }).state;
+    const rng = new AiRandom(9);
+    while (s.phase === "mulligan" || s.turn !== 0) s = apply(s, chooseAction(s, "easy", rng)).state;
+    // Swap the opponent's hand with cards of their deck: the hard AI must give the same answer.
+    const changed = structuredClone(s);
+    const foe = changed.players[1];
+    const ids = [...foe.hand, ...foe.deck];
+    const cardIds = ids.map((id) => changed.cards[id]!.cardId).reverse();
+    ids.forEach((id, i) => (changed.cards[id]!.cardId = cardIds[i]!));
+    changed.players[1].deck.reverse();
+    changed.players[0].deck.reverse();
+    changed.rng = 12345;
+    const a = ismctsChoose(s, new AiRandom(7), HARD_HOOKS, { iterations: 150 });
+    const b = ismctsChoose(changed, new AiRandom(7), HARD_HOOKS, { iterations: 150 });
+    expect(actionKey(b)).toBe(actionKey(a));
+  });
+
+  it("keeps the input state unchanged", () => {
+    let s = newGame({ seed: 11, decks: [FORGE, FORGE] }).state;
+    const rng = new AiRandom(11);
+    for (let i = 0; i < 12 && s.phase !== "over"; i++) s = apply(s, chooseAction(s, "easy", rng)).state;
+    const before = JSON.stringify(s);
+    chooseAction(s, "hard", rng, { iterations: 80 });
+    ismctsChoose(s, rng, HARD_HOOKS, { iterations: 80 });
+    expect(JSON.stringify(s)).toBe(before);
   });
 });

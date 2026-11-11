@@ -56,7 +56,9 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - name: Install Chromium for Playwright
-        run: pnpm exec playwright install --with-deps chromium
+        # apt-get can fail when the Ubuntu mirrors are down. The runner image already has the main libraries,
+        # so the job then installs only the browser.
+        run: pnpm exec playwright install --with-deps chromium || pnpm exec playwright install chromium
       - name: End-to-end tests (tutorial, match against the AI, deck editor, online match)
         run: pnpm e2e
         env:

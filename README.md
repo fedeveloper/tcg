@@ -50,7 +50,7 @@ I mazzi disponibili per `--deck` e `--opponent` sono `forge`, `sprout`, `forgeSp
 | `packages/engine` | Motore delle regole: puro, deterministico, senza grafica. |
 | `packages/cards` | Dati delle carte (JSON), schema Zod, validatore, mazzi base. |
 | `packages/i18n` | Testi in italiano e inglese, testo delle regole generato dagli effetti. |
-| `packages/ai` | IA facile (euristica), IA media (ricerca) e giocatore casuale. |
+| `packages/ai` | IA facile (euristica), IA media (ricerca), IA difficile (ricerca e ISMCTS) e giocatore casuale. |
 | `packages/meta` | Collezione, Frammenti, Spedizione e Draft. |
 | `packages/protocol` | Messaggi tra il client e il server PvP (Zod). |
 | `packages/server` | Server PvP: WebSocket, SQLite, replay. Vedi [docs/server.md](docs/server.md). |

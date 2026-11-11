@@ -14,26 +14,13 @@ import {
   type GameState,
   type PlayerId,
 } from "@tcg/engine";
+import { AiRandom } from "./random.ts";
+import { HARD_TIME_MS, ismctsChoose, type HardOptions } from "./ismcts.ts";
 
-export type AiLevel = "random" | "easy" | "medium";
+export type AiLevel = "random" | "easy" | "medium" | "hard";
 
-/** A small seeded generator for the AI. It does not touch the game generator. */
-export class AiRandom {
-  private s: number;
-  constructor(seed: number) {
-    this.s = seed >>> 0;
-  }
-  next(): number {
-    this.s = (this.s + 0x6d2b79f5) >>> 0;
-    let t = this.s;
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  }
-  int(maxExclusive: number): number {
-    return Math.floor(this.next() * maxExclusive);
-  }
-}
+export { AiRandom } from "./random.ts";
+export { determinize, HARD_TIME_MS, type HardOptions } from "./ismcts.ts";
 
 const WIN_SCORE = 1_000_000;
 
@@ -98,12 +85,12 @@ function threat(state: GameState, p: PlayerId): number {
 }
 
 /** Plays the game forward with passes until the round ends, so every option is compared after the Clash. */
-function settle(state: GameState): GameState {
+function settle(state: GameState, inPlace = false): GameState {
   const round = state.round;
   let s = state;
   for (let i = 0; i < 6 && s.phase !== "over"; i++) {
     if (s.phase === "maneuver" && s.round !== round && s.chain.length === 0) break;
-    s = apply(s, { type: "Pass" }, { trusted: true }).state;
+    s = apply(s, { type: "Pass" }, { trusted: true, inPlace }).state;
   }
   return s;
 }
@@ -134,6 +121,9 @@ function greedyScore(state: GameState, a: Action, me: PlayerId): number {
 /** Search options for the medium AI. */
 export const MEDIUM_BEAM = 5;
 export const MEDIUM_DEPTH = 2;
+/** Search options for the hard AI in the Maneuver phase: a wider and deeper search of my own actions. */
+export const HARD_BEAM = 8;
+export const HARD_DEPTH = 3;
 
 /** Applies an action and lets the chain resolve, with no response from the opponent. */
 function resolveQuietly(state: GameState, action: Action): GameState {
@@ -149,7 +139,7 @@ function resolveQuietly(state: GameState, action: Action): GameState {
  * It finds combinations, for example a keeper and then a relic on it.
  * The search assumes that the opponent passes, so it never looks at hidden cards.
  */
-function searchValue(state: GameState, me: PlayerId, depth: number): number {
+function searchValue(state: GameState, me: PlayerId, depth: number, beam: number): number {
   const round = state.round;
   let s = state;
   // The opponent passes: the turn returns to me in the same Maneuver phase.
@@ -160,19 +150,18 @@ function searchValue(state: GameState, me: PlayerId, depth: number): number {
   const scored = legalActions(s, me).map((a) => ({ a, v: greedyScore(s, a, me) }));
   scored.sort((x, y) => y.v - x.v);
   let best = -Infinity;
-  for (const { a, v } of scored.slice(0, MEDIUM_BEAM)) {
-    const value = a.type === "Pass" ? v : searchValue(resolveQuietly(s, a), me, depth - 1) - actionPenalty(a);
+  for (const { a, v } of scored.slice(0, beam)) {
+    const value = a.type === "Pass" ? v : searchValue(resolveQuietly(s, a), me, depth - 1, beam) - actionPenalty(a);
     if (value > best) best = value;
   }
   return best;
 }
 
-function mediumChoice(state: GameState, ranked: { a: Action; v: number }[], me: PlayerId, rng: AiRandom): Action {
-  if (state.chain.length > 0) return ranked[0]!.a;
+function searchChoice(state: GameState, ranked: { a: Action; v: number }[], me: PlayerId, rng: AiRandom, beam: number, depth: number): Action {
   let best = ranked[0]!.a;
   let bestValue = -Infinity;
-  for (const c of ranked.slice(0, MEDIUM_BEAM)) {
-    const value = c.a.type === "Pass" ? c.v : searchValue(resolveQuietly(state, c.a), me, MEDIUM_DEPTH - 1) - actionPenalty(c.a) + rng.next() * 0.01;
+  for (const c of ranked.slice(0, beam)) {
+    const value = c.a.type === "Pass" ? c.v : searchValue(resolveQuietly(state, c.a), me, depth - 1, beam) - actionPenalty(c.a) + rng.next() * 0.01;
     if (value > bestValue) {
       bestValue = value;
       best = c.a;
@@ -181,18 +170,40 @@ function mediumChoice(state: GameState, ranked: { a: Action; v: number }[], me: 
   return best;
 }
 
-/** Chooses an action for the player who must act now. */
-export function chooseAction(state: GameState, level: AiLevel, rng: AiRandom): Action {
+/** The search functions of the hard AI: the same evaluation as the other levels. */
+export const HARD_HOOKS = {
+  evaluate,
+  settle: (s: GameState) => settle(s, true),
+  rank: (s: GameState, actions: Action[], me: PlayerId) =>
+    actions
+      .map((a) => ({ a, v: greedyScore(s, a, me) }))
+      .sort((x, y) => y.v - x.v)
+      .map((x) => x.a),
+  quickRank: (s: GameState, actions: Action[], actor: PlayerId) =>
+    actions
+      .map((a) => ({ a, v: evaluate(apply(s, a, { trusted: true }).state, actor) - actionPenalty(a) }))
+      .sort((x, y) => y.v - x.v)
+      .map((x) => x.a),
+};
+
+/**
+ * Chooses an action for the player who must act now.
+ * The hard AI uses `hard` as its budget. The default is HARD_TIME_MS per action.
+ */
+export function chooseAction(state: GameState, level: AiLevel, rng: AiRandom, hard: HardOptions = { timeMs: HARD_TIME_MS }): Action {
   const me = state.turn;
   const actions = legalActions(state, me);
   if (actions.length === 0) throw new Error("No legal action");
   if (actions.length === 1) return actions[0] as Action;
   if (state.phase === "mulligan") return level === "random" ? (actions[rng.int(actions.length)] as Action) : mulliganChoice(state, actions, me);
   if (level === "random") return actions[rng.int(actions.length)] as Action;
+  // On the chain, the answer depends on the opponent's hidden cards: the hard AI uses ISMCTS (plan, section 8).
+  if (level === "hard" && state.chain.length > 0) return ismctsChoose(state, rng, HARD_HOOKS, hard);
 
   const scored = actions.map((a) => ({ a, v: greedyScore(state, a, me) + rng.next() * 0.01 }));
   scored.sort((x, y) => y.v - x.v);
   if (level === "easy") return scored[0]!.a;
 
-  return mediumChoice(state, scored, me, rng);
+  if (state.chain.length > 0) return scored[0]!.a;
+  return level === "hard" ? searchChoice(state, scored, me, rng, hard.beam ?? HARD_BEAM, hard.searchDepth ?? HARD_DEPTH) : searchChoice(state, scored, me, rng, MEDIUM_BEAM, MEDIUM_DEPTH);
 }

@@ -302,7 +302,7 @@
     "replaces": " (replaces {{old}})"
   },
   "ui": {
-    "title": "Sunken Beacons",
+    "title": "High Tides",
     "subtitle": "Text interface. Type the number of an action and press Enter.",
     "help": "Commands: a number chooses an action. \"c N\" shows card N of your hand. \"k\" shows the keywords. \"q\" quits.",
     "round": "Round {{round}}",
@@ -344,7 +344,8 @@
     "difficulty": "Difficulty",
     "levels": {
       "easy": "Easy",
-      "medium": "Medium"
+      "medium": "Medium",
+      "hard": "Hard"
     },
     "yourDeck": "Your deck",
     "opponentDeck": "Opponent deck",
