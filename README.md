@@ -7,6 +7,7 @@ Il piano di progetto è in [docs/piano-di-progetto.md](docs/piano-di-progetto.md
 Le scelte del motore delle regole sono in [docs/motore.md](docs/motore.md).
 Le regole della pixel art sono in [docs/guida-di-stile.md](docs/guida-di-stile.md).
 Le specifiche di animazione sono in [docs/animazioni.md](docs/animazioni.md).
+Il server PvP e il deploy sul Raspberry Pi sono in [docs/server.md](docs/server.md).
 
 ## Requisiti
 
@@ -17,10 +18,11 @@ Le specifiche di animazione sono in [docs/animazioni.md](docs/animazioni.md).
 
 1. Installa le dipendenze: `pnpm install`
 2. Gioca nel browser: `pnpm dev`, poi apri l'indirizzo che Vite mostra.
-3. Gioca contro l'IA nel terminale: `pnpm play`
-4. Scegli la lingua e i mazzi: `pnpm play --lang en --deck sprout --opponent forge`
-5. Guarda una partita IA contro IA: `pnpm play --auto --seed 7`
-6. Esegui tutti i controlli della CI: `pnpm check`
+3. Gioca online: avvia `pnpm server` in un secondo terminale, poi apri la schermata Online del client.
+4. Gioca contro l'IA nel terminale: `pnpm play`
+5. Scegli la lingua e i mazzi: `pnpm play --lang en --deck sprout --opponent forge`
+6. Guarda una partita IA contro IA: `pnpm play --auto --seed 7`
+7. Esegui tutti i controlli della CI: `pnpm check`
 
 | Comando | Effetto |
 |---|---|

@@ -1,0 +1,31 @@
+# systemd unit for the PvP server (plan, section 6.7).
+# Copy to /etc/systemd/system/, then: sudo systemctl enable --now tcg-server
+[Unit]
+Description=Fari Sommersi PvP server
+After=network.target
+
+[Service]
+Type=simple
+User=tcg
+Group=tcg
+WorkingDirectory=/opt/tcg
+Environment=NODE_ENV=production
+Environment=PORT=8787
+Environment=HOST=127.0.0.1
+Environment=DB_PATH=/var/lib/tcg/tcg.sqlite
+# Comma-separated list. Example: https://tcg.example.org
+Environment=ALLOWED_ORIGIN=
+Environment=TURN_SECONDS=120
+ExecStart=/usr/bin/node --max-old-space-size=256 --disable-warning=ExperimentalWarning /opt/tcg/server/server.mjs
+Restart=on-failure
+RestartSec=3
+MemoryMax=300M
+StateDirectory=tcg
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/tcg
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

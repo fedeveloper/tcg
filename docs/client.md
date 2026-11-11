@@ -75,3 +75,15 @@ Il menu offre la Sfida libera, la Spedizione, il Draft, la Collezione, i Mazzi e
 - Uscire da una partita di una corsa conta come una sconfitta.
 
 NOTA: le nuove carte senza illustrazione mostrano un riquadro vuoto. Il thread di grafica disegna le illustrazioni.
+
+## Modalità Online
+
+La schermata **Online** gioca contro altri giocatori tramite il server PvP (vedi [server.md](server.md)).
+
+- `src/online/connection.ts`: la connessione WebSocket. Salva il token dell'account ospite nel browser e si riconnette da sola.
+- `src/online/remoteSession.ts`: la sessione di una partita online. Il server manda una vista dopo ogni azione; la sessione anima le viste in ordine.
+- `src/ui/Online.svelte`: partita rapida, partita con un codice e lista delle partite in corso.
+
+Game.svelte usa l'interfaccia `PlaySession`. `GameSession` esegue il motore nel browser; `RemoteSession` riceve le viste dal server.
+Il giocatore locale è `me`. Online, `me` può essere il posto 1: la plancia mostra sempre il giocatore locale a sinistra.
+Il client calcola le azioni legali solo per l'interfaccia. Il server controlla di nuovo ogni azione.

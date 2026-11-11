@@ -35,6 +35,8 @@ jobs:
         run: pnpm sim --games 10 --ai medium --decks starter
       - name: Client build
         run: pnpm build
+      - name: Server build
+        run: pnpm build:server
       - uses: actions/upload-artifact@v4
         with:
           name: client

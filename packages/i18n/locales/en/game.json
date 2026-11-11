@@ -492,5 +492,45 @@
     "runDeck_other": "Your deck ({{count}} cards)",
     "freeMatch": "Free match",
     "modes": "Modes"
+  },
+  "online": {
+    "title": "Online",
+    "status": {
+      "connecting": "Connecting…",
+      "online": "Connected",
+      "offline": "Not connected"
+    },
+    "name": "Your name",
+    "quickTitle": "Quick match",
+    "quick": "Find an opponent",
+    "searching": "Looking for an opponent…",
+    "privateTitle": "Match with a friend",
+    "create": "Create a match",
+    "shareCode": "Give this code to your friend:",
+    "waitingFriend": "The match starts when your friend joins.",
+    "codePlaceholder": "6-character code",
+    "join": "Join",
+    "badCode": "The code has 6 letters or digits.",
+    "noDeck": "You have no valid deck. Make a deck in the Decks screen.",
+    "activeMatches": "Matches in progress",
+    "versus": "Against {{name}}",
+    "resume": "Resume",
+    "note": "The server checks the rules of every action. If you lose the connection, the match goes on: resume it from this screen.",
+    "opponentTurn": "Opponent's turn",
+    "timer": "Time: {{seconds}} s",
+    "concede": "Concede",
+    "concedeConfirm": "Do you want to concede? You lose the match.",
+    "errors": {
+      "badMessage": "The server does not understand the message. Reload the page.",
+      "notLoggedIn": "The server does not know you yet. Wait for the connection.",
+      "badDeck": "The server refuses the deck: the deck breaks the deck rules.",
+      "noMatch": "The match does not exist or is already over.",
+      "notYourTurn": "Wait for your turn.",
+      "illegal": "The server refuses this action.",
+      "stale": "Your view was old. Here is the new view.",
+      "busy": "The server is busy. Try again soon.",
+      "rateLimited": "You send too many messages. Wait a few seconds.",
+      "version": "The server uses a new version. Reload the page."
+    }
   }
 }

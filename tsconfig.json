@@ -31,6 +31,9 @@
     "packages/ai/test/**/*.ts",
     "packages/meta/src/**/*.ts",
     "packages/meta/test/**/*.ts",
+    "packages/protocol/src/**/*.ts",
+    "packages/server/src/**/*.ts",
+    "packages/server/test/**/*.ts",
     "packages/tools/src/**/*.ts",
     "packages/tools/test/**/*.ts",
     "vitest.config.ts"
