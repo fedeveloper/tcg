@@ -50,6 +50,7 @@ RAMPS = {
     "stone": ("slate", "stone", "ash"),
     "lilac": ("violet", "lilac", "white"),
     "slate": ("ink", "slate", "stone"),
+    "deep": ("ink", "abyss", "deep"),
 }
 
 

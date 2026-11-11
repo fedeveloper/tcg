@@ -39,7 +39,7 @@ Il file [`fari-32.json`](../assets/palette/fari-32.json) serve al codice.
 | Germoglio | `kelp_dark`, `kelp`, `moss`, `sprout`, `coral` (+ `coral_dark`) | Alghe, corallo |
 | Verderame | `verd_dark`, `verd`, `verd_light` | Rame ossidato, interfaccia |
 | Terra | `wood_dark`, `wood`, `tan`, `sand` | Legno, pelle, pergamena |
-| Crepuscolo | `dusk`, `violet`, `lilac` | Cielo di sera, fazioni future |
+| Crepuscolo | `dusk`, `violet`, `lilac` | Cielo di sera, spiriti del Vespro |
 
 I valori esadecimali sono in [`assets/src/palette.py`](../assets/src/palette.py).
 
@@ -53,9 +53,9 @@ La forma aiuta i giocatori daltonici.
 | Fucina | `soot`, `rust`, `ember`, `flame`, `glow` | Fiamma | Triangolo |
 | Germoglio | `kelp_dark`, `kelp`, `moss`, `sprout`, `coral` | Germoglio | Cerchio |
 | Neutrale | `slate`, `stone`, `ash`, `sand`, `white` | Stella a 4 punte | Stella |
-| Abisso (futuro) | `abyss`, `deep`, `sea`, `mist`, `foam` | Goccia | Goccia |
-| Ingranaggio (futuro) | `wood_dark`, `wood`, `copper`, `tan`, `sand` | Ruota dentata | Quadrato |
-| Vespro (futuro) | `dusk`, `violet`, `lilac`, `glow`, `white` | Falce di luna | Rombo |
+| Abisso | `abyss`, `deep`, `sea`, `mist`, `foam` | Goccia | Goccia |
+| Ingranaggio | `wood_dark`, `wood`, `copper`, `tan`, `sand` | Ruota dentata | Quadrato |
+| Vespro | `dusk`, `violet`, `lilac`, `glow`, `white` | Falce di luna | Rombo |
 
 Le icone misurano 9 × 9 pixel. Le icone sono nel foglio `ui` con il nome `faction/<id>`.
 
@@ -74,7 +74,7 @@ La carta misura 64 × 88 pixel.
 | Tenuta (solo Custodi) | centro 55, 80 | scudo | Numero in `white` |
 
 - Disegna prima l'illustrazione, poi la cornice.
-- La cornice esiste in 6 varianti: 3 fazioni × 2 tipi (`keeper`, `spell`).
+- La cornice esiste in 12 varianti: 6 fazioni × 2 tipi (`keeper`, `spell`).
 - La variante `spell` serve per Riti, Reliquie e Luoghi.
 - Il rombo indica l'Attacco. Lo scudo indica la Tenuta. La forma non dipende dal colore.
 - Il testo completo delle regole appare nella vista a schermo intero.
@@ -86,7 +86,13 @@ NOTA: il nome più lungo su una riga è "Surriscaldamento" (58 pixel). La targa 
 ### Illustrazioni
 
 - Un Custode appare nella sua illustrazione con lo stesso sprite del campo. Il giocatore riconosce subito il Custode.
-- Ogni fazione ha 3 sfondi. Fucina: sala della forgia, riva al tramonto, fonderia. Germoglio: scogliera sommersa, pozze di marea, foresta di alghe.
+- Ogni fazione ha 3 sfondi.
+  - Fucina: sala della forgia, riva al tramonto, fonderia.
+  - Germoglio: scogliera sommersa, pozze di marea, foresta di alghe.
+  - Abisso: secche di notte, fossa, relitto.
+  - Ingranaggio: officina, molo con la gru, stanza dell'orologio.
+  - Vespro: riva nella nebbia, cimitero, cripta.
+  - Neutrale: porto, ponte della nave, scogliera.
 - Un Rito, una Reliquia o un Luogo ha una scena propria.
 - Usa i colori dominanti della fazione per almeno metà dell'immagine.
 
@@ -161,5 +167,6 @@ Il progetto usa 2 font originali. Non hanno vincoli di licenza esterni.
 1. Apri il file sorgente giusto in `assets/src/`.
 2. Scrivi una funzione che disegna l'asset con le forme di `px.py`.
 3. Registra la funzione nel dizionario del file (`KEEPERS`, `SCENES`).
-4. Esegui `pnpm assets`.
-5. Controlla le anteprime in `assets/preview/`.
+4. Aggiungi l'identificativo della carta a `CARD_IDS` nel file `roster.py`.
+5. Esegui `pnpm assets`.
+6. Controlla le anteprime in `assets/preview/`.

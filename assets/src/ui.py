@@ -8,6 +8,9 @@ FACTION_RAMP = {
     "forge": ("soot", "rust", "ember", "flame"),
     "sprout": ("kelp_dark", "kelp", "moss", "sprout"),
     "neutral": ("slate", "stone", "ash", "sand"),
+    "abyss": ("abyss", "deep", "sea", "foam"),
+    "gear": ("wood_dark", "wood", "copper", "sand"),
+    "vesper": ("ink", "dusk", "violet", "lilac"),
 }
 
 

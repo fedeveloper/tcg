@@ -31,7 +31,8 @@ Il campo usa il tema `SpriteTheme` (`src/render/spriteTheme.ts`). Il tema implem
 - `loadArt()` carica gli spritesheet e i font di `assets/`. Vite copia i file nella build.
 - `PixelFont` e `PixelText` disegnano il testo con i font Faro e Faro Mini.
 - Il tema `ShapeTheme` resta come riserva. Il client lo usa se il caricamento degli sprite fallisce.
-- La mano nel DOM mostra l'illustrazione di ogni carta (foglio `card-art`, scala ×2).
+- La mano mostra carte complete in pixel art. Il componente `PixelCard.svelte` disegna illustrazione, cornice, nome, costo e statistiche su un canvas 64 × 88 (`pixelCanvas.ts`).
+- Un Custode senza sprite usa lo sprite di riserva `keeper/unknown/idle`. Una carta senza illustrazione mostra un riquadro grigio.
 - Il canvas mostra solo la parte alta della scena (`VIEW_HEIGHT` = 186 pixel). La mano è sotto il canvas.
 
 Tre metodi di `Theme` sono opzionali: `fx` (scintille, sbuffi, colpi), `cardGhost` (illustrazione della carta giocata) e `dissolve` (dissolvenza a dithering).

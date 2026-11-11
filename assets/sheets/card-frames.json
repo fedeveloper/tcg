@@ -120,10 +120,130 @@
     "h": 88
    }
   },
-  "frame/back": {
+  "frame/abyss/keeper": {
    "frame": {
     "x": 384,
     "y": 0,
+    "w": 64,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 88
+   }
+  },
+  "frame/abyss/spell": {
+   "frame": {
+    "x": 0,
+    "y": 88,
+    "w": 64,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 88
+   }
+  },
+  "frame/gear/keeper": {
+   "frame": {
+    "x": 64,
+    "y": 88,
+    "w": 64,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 88
+   }
+  },
+  "frame/gear/spell": {
+   "frame": {
+    "x": 128,
+    "y": 88,
+    "w": 64,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 88
+   }
+  },
+  "frame/vesper/keeper": {
+   "frame": {
+    "x": 192,
+    "y": 88,
+    "w": 64,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 88
+   }
+  },
+  "frame/vesper/spell": {
+   "frame": {
+    "x": 256,
+    "y": 88,
+    "w": 64,
+    "h": 88
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 64,
+    "h": 88
+   },
+   "sourceSize": {
+    "w": 64,
+    "h": 88
+   }
+  },
+  "frame/back": {
+   "frame": {
+    "x": 320,
+    "y": 88,
     "w": 64,
     "h": 88
    },
@@ -147,7 +267,7 @@
   "format": "RGBA8888",
   "size": {
    "w": 448,
-   "h": 88
+   "h": 176
   },
   "scale": "1",
   "artWindow": {

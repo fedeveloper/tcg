@@ -193,18 +193,55 @@ export class SpriteTheme implements Theme {
   constructor(
     private readonly art: Art,
     public resolution: number,
+    /** True while "Reduce animations" is on: the sea moves 4 times slower. */
+    private readonly reduced: () => boolean = () => false,
   ) {}
 
   private anim(source: Spritesheet, name: string, loop = true): AnimatedSprite {
-    const s = new AnimatedSprite(source.animations[name] ?? [Texture.EMPTY]);
+    const s = new AnimatedSprite(this.frames(source, name));
     s.animationSpeed = IDLE_SPEED;
     s.loop = loop;
     if (loop) s.play();
     return s;
   }
 
+  /** The frames of an animation. A Keeper with no art yet gets the hooded fallback sprite. */
+  private frames(source: Spritesheet, name: string): Texture[] {
+    return source.animations[name] ?? (name.startsWith("keeper/") ? source.animations["keeper/unknown/idle"] : undefined) ?? [Texture.EMPTY];
+  }
+
   background(): Container {
-    return new Sprite(this.art.board);
+    const c = new Container();
+    c.addChild(new Sprite(this.art.board));
+    // Wave glints: short light lines that drift and blink at the frame rate of the sprites.
+    const glints = new Graphics();
+    c.addChild(glints);
+    const spots = Array.from({ length: 46 }, (_, i) => ({
+      x: (i * 97 + 31) % 470,
+      y: 34 + ((i * 53) % 138),
+      phase: (i * 7) % 12,
+      w: 3 + (i % 3),
+    }));
+    let step = 0;
+    const draw = () => {
+      glints.clear();
+      for (const g of spots) {
+        const t = (step + g.phase) % 12;
+        if (t > 5) continue;
+        // The glint grows, slides 1 pixel for each frame and fades.
+        const w = t < 3 ? g.w : g.w - (t - 2);
+        glints.rect(g.x + t, g.y, Math.max(w, 1), 1).fill({ color: g.y < 80 ? PAL.foam : 0x7fb0c4, alpha: t === 0 || t === 5 ? 0.35 : 0.7 });
+      }
+    };
+    draw();
+    let slow = 0;
+    const timer = setInterval(() => {
+      if (this.reduced() && slow++ % 4 !== 0) return;
+      step++;
+      draw();
+    }, 180);
+    c.on("destroyed", () => clearInterval(timer));
+    return c;
   }
 
   /** The board picture already shows the slots. The empty container only takes the clicks. */
@@ -237,7 +274,7 @@ export class SpriteTheme implements Theme {
     c.update = (l: KeeperLook) => {
       if (l.cardId !== shown) {
         shown = l.cardId;
-        sprite.textures = this.art.keepers.animations[`keeper/${l.cardId}/idle`] ?? [Texture.EMPTY];
+        sprite.textures = this.frames(this.art.keepers, `keeper/${l.cardId}/idle`);
       }
       sprite.scale.x = l.mine ? 1 : -1;
       // A keeper that entered in this round waits: it is darker and it does not move.

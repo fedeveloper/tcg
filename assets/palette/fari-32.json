@@ -183,6 +183,27 @@
    "ash",
    "sand",
    "white"
+  ],
+  "abyss": [
+   "abyss",
+   "deep",
+   "sea",
+   "mist",
+   "foam"
+  ],
+  "gear": [
+   "wood_dark",
+   "wood",
+   "copper",
+   "tan",
+   "sand"
+  ],
+  "vesper": [
+   "dusk",
+   "violet",
+   "lilac",
+   "glow",
+   "white"
   ]
  }
 }
