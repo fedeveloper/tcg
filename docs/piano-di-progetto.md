@@ -510,6 +510,7 @@ L'IA usa lo stesso motore del gioco e ha tre livelli di difficoltà.
 | **Medio** | Ricerca in profondità limitata (2–3 azioni) con funzione di valutazione. |
 | **Difficile** | **ISMCTS** (Information Set Monte Carlo Tree Search): simula molte partite con le carte nascoste dell'avversario ipotizzate a caso. |
 
+- Implementazione (novembre 2026): l'IA difficile usa ISMCTS sulla catena e una ricerca più profonda nella Manovra. Vedi `docs/motore.md`, sezione 4.1.
 - L'IA gira in un **Web Worker**. Il Web Worker evita blocchi dell'interfaccia.
 - L'IA ha un limite di tempo per azione (esempio: 800 ms).
 - La funzione di valutazione considera: Luce dei Fari, valore sul campo, carte in mano, controllo della Marea.

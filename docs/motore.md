@@ -90,10 +90,30 @@ Il piano lascia aperti alcuni dettagli. Il motore usa queste scelte. Ogni scelta
 | Casuale | Sceglie un'azione legale a caso. | Usato solo dal simulatore. |
 | Facile | Valuta ogni azione dopo lo Scontro del round. | Vince 30 partite su 30 contro il giocatore casuale. |
 | Media | Cerca sequenze di 2 azioni proprie (5 candidati per livello). | Vince il 60% delle partite decise contro la facile (177 partite). |
+| Difficile | Nella Manovra cerca sequenze di 3 azioni proprie (8 candidati per livello). Sulla catena usa ISMCTS. | Vince il 53% delle partite decise contro la media (319 partite, 8 incontri tra mazzi diversi). |
 
 La funzione di valutazione considera la Luce (con valore concavo: un punto vale di più su un Faro debole), il campo, la mano, la Marea e il danno previsto del prossimo Scontro.
 L'IA media non guarda le carte nascoste: la ricerca suppone che l'avversario passi.
 Il comando `pnpm duel --a medium --b easy --games 30` confronta due livelli.
+
+### 4.1 IA difficile e ISMCTS
+
+ISMCTS (Information Set Monte Carlo Tree Search) cerca una mossa senza conoscere le carte nascoste. Il codice è in `packages/ai/src/ismcts.ts`.
+
+1. **Determinizzazione.** Ogni iterazione indovina le informazioni nascoste: le carte della mano e del mazzo dell'avversario, l'ordine dei mazzi e lo stato del generatore casuale. L'ipotesi usa solo la lista delle carte non viste, non le posizioni reali. Un test controlla che la scelta non cambia quando cambiano le carte nascoste.
+2. **Albero.** Un solo albero vale per tutte le ipotesi. UCB conta per ogni azione solo le iterazioni in cui l'azione è legale.
+3. **Ampiezza.** La radice cerca le 8 azioni migliori secondo la valutazione rapida. I nodi sotto la radice cercano 5 azioni e "Passa".
+4. **Valutazione.** Dopo 3 azioni, il round finisce con dei passaggi. La ricompensa è `tanh((valore − valore di "Passa") / 6)`.
+5. **Tempo.** L'IA usa al massimo 800 ms per mossa (sezione 8 del piano), nel Web Worker.
+
+Nelle prove, ISMCTS da solo non batte l'IA media: le due IA usano la stessa funzione di valutazione, e la ricerca tra le risposte dell'avversario aggiunge poco.
+Per questo l'IA difficile usa ISMCTS solo sulla catena, dove le carte nascoste dell'avversario contano di più.
+Nella Manovra usa la ricerca dell'IA media, più larga e più profonda.
+Il limite attuale è la funzione di valutazione: una ricerca ancora più profonda (6 × 4) non vince di più.
+
+`pnpm duel --a hard --b medium --games 40 --iterations 800` confronta l'IA difficile con la media.
+Il comando gioca ogni seme due volte con i posti scambiati. Con due livelli diversi, ogni seconda coppia scambia anche i mazzi.
+`--iterations` fissa il numero di iterazioni di ISMCTS, così il risultato è riproducibile.
 
 ## 5. Test
 

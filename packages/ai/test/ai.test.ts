@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { expandDeck, STARTER_DECKS } from "@tcg/cards";
 import { apply, legalActions, newGame, actionKey } from "@tcg/engine";
-import { AiRandom, chooseAction } from "../src/index.ts";
+import { AiRandom, chooseAction, HARD_HOOKS } from "../src/index.ts";
+import { ismctsChoose } from "../src/ismcts.ts";
 
 const FORGE = expandDeck(STARTER_DECKS.forge!);
 
@@ -66,8 +67,8 @@ describe("hard AI (ISMCTS)", () => {
     changed.players[1].deck.reverse();
     changed.players[0].deck.reverse();
     changed.rng = 12345;
-    const a = chooseAction(s, "hard", new AiRandom(7), { iterations: 120 });
-    const b = chooseAction(changed, "hard", new AiRandom(7), { iterations: 120 });
+    const a = ismctsChoose(s, new AiRandom(7), HARD_HOOKS, { iterations: 150 });
+    const b = ismctsChoose(changed, new AiRandom(7), HARD_HOOKS, { iterations: 150 });
     expect(actionKey(b)).toBe(actionKey(a));
   });
 
@@ -77,6 +78,7 @@ describe("hard AI (ISMCTS)", () => {
     for (let i = 0; i < 12 && s.phase !== "over"; i++) s = apply(s, chooseAction(s, "easy", rng)).state;
     const before = JSON.stringify(s);
     chooseAction(s, "hard", rng, { iterations: 80 });
+    ismctsChoose(s, rng, HARD_HOOKS, { iterations: 80 });
     expect(JSON.stringify(s)).toBe(before);
   });
 });

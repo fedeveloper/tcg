@@ -171,7 +171,7 @@ function searchChoice(state: GameState, ranked: { a: Action; v: number }[], me: 
 }
 
 /** The search functions of the hard AI: the same evaluation as the other levels. */
-const HARD_HOOKS = {
+export const HARD_HOOKS = {
   evaluate,
   settle: (s: GameState) => settle(s, true),
   rank: (s: GameState, actions: Action[], me: PlayerId) =>
