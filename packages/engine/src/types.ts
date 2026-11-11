@@ -156,6 +156,7 @@ export type GameEvent =
   | { type: "ClashStarted" }
   | { type: "LaneClash"; lane: Lane }
   | { type: "DuskStarted" }
+  | { type: "RisingTide"; amount: number }
   | { type: "Worn"; keeper: string }
   | { type: "GameOver"; winner: PlayerId | null; reason: Outcome["reason"] };
 

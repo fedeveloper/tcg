@@ -262,6 +262,8 @@
     "SitePlaced": "{{card}} becomes the Site of lane {{lane}}.",
     "ClashStarted": "Clash!",
     "DuskStarted": "Dusk.",
+    "RisingTide_one": "Rising Tide: every lit Beacon loses 1 Light.",
+    "RisingTide_other": "Rising Tide: every lit Beacon loses {{count}} Light.",
     "Worn": "Wear: {{card}} loses 1 Attack.",
     "GameOver": {
       "win": "You win!",
@@ -532,5 +534,15 @@
       "rateLimited": "You send too many messages. Wait a few seconds.",
       "version": "The server uses a new version. Reload the page."
     }
+  },
+  "replay": {
+    "title": "Replays of finished matches",
+    "watch": "Watch",
+    "won": "win",
+    "lost": "loss",
+    "draw": "draw",
+    "step": "Step {{n}} of {{total}}",
+    "play": "Play",
+    "pause": "Pause"
   }
 }

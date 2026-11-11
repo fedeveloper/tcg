@@ -96,7 +96,7 @@ Un round ha quattro fasi.
    - Un'azione è: giocare una carta, spostare un Custode di uno slot (costo 1 Brace), attivare un'abilità, o passare.
    - La fase termina quando entrambi i giocatori passano in sequenza.
 3. **Scontro.** Il gioco risolve il combattimento corsia per corsia, da A a C.
-4. **Tramonto.** Il gioco risolve gli effetti di fine round. La Brace in eccesso va nella Riserva.
+4. **Tramonto.** Il gioco risolve gli effetti di fine round. La Brace in eccesso va nella Riserva. Dal round 14, la **Marea crescente** toglie 1 Luce a ogni Faro acceso.
 
 L'alternanza di singole azioni crea bluff e lettura dell'avversario.
 Passare presto conserva informazioni. Passare tardi conserva la possibilità di reagire.
@@ -164,6 +164,7 @@ Queste regole chiudono i casi limite per il motore.
 | Fronte vuoto | Il Custode in Retro non avanza da solo. Il giocatore lo sposta con un'azione (costo 1 Brace). |
 | Custode appena entrato | Il Custode non attacca nel round del suo ingresso. Il Custode blocca e risponde al danno. Eccezione: **Slancio**. |
 | Danno contro un Faro spento | Il danno va perso. La corsia resta attiva e i Custodi bloccano ancora. |
+| Marea crescente | Dal round 14, alla fine del Tramonto, ogni Faro acceso perde 1 Luce. |
 | Limite di round | La partita termina al round 20. Vince il giocatore con più Luce totale. Con Luce uguale, la partita è pari. |
 | Vittoria simultanea | Se entrambi i giocatori spengono il secondo Faro avversario nello stesso Scontro, la partita è pari. |
 
@@ -560,7 +561,7 @@ Il motore viene prima della grafica. Questo ordine permette di testare le regole
 | Rischio | Impatto | Mitigazione |
 |---|---|---|
 | Regole troppo complesse per i nuovi giocatori | Alto | Tutorial a passi, Luoghi assenti nelle prime partite, anteprima delle conseguenze. |
-| Partite troppo lunghe | Medio | Limite di catena, timer per azione, 10 punti Luce per Faro. |
+| Partite troppo lunghe | Medio | Limite di catena, timer per azione, 10 punti Luce per Faro, Marea crescente dal round 14. |
 | Combinazioni di carte che rompono il gioco | Alto | Simulazioni automatiche, test basati su proprietà, limite di 2 parole chiave. |
 | Costo alto della pixel art | Medio | Palette fissa, sprite piccoli, riuso delle animazioni tra Custodi simili. |
 | Prestazioni basse su mobile | Medio | PixiJS con batching, atlanti di texture, test su dispositivi reali. |

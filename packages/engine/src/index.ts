@@ -19,6 +19,8 @@ export {
   HAND_LIMIT,
   TIDE_LIMIT,
   ROUND_LIMIT,
+  RISING_TIDE_ROUND,
+  RISING_TIDE_DAMAGE,
   CHAIN_LIMIT,
 } from "./core.ts";
 export { newGame, apply, concede, isOver, OPENING_HAND, type NewGameOptions, type ApplyOptions } from "./game.ts";

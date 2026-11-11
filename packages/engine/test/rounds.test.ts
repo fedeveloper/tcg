@@ -132,3 +132,46 @@ describe("round structure", () => {
     expect(s).toEqual(copy);
   });
 });
+
+describe("rising tide", () => {
+  it("does nothing before round 14", () => {
+    const s = blank();
+    s.round = 13;
+    const { state, events } = endManeuver(s);
+    expect(events.some((e) => e.type === "RisingTide")).toBe(false);
+    expect(state.players[0].beacons.map((b) => b.light)).toEqual([10, 10, 10]);
+  });
+
+  it("takes 1 light from every lit beacon at the end of Dusk from round 14", () => {
+    const s = blank();
+    s.round = 14;
+    s.players[1].beacons[2].light = 0;
+    const { state, events } = endManeuver(s);
+    const i = events.findIndex((e) => e.type === "RisingTide");
+    expect(i).toBeGreaterThan(events.findIndex((e) => e.type === "DuskStarted"));
+    expect(state.players[0].beacons.map((b) => b.light)).toEqual([9, 9, 9]);
+    expect(state.players[1].beacons.map((b) => b.light)).toEqual([9, 9, 0]);
+    expect(state.round).toBe(15);
+  });
+
+  it("can end the game: a beacon at 1 light goes out", () => {
+    const s = blank();
+    s.round = 15;
+    s.players[0].beacons[0].light = 0;
+    s.players[0].beacons[1].light = 1;
+    const { state } = endManeuver(s);
+    expect(state.outcome).toEqual({ winner: 1, reason: "beacons" });
+  });
+});
+
+describe("end of the game", () => {
+  it("puts the cards still on the chain in the graveyard", () => {
+    const s = blank();
+    const id = give(s, 0, "forge-016");
+    s.players[0].hand = s.players[0].hand.filter((x) => x !== id);
+    s.chain.push({ player: 0, action: { type: "PlayCard", card: id, targets: [] }, resonance: false });
+    const r = apply(s, { type: "Concede" });
+    expect(r.state.chain).toEqual([]);
+    expect(r.state.players[0].graveyard).toContain(id);
+  });
+});

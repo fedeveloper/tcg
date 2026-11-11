@@ -3,7 +3,8 @@
   import { expandDeck } from "@tcg/cards";
   import { deckProblems } from "@tcg/meta";
   import type { Translator } from "@tcg/i18n";
-  import type { MatchSummary, ServerMessage } from "@tcg/protocol";
+  import type { MatchSummary, Replay, ServerMessage } from "@tcg/protocol";
+  import type { PlayerId } from "@tcg/engine";
   import { profileStore } from "../meta/profileStore.svelte.ts";
   import type { ConnectionStatus, OnlineClient } from "../online/connection.ts";
   import { deckLabel } from "./deckText.ts";
@@ -14,9 +15,11 @@
     client: OnlineClient;
     /** Called when a match of this player starts or resumes. */
     onMatch: (first: StateMsg) => void;
+    /** Called when the server sends the replay of a finished match. */
+    onReplay: (replay: Replay, seat: PlayerId) => void;
     onBack: () => void;
   }
-  let { tr, client, onMatch, onBack }: Props = $props();
+  let { tr, client, onMatch, onReplay, onBack }: Props = $props();
 
   let status = $state<ConnectionStatus>(untrack(() => client.status));
   let name = $state(untrack(() => client.name));
@@ -33,6 +36,9 @@
     return d ? expandDeck(d.cards) : null;
   });
   const active = $derived(matches.filter((m) => m.status === "active"));
+  const finished = $derived(matches.filter((m) => m.status === "over" && m.opponent).slice(0, 10));
+  /** The seat of the replay that the player asked for. */
+  let replaySeat: PlayerId = 0;
 
   function onMessage(msg: ServerMessage) {
     switch (msg.t) {
@@ -51,6 +57,9 @@
         break;
       case "error":
         error = tr.t(`online.errors.${msg.code}`, { defaultValue: msg.message });
+        break;
+      case "replay":
+        onReplay(msg.replay, replaySeat);
         break;
       case "state":
         queued = false;
@@ -107,6 +116,10 @@
   function cancelHost() {
     if (hosting) client.send({ t: "concede", matchId: hosting.matchId });
     hosting = null;
+  }
+  function watch(m: MatchSummary) {
+    replaySeat = m.seat;
+    client.send({ t: "replay", matchId: m.matchId });
   }
   function resume(m: MatchSummary) {
     client.send({ t: "resume", matchId: m.matchId });
@@ -168,6 +181,18 @@
         <li>
           <span>{tr.t("online.versus", { name: m.opponent ?? "?" })}</span>
           <button onclick={() => resume(m)}>{tr.t("online.resume")}</button>
+        </li>
+      {/each}
+    </ul>
+  {/if}
+
+  {#if finished.length > 0}
+    <h3>{tr.t("replay.title")}</h3>
+    <ul>
+      {#each finished as m (m.matchId)}
+        <li>
+          <span>{tr.t("online.versus", { name: m.opponent ?? "?" })} · {m.winner === null ? tr.t("replay.draw") : m.winner === m.seat ? tr.t("replay.won") : tr.t("replay.lost")}</span>
+          <button onclick={() => watch(m)}>{tr.t("replay.watch")}</button>
         </li>
       {/each}
     </ul>

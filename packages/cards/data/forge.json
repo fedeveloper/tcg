@@ -81,7 +81,7 @@
     ]
   },
   {
-    "id": "forge-026", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 4, "attack": 3, "hold": 3, "keywords": ["surge"],
-    "effects": [{ "when": "enterPlay", "actions": [{ "op": "damage", "amount": 1, "target": "enemyBeaconSameLane" }] }]
+    "id": "forge-026", "type": "keeper", "faction": "forge", "rarity": "uncommon", "cost": 4, "attack": 3, "hold": 4, "keywords": ["surge"],
+    "effects": [{ "when": "enterPlay", "actions": [{ "op": "damage", "amount": 2, "target": "enemyBeaconSameLane" }] }]
   }
 ]

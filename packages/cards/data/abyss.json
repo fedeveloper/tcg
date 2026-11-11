@@ -1,5 +1,5 @@
 [
-  { "id": "abyss-001", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 1, "attack": 1, "hold": 2, "tidePush": -1 },
+  { "id": "abyss-001", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 1, "attack": 1, "hold": 3, "tidePush": -1 },
   { "id": "abyss-002", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 1, "attack": 2, "hold": 1, "keywords": ["reach"] },
   {
     "id": "abyss-003", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 2, "attack": 2, "hold": 2,
@@ -15,7 +15,7 @@
     "id": "abyss-006", "type": "keeper", "faction": "abyss", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 3,
     "effects": [{ "when": "enterPlay", "actions": [{ "op": "discard", "amount": 1 }] }]
   },
-  { "id": "abyss-007", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 3, "attack": 3, "hold": 3, "tidePush": -1 },
+  { "id": "abyss-007", "type": "keeper", "faction": "abyss", "rarity": "common", "cost": 3, "attack": 3, "hold": 4, "tidePush": -1 },
   {
     "id": "abyss-008", "type": "keeper", "faction": "abyss", "rarity": "uncommon", "cost": 3, "attack": 2, "hold": 3,
     "effects": [{ "when": "enterPlay", "condition": { "lowTide": true }, "actions": [{ "op": "damage", "amount": 2, "target": "enemyFrontSameLane" }] }]

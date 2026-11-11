@@ -1,0 +1,18 @@
+# Caddy for a test in the local network, without a domain and without HTTPS.
+# Open http://<ip-of-the-pi>/ from a browser in the same network.
+:80 {
+	encode zstd gzip
+
+	handle /ws {
+		reverse_proxy 127.0.0.1:8787
+	}
+	handle /health {
+		reverse_proxy 127.0.0.1:8787
+	}
+
+	handle {
+		root * /opt/tcg/client
+		try_files {path} /index.html
+		file_server
+	}
+}

@@ -120,6 +120,9 @@ importers:
 
   packages/server:
     dependencies:
+      '@tcg/ai':
+        specifier: workspace:*
+        version: link:../ai
       '@tcg/cards':
         specifier: workspace:*
         version: link:../cards
@@ -154,6 +157,9 @@ importers:
       '@tcg/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@tcg/server':
+        specifier: workspace:*
+        version: link:../server
 
 packages:
 

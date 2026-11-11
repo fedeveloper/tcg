@@ -4,6 +4,7 @@ import { parseClientMessage, type ServerMessage } from "@tcg/protocol";
 import { GameServer, starterDeck, Store, type Clock, type Connection } from "@tcg/server";
 import { OnlineClient, type SocketLike } from "../src/online/connection.ts";
 import { RemoteSession } from "../src/online/remoteSession.ts";
+import { ReplaySession } from "../src/online/replaySession.ts";
 
 const clock: Clock = { now: () => Date.now(), setTimeout: () => 0, clearTimeout: () => {} };
 const config = { port: 0, host: "", dbPath: ":memory:", allowedOrigins: [], turnSeconds: 120, maxTimeouts: 3 };
@@ -85,6 +86,14 @@ describe("online client", () => {
     // The views stay secret: the opponent hand is hidden.
     const foeHand = ra.state.players[ra.me === 0 ? 1 : 0].hand;
     expect(foeHand.every((id) => ra.state.cards[id]!.cardId === "hidden")).toBe(true);
+
+    // The replay of the server plays the same match again in the client.
+    const replay = new Promise<Extract<ServerMessage, { t: "replay" }>>((resolve) => a.onMessage((m) => m.t === "replay" && resolve(m)));
+    a.send({ t: "replay", matchId: ra.matchId });
+    const rep = new ReplaySession((await replay).replay, ra.me, 0).attach({ onStep: () => {} });
+    await rep.start();
+    expect(rep.over).toBe(true);
+    expect(rep.state).toEqual(ra.state);
     ra.dispose();
     rb.dispose();
     a.close();
