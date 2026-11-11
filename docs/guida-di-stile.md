@@ -1,6 +1,6 @@
 # Guida di stile della pixel art
 
-Questa guida fissa le regole grafiche di **Fari Sommersi**.
+Questa guida fissa le regole grafiche di **High Tides**.
 Ogni nuovo asset rispetta queste regole.
 Gli asset sono nella cartella [`assets/`](../assets/README.md).
 

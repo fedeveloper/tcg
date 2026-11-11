@@ -1,4 +1,4 @@
-"""The fixed 32-colour palette of Fari Sommersi ("Fari 32")."""
+"""The fixed 32-colour palette of High Tides ("Fari 32")."""
 
 # name, hex, group
 COLOURS = [

@@ -1,6 +1,6 @@
 # Asset grafici
 
-Questa cartella contiene la pixel art di Fari Sommersi.
+Questa cartella contiene la pixel art di High Tides.
 Le regole di stile sono in [docs/guida-di-stile.md](../docs/guida-di-stile.md).
 Le specifiche di animazione sono in [docs/animazioni.md](../docs/animazioni.md).
 
