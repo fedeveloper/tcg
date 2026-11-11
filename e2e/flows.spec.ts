@@ -54,3 +54,39 @@ test("two players play an online match with a code, and one concedes", async ({ 
   await expect(host.locator(".over h2")).toContainText("Hai perso");
   await expect(guest.locator(".over h2")).toContainText("Hai vinto");
 });
+
+test("the keyboard plays a card and opens the card sheet", async ({ page }) => {
+  await openMenu(page);
+  await page.getByRole("button", { name: "Gioca", exact: true }).click();
+  await waitForBoard(page);
+  // The card sheet: right click on a card, Esc closes it.
+  await page.locator(".hand .card").first().click({ button: "right" });
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  // P confirms the mulligan.
+  const primary = page.locator(".me button.primary");
+  await expect(primary).toBeEnabled({ timeout: 20_000 });
+  await page.keyboard.press("p");
+  await expect(primary).not.toHaveText("Conferma", { timeout: 20_000 });
+  // P passes until a card can be played.
+  const playable = page.locator(".hand .card:not(.dim)");
+  for (let i = 0; i < 60 && (await playable.count()) === 0; i++) {
+    if (await page.locator(".me button.primary").isEnabled()) await page.keyboard.press("p");
+    await page.waitForTimeout(300);
+  }
+  await expect(playable.first()).toBeVisible();
+  const name = (await playable.first().locator(".sr-only").textContent())!.split(" (")[0]!;
+  const copies = page.locator(".hand .card", { has: page.locator(".sr-only", { hasText: `${name} (` }) });
+  const before = await copies.count();
+  await playable.first().focus();
+  await page.keyboard.press("Enter");
+  // The choices of the board (slot, lane or target) are buttons too.
+  for (let i = 0; i < 3; i++) {
+    const choice = page.locator(".choices button").first();
+    if (!(await choice.isVisible().catch(() => false))) break;
+    await choice.focus();
+    await page.keyboard.press("Enter");
+  }
+  await expect.poll(() => copies.count(), { timeout: 20_000 }).toBeLessThan(before);
+});

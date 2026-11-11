@@ -88,3 +88,11 @@ Game.svelte usa l'interfaccia `PlaySession`. `GameSession` esegue il motore nel 
 Il giocatore locale è `me`. Online, `me` può essere il posto 1: la plancia mostra sempre il giocatore locale a sinistra.
 Il client calcola le azioni legali solo per l'interfaccia. Il server controlla di nuovo ogni azione.
 - `src/online/replaySession.ts`: il replay di una partita online finita. Il client ricostruisce la partita da seed, mazzi e azioni, e la mostra dal posto del giocatore: le carte nascoste restano nascoste. Il pulsante "Pausa" ferma il replay.
+
+## Accessibilità (sezione 7.4 del piano)
+
+- **Tastiera.** Tab sposta il fuoco tra le carte e i pulsanti. Invio sceglie. P passa o conferma il mulligan. Esc annulla la scelta o chiude la scheda.
+- **Scelte della plancia.** Durante una scelta, la sezione "Scegli dove" mostra le stesse caselle, corsie e bersagli evidenziati sulla plancia, come pulsanti.
+- **Elenco del campo.** La sezione "Campo" elenca i Custodi dei due giocatori con posizione, Attacco e Tenuta. Il pulsante "Azioni" apre lo spostamento e le abilità di un Custode.
+- **Scheda della carta.** Il clic destro o il tasto I su una carta apre la carta a schermo intero, con le parole chiave spiegate, il testo completo e il testo di colore.
+- **Test.** `pnpm e2e` esegue i test end-to-end con Playwright, anche il flusso con la sola tastiera.

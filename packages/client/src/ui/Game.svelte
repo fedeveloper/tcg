@@ -2,8 +2,8 @@
   import { onDestroy, onMount } from "svelte";
   import { Application, TextureStyle } from "pixi.js";
   import { CARDS } from "@tcg/cards";
-  import { eventsFor, tideFor, totalLight, type Action, type GameState, type PlayerId } from "@tcg/engine";
-  import { cardRulesText, cardSummary, describeAction, describeEvent, lookupIn, type Lang, type Translator } from "@tcg/i18n";
+  import { attackOf, eventsFor, holdOf, tideFor, totalLight, type Action, type GameState, type Lane, type PlayerId } from "@tcg/engine";
+  import { cardFlavor, cardName, cardRulesText, cardSummary, describeAction, describeEvent, laneName, lookupIn, slotName, targetName, type Lang, type Translator } from "@tcg/i18n";
   import type { AiLevel } from "@tcg/ai";
   import { GameSession, HUMAN, type PlaySession, type SessionHooks, type Step } from "../game/session.ts";
   import { ScriptedAiDriver, WorkerAiDriver } from "../game/aiDriver.ts";
@@ -245,6 +245,82 @@
     return { def, face, summary: cardSummary(tr, def), rules: cardRulesText(tr, def), echo };
   }
 
+  // ---------------------------------------------------------------- keyboard and screen readers (plan, section 7.4)
+
+  /** The places of the current selection as buttons: the same choices as the highlights on the board. */
+  const choices = $derived.by(() => {
+    if (!game || options.length === 0) return [];
+    const g = game;
+    const lookup = lookupIn(g);
+    const places = highlightPlaces(options);
+    const out: { key: string; label: string; click: BoardClick }[] = [];
+    const add = (key: string, label: string, click: BoardClick) => {
+      if (!out.some((c) => c.key === key)) out.push({ key, label, click });
+    };
+    for (const sl of places.slots) add(`s${sl.lane}${sl.row}`, slotName(tr, sl), { kind: "slot", owner: me, lane: sl.lane, row: sl.row });
+    for (const l of places.lanes) add(`l${l}`, laneName(tr, l as Lane), { kind: "site", lane: l as Lane });
+    for (const t of places.targets) {
+      if (t.kind === "keeper") add(`k${t.id}`, targetName(tr, lookup, t, me), { kind: "keeper", id: t.id });
+      else add(`b${t.player}${t.lane}`, targetName(tr, lookup, t, me), { kind: "beacon", owner: t.player, lane: t.lane });
+    }
+    return out;
+  });
+
+  /** The keepers on the board, mine first, for the keyboard list. */
+  const field = $derived.by(() => {
+    if (!game) return [];
+    const g = game;
+    return [me, foe].map((p) => ({
+      player: p,
+      keepers: ([0, 1, 2] as Lane[]).flatMap((lane) =>
+        g.players[p].board[lane]
+          .map((id, row) => ({ id, lane, row: row === 0 ? ("front" as const) : ("back" as const) }))
+          .filter((k): k is { id: string; lane: Lane; row: "front" | "back" } => !!k.id),
+      ),
+    }));
+  });
+
+  function pickChoice(click: BoardClick) {
+    if (!game) return;
+    const next = narrow(options, click, game, me);
+    if (next.length > 0) choose(next);
+  }
+
+  function keeperActions(id: string): Action[] {
+    return myTurn ? optionsForKeeper(actions, id) : [];
+  }
+
+  /** The card shown full screen with its complete text. */
+  let zoomId = $state<string | null>(null);
+  const zoom = $derived.by(() => {
+    if (!zoomId || !game) return null;
+    const info = cardInfo(zoomId);
+    if (!info) return null;
+    const onBoard = field.some((f) => f.keepers.some((k) => k.id === zoomId));
+    const stats = onBoard && game ? `${attackOf(game, zoomId)}/${holdOf(game, zoomId) - (game.cards[zoomId]?.damage ?? 0)}` : null;
+    const keywords = info.def.keywords.map((k) => `${tr.t(`keywords.${k}.name`)}: ${tr.t(`keywords.${k}.reminder`)}`);
+    return { ...info, stats, keywords, flavor: cardFlavor(tr, info.def.id) };
+  });
+
+  function onKey(e: KeyboardEvent) {
+    const el = e.target as HTMLElement | null;
+    if (el && (el.tagName === "INPUT" || el.tagName === "SELECT" || el.tagName === "TEXTAREA")) return;
+    if (e.key === "Escape") {
+      if (zoomId) zoomId = null;
+      else clearSelection();
+    } else if ((e.key === "p" || e.key === "P") && !zoomId && game) {
+      if (game.phase === "mulligan") confirmMulligan();
+      else pass();
+    }
+  }
+
+  function cardKey(e: KeyboardEvent, id: string) {
+    if (e.key === "i" || e.key === "I") {
+      e.preventDefault();
+      zoomId = id;
+    }
+  }
+
   function playable(id: string): boolean {
     return myTurn && optionsForCard(actions, id).length > 0;
   }
@@ -266,6 +342,8 @@
     return `${tr.t(`events.GameOver.${key}`)} ${tr.t(`events.reasons.${game.outcome.reason}`)}`;
   });
 </script>
+
+<svelte:window onkeydown={onKey} />
 
 <div class="game">
   <header>
@@ -326,6 +404,13 @@
       </section>
     {/if}
 
+    {#if choices.length > 0}
+      <section class="choices" aria-label={tr.t("ui.chooseTarget")}>
+        <strong>{tr.t("ui.chooseTarget")}</strong>
+        {#each choices as c (c.key)}<button onclick={() => pickChoice(c.click)}>{c.label}</button>{/each}
+      </section>
+    {/if}
+
     <section class="hand">
       {#each game.players[me].hand as id (id)}
         {@const info = cardInfo(id)}
@@ -335,6 +420,11 @@
             class:selected={selectedCard === id || mulliganPick.includes(id)}
             class:dim={game.phase !== "mulligan" && !playable(id)}
             onclick={() => (game?.phase === "mulligan" ? toggleMulligan(id) : pickCard(id))}
+            oncontextmenu={(e) => {
+              e.preventDefault();
+              zoomId = id;
+            }}
+            onkeydown={(e) => cardKey(e, id)}
           >
             <PixelCard face={info.face} />
             <span class="sr-only">{info.summary}{info.echo ? " [1/1]" : ""}</span>
@@ -344,11 +434,50 @@
       {/each}
     </section>
 
+    <details class="field">
+      <summary>{tr.t("ui.field")}</summary>
+      {#each field as side (side.player)}
+        <div class="side">
+          <strong>{side.player === me ? tr.t("ui.yourKeepers") : tr.t("ui.enemyKeepers")}</strong>
+          {#if side.keepers.length === 0}<span class="hint">—</span>{/if}
+          {#each side.keepers as k (k.id)}
+            <div class="keeper">
+              <span>{cardName(tr, game.cards[k.id]?.cardId ?? "")} · {slotName(tr, { lane: k.lane, row: k.row })} · {attackOf(game, k.id)}/{holdOf(game, k.id) - (game.cards[k.id]?.damage ?? 0)}</span>
+              {#if keeperActions(k.id).length > 0}
+                <button onclick={() => {
+                  clearSelection();
+                  choose(keeperActions(k.id));
+                }}>{tr.t("ui.keeperActions")}</button>
+              {/if}
+              <button onclick={() => (zoomId = k.id)}>{tr.t("ui.details")}</button>
+            </div>
+          {/each}
+        </div>
+      {/each}
+    </details>
+
     <section class="log" aria-live="polite">
       <strong>{tr.t("ui.log")}</strong>
       {#each log.slice(-8) as line}<div>{line}</div>{/each}
       <div class="hint">{tr.t("ui.moveHint")} {tr.t("ui.speedHint")}</div>
+      <div class="hint">{tr.t("ui.keysHint")}</div>
     </section>
+
+    {#if zoom}
+      <div class="zoom" role="dialog" aria-modal="true" aria-label={zoom.face.name} tabindex="-1" onclick={() => (zoomId = null)} onkeydown={() => {}}>
+        <div class="zoom-card" role="presentation" onclick={(e) => e.stopPropagation()}>
+          <PixelCard face={zoom.face} scale={3} />
+          <div class="zoom-text">
+            <h3>{zoom.face.name}</h3>
+            <p>{zoom.summary}{zoom.stats ? ` · ${tr.t("ui.current")}: ${zoom.stats}` : ""}</p>
+            {#each zoom.keywords as line}<p class="kw">{line}</p>{/each}
+            {#each zoom.rules as line}<p>{line}</p>{/each}
+            <p class="flavor">{zoom.flavor}</p>
+            <button class="primary" onclick={() => (zoomId = null)}>{tr.t("ui.close")}</button>
+          </div>
+        </div>
+      </div>
+    {/if}
 
     {#if lessonResult}
       <div class="over">
@@ -397,6 +526,17 @@
   .chain, .log { width: 100%; max-width: 1440px; background: var(--panel); border-radius: 4px; padding: 6px 10px; font-size: 12px; }
   .lesson { width: 100%; max-width: 1440px; background: #1d2f22; border: 1px solid #4f9d69; border-radius: 4px; padding: 8px 10px; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
   .lesson .goal { color: var(--accent); }
+  .choices, .field { width: 100%; max-width: 1440px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; }
+  .field { display: block; background: var(--panel); border-radius: 4px; padding: 6px 10px; }
+  .field summary { cursor: pointer; }
+  .field .side { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+  .field .keeper { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .zoom { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 10; padding: 16px; }
+  .zoom-card { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; background: var(--panel); border-radius: 8px; padding: 16px; max-width: 640px; max-height: 100%; overflow: auto; }
+  .zoom-text { flex: 1; min-width: 200px; font-size: 14px; }
+  .zoom-text h3 { margin: 0 0 8px; color: var(--accent); }
+  .zoom-text .kw { color: var(--accent); }
+  .zoom-text .flavor { font-style: italic; color: var(--muted); }
   .over { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
   .over h2 { color: var(--accent); text-align: center; padding: 0 16px; }
 </style>
