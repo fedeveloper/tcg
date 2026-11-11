@@ -36,6 +36,8 @@
     "packages/server/test/**/*.ts",
     "packages/tools/src/**/*.ts",
     "packages/tools/test/**/*.ts",
+    "e2e/**/*.ts",
+    "playwright.config.ts",
     "vitest.config.ts"
   ]
 }

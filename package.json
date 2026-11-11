@@ -21,12 +21,14 @@
     "dev": "pnpm --filter @tcg/client dev",
     "build": "pnpm --filter @tcg/client build",
     "check:client": "pnpm --filter @tcg/client check",
-    "server": "tsx packages/server/src/main.ts",
     "build:server": "node packages/server/scripts/build.mjs",
     "soak:pvp": "tsx packages/tools/src/pvp-soak.ts",
-    "smoke": "tsx packages/tools/src/smoke.ts"
+    "smoke": "tsx packages/tools/src/smoke.ts",
+    "e2e": "playwright test",
+    "start:server": "tsx packages/server/src/main.ts"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/node": "^22.15.0",
     "fast-check": "^4.3.0",
     "tsx": "^4.20.0",

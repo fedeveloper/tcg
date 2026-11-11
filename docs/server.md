@@ -12,7 +12,7 @@ Il codice è in `packages/server`. Il protocollo dei messaggi è in `packages/pr
 
 ## Avvio
 
-1. Avvia il server in sviluppo con `pnpm server`.
+1. Avvia il server in sviluppo con `pnpm start:server`.
 2. Avvia il client con `pnpm dev`.
 3. Apri la schermata **Online** del client.
 

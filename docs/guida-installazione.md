@@ -35,7 +35,7 @@ Controlla la versione di Node.js con `node -v`.
 
 Il gioco online ha bisogno del server PvP.
 
-1. Avvia il server in un secondo terminale: `pnpm server`
+1. Avvia il server in un secondo terminale: `pnpm start:server`
 2. Controlla il server: apri `http://localhost:8787/health`. La pagina mostra `ok`, il numero di partite aperte (`matches`) e la memoria del server (`rss`).
 3. Apri il gioco in una finestra normale del browser.
 4. Apri il gioco in una finestra privata (anonima) dello stesso browser.
@@ -49,7 +49,7 @@ NOTA: le due finestre devono avere account diversi. Il browser salva il token de
 ### 1.5 Gioca dal telefono nella stessa rete
 
 1. Avvia il client con `pnpm dev --host`.
-2. Avvia il server con `HOST=0.0.0.0 pnpm server`.
+2. Avvia il server con `HOST=0.0.0.0 pnpm start:server`.
 3. Cerca l'indirizzo IP del computer (esempio: `192.168.1.20`).
 4. Sul telefono, apri `http://192.168.1.20:5173/`.
 
@@ -184,7 +184,7 @@ Usa questa lista per provare tutte le funzioni del gioco.
 
 | Problema | Causa probabile | Soluzione |
 |---|---|---|
-| La schermata Online mostra "Non connesso". | Il server non è attivo. | Avvia `pnpm server`, oppure controlla `systemctl status tcg-server`. |
+| La schermata Online mostra "Non connesso". | Il server non è attivo. | Avvia `pnpm start:server`, oppure controlla `systemctl status tcg-server`. |
 | `node:sqlite` non esiste. | Node.js è più vecchio di 22.13. | Aggiorna Node.js. |
 | Il server rifiuta la connessione dal dominio. | `ALLOWED_ORIGIN` non contiene il dominio. | Scrivi l'origine esatta nel servizio, con `https://`. |
 | "Il server usa una versione nuova". | Il client e il server hanno versioni diverse. | Esegui di nuovo `deploy/deploy.sh` e ricarica la pagina. |

@@ -20,7 +20,7 @@ Il server PvP e il deploy sul Raspberry Pi sono in [docs/server.md](docs/server.
 
 1. Installa le dipendenze: `pnpm install`
 2. Gioca nel browser: `pnpm dev`, poi apri l'indirizzo che Vite mostra.
-3. Gioca online: avvia `pnpm server` in un secondo terminale, poi apri la schermata Online del client.
+3. Gioca online: avvia `pnpm start:server` in un secondo terminale, poi apri la schermata Online del client.
 4. Gioca contro l'IA nel terminale: `pnpm play`
 5. Scegli la lingua e i mazzi: `pnpm play --lang en --deck sprout --opponent forge`
 6. Guarda una partita IA contro IA: `pnpm play --auto --seed 7`
@@ -37,7 +37,7 @@ Il server PvP e il deploy sul Raspberry Pi sono in [docs/server.md](docs/server.
 | `pnpm balance --games 20` | Gioca tutte le coppie di mazzi base e mostra le percentuali di vittoria. |
 | `pnpm sim --games 500` | Simula 500 partite e controlla le regole dopo ogni azione. |
 | `pnpm soak:pvp --games 100` | Gioca 100 partite PvP tramite il server e controlla la sincronizzazione. |
-| `pnpm server` | Avvia il server PvP (porta 8787). |
+| `pnpm start:server` | Avvia il server PvP (porta 8787). |
 | `pnpm smoke --url ws://host/ws --matches 10` | Gioca partite complete su un server installato e misura i tempi. |
 | `pnpm build:server` | Crea il server in un solo file: `dist/server/server.mjs`. |
 
