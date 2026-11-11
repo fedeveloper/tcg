@@ -21,6 +21,8 @@ export interface SessionOptions {
   seed: number;
   deck: string;
   opponentDeck: string;
+  /** Explicit card lists (custom decks, Expedition, Draft). They replace the deck names. */
+  decks?: [string[], string[]];
   /** A fixed starting position (the tutorial). It replaces the decks. */
   initial?: { state: GameState; events: GameEvent[] };
   level: AiLevel;
@@ -48,7 +50,7 @@ export class GameSession {
     this.opts = opts;
     const r =
       opts.initial ??
-      newGame({ seed: opts.seed, decks: [expandDeck(STARTER_DECKS[opts.deck]!), expandDeck(STARTER_DECKS[opts.opponentDeck]!)] });
+      newGame({ seed: opts.seed, decks: opts.decks ?? [expandDeck(STARTER_DECKS[opts.deck]!), expandDeck(STARTER_DECKS[opts.opponentDeck]!)] });
     this.state = r.state;
     this.startEvents = r.events;
   }

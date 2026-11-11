@@ -29,6 +29,8 @@
     "packages/i18n/test/**/*.ts",
     "packages/ai/src/**/*.ts",
     "packages/ai/test/**/*.ts",
+    "packages/meta/src/**/*.ts",
+    "packages/meta/test/**/*.ts",
     "packages/tools/src/**/*.ts",
     "packages/tools/test/**/*.ts",
     "vitest.config.ts"

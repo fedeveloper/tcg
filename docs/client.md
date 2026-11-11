@@ -60,3 +60,17 @@ Il tutorial ha cinque lezioni. Ogni lezione introduce una regola.
 - `packages/client/test/tutorial.test.ts` controlla che ogni lezione si risolva con le mosse previste.
 
 NOTA: tieni lo stato del gioco, le azioni e le lezioni in `$state.raw`. Il motore usa `structuredClone`, e questa funzione non copia i proxy di Svelte.
+
+## Modalità e profilo
+
+Il menu offre la Sfida libera, la Spedizione, il Draft, la Collezione, i Mazzi e il Tutorial.
+
+- `packages/meta` contiene la logica senza interfaccia: collezione, Frammenti, ricompense, Spedizione e Draft. I test sono in `packages/meta/test`.
+- `src/meta/profileStore.svelte.ts` salva il profilo nella memoria del browser (`localStorage`, chiave `tcg.profile`). Prima della fase 4 non c'è un server: il profilo resta su un solo browser.
+- La collezione iniziale contiene le carte dei mazzi base. Una vittoria in Sfida libera dà 3 carte, una sconfitta 10 Frammenti.
+- Un doppione oltre il limite del mazzo si rompe in Frammenti. I Frammenti creano carte (costo per rarità in `packages/meta/src/collection.ts`).
+- Spedizione: un mazzo di 20 carte di una fazione, 6 avversari, 2 vite, una carta nuova dopo ogni vittoria.
+- Draft: due fazioni, 30 scelte di 1 carta su 3, poi partite fino a 7 vittorie o 3 sconfitte.
+- Uscire da una partita di una corsa conta come una sconfitta.
+
+NOTA: le nuove carte senza illustrazione mostrano un riquadro vuoto. Il thread di grafica disegna le illustrazioni.
