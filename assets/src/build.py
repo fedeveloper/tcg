@@ -18,8 +18,8 @@ import board as board_mod  # noqa: E402
 import font as font_mod  # noqa: E402
 import ui  # noqa: E402
 from beacon import STATES, beacon  # noqa: E402
-from cards import CARD_IDS, illustration  # noqa: E402
-from keepers import KEEPERS, unknown_keeper  # noqa: E402
+from keepers import unknown_keeper  # noqa: E402
+from roster import CARD_IDS, KEEPERS, illustration  # noqa: E402
 from palette import COLOURS, FACTION_COLOURS, RGB  # noqa: E402
 from px import Canvas  # noqa: E402
 
@@ -153,10 +153,18 @@ def build_fonts():
             fh.write(fnt)
 
 
+def load_fallback():
+    """Names and numbers for the previews of the cards that the card data does not contain yet."""
+    with open(os.path.join(HERE, "preview-cards.json")) as fh:
+        return json.load(fh)
+
+
 def load_names():
     path = os.path.join(os.path.dirname(ROOT), "packages", "i18n", "locales", "it", "cards.json")
+    names = {k: v[0] for k, v in load_fallback().items()}
     with open(path) as fh:
-        return {k: v["name"] for k, v in json.load(fh).items()}
+        names.update({k: v["name"] for k, v in json.load(fh).items()})
+    return names
 
 
 def full_card(cid, arts, names, keeper, stats=None):
@@ -180,16 +188,18 @@ def full_card(cid, arts, names, keeper, stats=None):
 
 def build_previews(arts, b):
     names = load_names()
-    data = {}
-    for fac in ("forge", "sprout", "neutral"):
-        with open(os.path.join(os.path.dirname(ROOT), "packages", "cards", "data", f"{fac}.json")) as fh:
-            d = json.load(fh)
-            for card in d if isinstance(d, list) else d["cards"]:
-                data[card["id"]] = card
+    data = {k: {"cost": v[1], "attack": v[2], "hold": v[3]} for k, v in load_fallback().items()}
+    data_dir = os.path.join(os.path.dirname(ROOT), "packages", "cards", "data")
+    for file in sorted(os.listdir(data_dir)):
+        if file.endswith(".json"):
+            with open(os.path.join(data_dir, file)) as fh:
+                d = json.load(fh)
+                for card in d if isinstance(d, list) else d["cards"]:
+                    data[card["id"]] = card
     stats = lambda cid: (data[cid]["cost"], data[cid].get("attack", 0), data[cid].get("hold", 0))  # noqa: E731
     # 1. every card
-    cols = 13
-    sheet = Canvas(cols * 66 + 2, 4 * 90 + 2, "ink")
+    cols = 14
+    sheet = Canvas(cols * 66 + 2, -(-len(CARD_IDS) // cols) * 90 + 2, "ink")
     for i, cid in enumerate(CARD_IDS):
         sheet.blit(full_card(cid, arts, names, cid in KEEPERS, stats(cid)), 2 + (i % cols) * 66, 2 + (i // cols) * 90)
     im = sheet.image()
@@ -221,13 +231,13 @@ def build_previews(arts, b):
     im = s.image()
     im.resize((im.width * 3, im.height * 3), Image.NEAREST).save(out("preview", "mockup.png"))
     # 3. keepers, beacons and fonts
-    k = Canvas(16 * 32, 4 * 32 + 52, "sea")
+    rows = -(-len(KEEPERS) // 16)
+    k = Canvas(16 * 32, rows * 32 + 52, "sea")
     for i, kid in enumerate(KEEPERS):
         k.blit(KEEPERS[kid](0), (i % 16) * 32, (i // 16) * 32)
-        k.blit(KEEPERS[kid](2), (i % 16) * 32, (i // 16) * 32 + 64)
     for i, st in enumerate(STATES):
         for f in range(4):
-            k.blit(beacon(st, f), (i * 4 + f) * 34 + 4, 4 * 32 + 2)
+            k.blit(beacon(st, f), (i * 4 + f) * 34 + 4, rows * 32 + 2)
     im = k.image()
     im.resize((im.width * 3, im.height * 3), Image.NEAREST).save(out("preview", "keepers-beacons.png"))
     t = Canvas(250, 96, "abyss")

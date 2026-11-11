@@ -44,4 +44,7 @@ FACTION_COLOURS = {
     "forge": ["soot", "rust", "ember", "flame", "glow"],
     "sprout": ["kelp_dark", "kelp", "moss", "sprout", "coral"],
     "neutral": ["slate", "stone", "ash", "sand", "white"],
+    "abyss": ["abyss", "deep", "sea", "mist", "foam"],
+    "gear": ["wood_dark", "wood", "copper", "tan", "sand"],
+    "vesper": ["dusk", "violet", "lilac", "glow", "white"],
 }

@@ -26,8 +26,13 @@ Il file `palette/fari-32.gpl` permette di ritoccare un PNG in Aseprite.
 |---|---|
 | `palette.py` | I 32 colori e i colori delle fazioni |
 | `px.py` | Strumenti di disegno: forme, rampe, dithering, contorno |
-| `keepers.py` | 30 Custodi, 4 fotogrammi di riposo ciascuno |
-| `cards.py` | 52 illustrazioni (56 × 40) |
+| `keepers.py` | 30 Custodi di Fucina e Germoglio, 4 fotogrammi di riposo ciascuno |
+| `keepers_abyss.py`, `keepers_gear.py`, `keepers_vesper.py`, `keepers_neutral.py` | 62 Custodi delle altre fazioni |
+| `parts.py` | Parti comuni dei Custodi: lanterna, ruota dentata, spettro |
+| `cards.py` | Sfondi e scene di Fucina e Germoglio (56 × 40) |
+| `scenes_set.py` | Sfondi e scene di Abisso, Ingranaggio, Vespro e carte neutrali |
+| `roster.py` | Elenco completo: 92 Custodi e 154 illustrazioni |
+| `preview-cards.json` | Nomi e numeri per le anteprime delle carte che i dati non contengono ancora |
 | `ui.py` | Cornici delle carte, retro, icone, indicatore della Marea, effetti |
 | `beacon.py` | Faro: acceso, danneggiato, spento |
 | `board.py` | Tabellone 480 × 270 e coordinate |
