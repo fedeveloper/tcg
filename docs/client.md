@@ -96,3 +96,11 @@ Il client calcola le azioni legali solo per l'interfaccia. Il server controlla d
 - **Elenco del campo.** La sezione "Campo" elenca i Custodi dei due giocatori con posizione, Attacco e Tenuta. Il pulsante "Azioni" apre lo spostamento e le abilità di un Custode.
 - **Scheda della carta.** Il clic destro o il tasto I su una carta apre la carta a schermo intero, con le parole chiave spiegate, il testo completo e il testo di colore.
 - **Test.** `pnpm e2e` esegue i test end-to-end con Playwright, anche il flusso con la sola tastiera.
+
+## Telefono in verticale (sezione 7.5 del piano)
+
+- Sotto 700 px di larghezza e in verticale, la mano resta in basso come un ventaglio.
+- La riga del giocatore resta sopra la mano, con il pulsante principale sempre visibile.
+- Le carte della mano sono piccole. Il testo delle regole appare solo nella scheda della carta.
+- La plancia resta orizzontale e si adatta alla larghezza. Una plancia verticale richiede nuova grafica.
+- Un test e2e controlla il layout su un telefono di 412 × 915 px: mano su una riga, pulsante visibile, nessuno scorrimento orizzontale.

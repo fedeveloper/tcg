@@ -90,3 +90,19 @@ test("the keyboard plays a card and opens the card sheet", async ({ page }) => {
   }
   await expect.poll(() => copies.count(), { timeout: 20_000 }).toBeLessThan(before);
 });
+
+test.describe("phone in portrait", () => {
+  test.use({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true });
+  test("the hand is one row at the bottom and the cards stay playable", async ({ page }) => {
+    await openMenu(page);
+    await page.getByRole("button", { name: "Gioca", exact: true }).click();
+    await waitForBoard(page);
+    const cards = page.locator(".hand .card");
+    const first = await cards.first().boundingBox();
+    const last = await cards.last().boundingBox();
+    expect(Math.abs(first!.y - last!.y)).toBeLessThan(40);
+    await expect(page.locator(".me button.primary")).toBeVisible();
+    const width = await page.locator("html").evaluate((el) => el.scrollWidth);
+    expect(width).toBeLessThanOrEqual(412);
+  });
+});

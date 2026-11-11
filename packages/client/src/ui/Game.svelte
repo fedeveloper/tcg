@@ -412,11 +412,12 @@
     {/if}
 
     <section class="hand">
-      {#each game.players[me].hand as id (id)}
+      {#each game.players[me].hand as id, i (id)}
         {@const info = cardInfo(id)}
         {#if info}
           <button
             class="card {info.def.faction}"
+            style="--fan: {i - (game.players[me].hand.length - 1) / 2}"
             class:selected={selectedCard === id || mulliganPick.includes(id)}
             class:dim={game.phase !== "mulligan" && !playable(id)}
             onclick={() => (game?.phase === "mulligan" ? toggleMulligan(id) : pickCard(id))}
@@ -537,6 +538,29 @@
   .zoom-text h3 { margin: 0 0 8px; color: var(--accent); }
   .zoom-text .kw { color: var(--accent); }
   .zoom-text .flavor { font-style: italic; color: var(--muted); }
+  /* Phone in portrait (plan, section 7.5): the hand opens as a fan at the bottom of the screen. */
+  @media (max-width: 700px) and (orientation: portrait) {
+    .game { padding: 6px 8px 0; gap: 6px; }
+    header { gap: 6px 10px; font-size: 12px; }
+    header .motion { display: none; }
+    .me { position: sticky; bottom: 150px; z-index: 3; background: var(--bg, #0f1722); padding: 6px 0; font-size: 12px; }
+    .hand {
+      position: sticky; bottom: 0; z-index: 2; flex-wrap: nowrap; justify-content: center; gap: 0;
+      padding: 18px 8px 8px; min-height: 150px; overflow-x: auto; overflow-y: visible;
+      background: linear-gradient(to top, var(--bg, #0f1722) 70%, transparent);
+    }
+    .card {
+      flex: 0 0 auto; width: 84px; padding: 0; margin-left: -22px;
+      transform: rotate(calc(var(--fan) * 5deg)) translateY(calc(var(--fan) * var(--fan) * 2px));
+      transform-origin: 50% 120%;
+    }
+    .card:first-child { margin-left: 0; }
+    .card :global(canvas) { width: 100% !important; height: auto !important; }
+    .card .rules { display: none; }
+    .card:hover:not(.dim) { transform: rotate(calc(var(--fan) * 5deg)) translateY(-8px); }
+    .card.selected { transform: translateY(-22px); z-index: 1; }
+    .chain, .log { font-size: 11px; }
+  }
   .over { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
   .over h2 { color: var(--accent); text-align: center; padding: 0 16px; }
 </style>
