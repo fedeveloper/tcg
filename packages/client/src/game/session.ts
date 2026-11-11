@@ -30,16 +30,46 @@ export interface SessionOptions {
   /** Called for every step. The session waits for the returned promise (the animation). */
   onStep: (step: Step) => Promise<void> | void;
   /** Called when the state changes and when the human must act. */
-  onChange?: (session: GameSession) => void;
+  onChange?: (session: PlaySession) => void;
 }
 
 export const HUMAN: PlayerId = 0;
 
 /**
+ * What the game screen needs from a session. GameSession runs the engine in the browser (AI, tutorial);
+ * RemoteSession receives the views from the PvP server.
+ */
+export interface PlaySession {
+  /** The seat of the local player. Online, it can be 1. */
+  readonly me: PlayerId;
+  readonly state: GameState;
+  readonly busy: boolean;
+  readonly over: boolean;
+  readonly startEvents: GameEvent[];
+  /** Player names (online only). */
+  readonly names?: [string, string];
+  /** Time limit of the current decision, in milliseconds since 1970 (online only). */
+  readonly deadline?: number | null;
+  humanActions(): Action[];
+  humanAct(action: Action): Promise<void>;
+  start(): Promise<void>;
+  /** Gives up the match (online only). */
+  concede?(): void;
+  dispose(): void;
+}
+
+/** Callbacks of the game screen. */
+export interface SessionHooks {
+  onStep: (step: Step) => Promise<void> | void;
+  onChange?: (session: PlaySession) => void;
+}
+
+/**
  * The game flow of the client. The engine computes the rules; this class only sequences
  * the human actions, the AI actions and the animations. It has no DOM code, so tests run it in Node.
  */
-export class GameSession {
+export class GameSession implements PlaySession {
+  readonly me: PlayerId = HUMAN;
   state: GameState;
   /** True while an action or an animation runs. The input stays locked (plan, section 6.5). */
   busy = false;

@@ -5,7 +5,7 @@
   import { eventsFor, tideFor, totalLight, type Action, type GameState, type PlayerId } from "@tcg/engine";
   import { cardRulesText, cardSummary, describeAction, describeEvent, lookupIn, type Lang, type Translator } from "@tcg/i18n";
   import type { AiLevel } from "@tcg/ai";
-  import { GameSession, HUMAN, type Step } from "../game/session.ts";
+  import { GameSession, HUMAN, type PlaySession, type SessionHooks, type Step } from "../game/session.ts";
   import { ScriptedAiDriver, WorkerAiDriver } from "../game/aiDriver.ts";
   import { newScenario } from "@tcg/engine";
   import { LESSONS, type Lesson } from "../tutorial/lessons.ts";
@@ -29,16 +29,25 @@
     decks?: [string[], string[]];
     /** Called by the button of the result screen. Without it, the button goes back to the menu. */
     onFinish?: (winner: PlayerId | null) => void;
+    /** Builds a session that does not run the engine here (online match). It replaces the local session. */
+    createSession?: (hooks: SessionHooks) => PlaySession;
     onNext?: () => void;
     onRetry?: () => void;
     onExit: () => void;
   }
-  let { tr, lang = $bindable(), deck, opponentDeck, level, seed, lesson = null, decks, onFinish, onNext, onRetry, onExit }: Props = $props();
+  let { tr, lang = $bindable(), deck, opponentDeck, level, seed, lesson = null, decks, onFinish, createSession, onNext, onRetry, onExit }: Props = $props();
 
   let host: HTMLDivElement;
   let app: Application | null = null;
   let board: BoardView | null = null;
-  let session = $state.raw<GameSession | null>(null);
+  let session = $state.raw<PlaySession | null>(null);
+  /** The seat of the local player. Online, the server can give seat 1. */
+  let me = $state<PlayerId>(HUMAN);
+  const foe = $derived<PlayerId>(me === 0 ? 1 : 0);
+  let names = $state.raw<[string, string] | null>(null);
+  let deadline = $state<number | null>(null);
+  let now = $state(Date.now());
+  const secondsLeft = $derived(deadline === null ? null : Math.max(0, Math.ceil((deadline - now) / 1000)));
 
   // Reactive copies of the session data. The session itself is a plain class.
   let game = $state.raw<GameState | null>(null);
@@ -62,17 +71,19 @@
   });
 
   const actions = $derived(session && game && !busy ? session.humanActions() : []);
-  const myTurn = $derived(!!game && game.turn === HUMAN && !busy && game.phase !== "over");
+  const myTurn = $derived(!!game && game.turn === me && !busy && actions.length > 0 && game.phase !== "over");
 
-  function refresh(s: GameSession) {
+  function refresh(s: PlaySession) {
     game = s.state;
     busy = s.busy;
+    names = s.names ?? null;
+    deadline = s.deadline ?? null;
   }
 
   function addLog(step: { before: GameState; after: GameState; events: Step["events"] }) {
     const lookup = lookupIn(step.after, step.before);
-    const lines = eventsFor(step.events, HUMAN)
-      .map((e) => describeEvent(tr, e, HUMAN, lookup))
+    const lines = eventsFor(step.events, me)
+      .map((e) => describeEvent(tr, e, me, lookup))
       .filter((l): l is string => !!l);
     log = [...log, ...lines].slice(-40);
   }
@@ -101,24 +112,32 @@
       if (disposed) return;
       host.appendChild(app!.canvas);
       app!.stage.scale.set(scale);
-      board = new BoardView(theme, tr, HUMAN, speed);
+      const hooks: SessionHooks = { onStep, onChange: refresh };
+      if (createSession) {
+        session = createSession(hooks);
+      } else {
+        const plan = lesson?.opponent;
+        const ai = !lesson ? new WorkerAiDriver() : new ScriptedAiDriver(plan?.kind === "script" ? plan.next : () => null, 350);
+        const initial = lesson ? newScenario(lesson.scenario) : undefined;
+        session = new GameSession({ seed, deck, opponentDeck, decks, level, ai, initial, ...hooks });
+      }
+      me = session.me;
+      board = new BoardView(theme, tr, me, speed);
       board.onClick = onBoardClick;
       app!.stage.addChild(board.root);
       app!.stage.eventMode = "static";
       app!.canvas.addEventListener("pointerdown", () => {
         if (busy) board?.speedUp();
       });
-      const plan = lesson?.opponent;
-      const ai = !lesson ? new WorkerAiDriver() : new ScriptedAiDriver(plan?.kind === "script" ? plan.next : () => null, 350);
-      const initial = lesson ? newScenario(lesson.scenario) : undefined;
-      session = new GameSession({ seed, deck, opponentDeck, decks, level, ai, initial, onStep, onChange: refresh });
       addLog({ before: session.state, after: session.state, events: session.startEvents });
       board.sync(session.state);
       refresh(session);
       await session.start();
     })();
+    const clock = setInterval(() => (now = Date.now()), 1000);
     return () => {
       disposed = true;
+      clearInterval(clock);
     };
   });
 
@@ -143,7 +162,7 @@
     if (!board || !game) return;
     const places = highlightPlaces(options);
     const rects: Rect[] = [
-      ...places.slots.map((s) => board!.rectOfSlot(HUMAN, s.lane, s.row)),
+      ...places.slots.map((s) => board!.rectOfSlot(me, s.lane, s.row)),
       ...places.lanes.map((l) => board!.rectOfSite(l as 0 | 1 | 2)),
       ...places.targets.map((t) => board!.rectOfTarget(game!, t)).filter((r): r is Rect => !!r),
     ];
@@ -177,11 +196,11 @@
   function onBoardClick(click: BoardClick) {
     if (!game || busy) return;
     if (options.length > 0) {
-      const next = narrow(options, click, game, HUMAN);
+      const next = narrow(options, click, game, me);
       if (next.length > 0) return choose(next);
     }
     // No selection: a click on one of my keepers starts a move.
-    if (click.kind === "keeper" && game.cards[click.id]?.owner === HUMAN && myTurn) {
+    if (click.kind === "keeper" && game.cards[click.id]?.owner === me && myTurn) {
       clearSelection();
       choose(optionsForKeeper(actions, click.id));
       return;
@@ -241,7 +260,7 @@
   const result = $derived.by(() => {
     if (!game?.outcome) return null;
     const w = game.outcome.winner;
-    const key = w === null ? "draw" : w === HUMAN ? "win" : "lose";
+    const key = w === null ? "draw" : w === me ? "win" : "lose";
     return `${tr.t(`events.GameOver.${key}`)} ${tr.t(`events.reasons.${game.outcome.reason}`)}`;
   });
 </script>
@@ -250,9 +269,10 @@
   <header>
     {#if game}
       <span>{game.phase === "mulligan" ? tr.t("ui.mulligan") : tr.t("ui.round", { round: game.round })}</span>
-      <span>{tr.t("ui.tide", { value: tideFor(game, HUMAN) > 0 ? `+${tideFor(game, HUMAN)}` : tideFor(game, HUMAN) })}</span>
-      <span>{tr.t("ui.opponent")}: {tr.t("ui.ember", { ember: game.players[1].ember })} · {tr.t("ui.hand", { count: game.players[1].hand.length })} · {tr.t("ui.deck", { count: game.players[1].deck.length })}</span>
-      <span class="status">{busy ? tr.t("ui.waiting") : myTurn ? tr.t("ui.yourTurn") : ""}</span>
+      <span>{tr.t("ui.tide", { value: tideFor(game, me) > 0 ? `+${tideFor(game, me)}` : tideFor(game, me) })}</span>
+      <span>{names ? names[foe] : tr.t("ui.opponent")}: {tr.t("ui.ember", { ember: game.players[foe].ember })} · {tr.t("ui.hand", { count: game.players[foe].hand.length })} · {tr.t("ui.deck", { count: game.players[foe].deck.length })}</span>
+      <span class="status">{busy ? tr.t("ui.waiting") : myTurn ? tr.t("ui.yourTurn") : names && game.phase !== "over" ? tr.t("online.opponentTurn") : ""}</span>
+      {#if secondsLeft !== null && game.phase !== "over"}<span class="timer" class:low={secondsLeft <= 20}>{tr.t("online.timer", { seconds: secondsLeft })}</span>{/if}
     {/if}
     <span class="spacer"></span>
     <label class="motion"><input type="checkbox" bind:checked={reducedMotion} /> {tr.t("ui.reducedMotion")}</label>
@@ -260,6 +280,9 @@
       <option value="it">IT</option>
       <option value="en">EN</option>
     </select>
+    {#if session?.concede && game && game.phase !== "over"}
+      <button onclick={() => confirm(tr.t("online.concedeConfirm")) && session?.concede?.()}>{tr.t("online.concede")}</button>
+    {/if}
     <button onclick={onExit}>{tr.t("ui.menu")}</button>
   </header>
 
@@ -275,9 +298,9 @@
 
   {#if game}
     <section class="me">
-      <span>{tr.t("ui.ember", { ember: game.players[HUMAN].ember })}</span>
-      <span>{tr.t("ui.reserve", { reserve: game.players[HUMAN].reserve })}</span>
-      <span>{tr.t("ui.deck", { count: game.players[HUMAN].deck.length })}</span>
+      <span>{tr.t("ui.ember", { ember: game.players[me].ember })}</span>
+      <span>{tr.t("ui.reserve", { reserve: game.players[me].reserve })}</span>
+      <span>{tr.t("ui.deck", { count: game.players[me].deck.length })}</span>
       <span class="spacer"></span>
       {#if options.length > 0}<span class="hint">{tr.t("ui.selectTarget")}</span><button onclick={clearSelection}>{tr.t("ui.cancel")}</button>{/if}
       {#if game.phase === "mulligan"}
@@ -292,13 +315,13 @@
       <section class="chain">
         <strong>{tr.t("ui.chain")}</strong>
         {#each [...game.chain].reverse() as link}
-          <div>{describeAction(tr, game, link.action, link.player)}{link.player === HUMAN ? "" : ` (${tr.t("ui.opponent")})`}</div>
+          <div>{describeAction(tr, game, link.action, link.player)}{link.player === me ? "" : ` (${tr.t("ui.opponent")})`}</div>
         {/each}
       </section>
     {/if}
 
     <section class="hand">
-      {#each game.players[HUMAN].hand as id (id)}
+      {#each game.players[me].hand as id (id)}
         {@const info = cardInfo(id)}
         {#if info}
           <button
@@ -335,7 +358,7 @@
     {:else if result}
       <div class="over">
         <h2>{result}</h2>
-        <p>{tr.t("ui.finalScore", { you: totalLight(game, 0), opponent: totalLight(game, 1) })}</p>
+        <p>{tr.t("ui.finalScore", { you: totalLight(game, me), opponent: totalLight(game, foe) })}</p>
         {#if onFinish}
           <button class="primary" onclick={() => onFinish(game?.outcome?.winner ?? null)}>{tr.t("meta.continue")}</button>
         {:else}
@@ -352,6 +375,8 @@
   .spacer { flex: 1; }
   .motion { display: flex; align-items: center; gap: 4px; cursor: pointer; }
   .status { color: var(--accent); }
+  .timer { font-variant-numeric: tabular-nums; }
+  .timer.low { color: #e0605a; }
   .hint { color: var(--muted); font-size: 12px; }
   .board { line-height: 0; max-width: 100%; overflow: hidden; }
   .board :global(canvas) { image-rendering: pixelated; max-width: 100%; }

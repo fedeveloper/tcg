@@ -56,6 +56,9 @@ importers:
       '@tcg/meta':
         specifier: workspace:*
         version: link:../meta
+      '@tcg/protocol':
+        specifier: workspace:*
+        version: link:../protocol
       gsap:
         specifier: ^3.13.0
         version: 3.15.1
@@ -66,6 +69,9 @@ importers:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^5.1.0
         version: 5.1.1(svelte@5.57.3)(vite@6.4.6(@types/node@22.20.5)(tsx@4.23.15))
+      '@tcg/server':
+        specifier: workspace:*
+        version: link:../server
       svelte:
         specifier: ^5.38.0
         version: 5.57.3

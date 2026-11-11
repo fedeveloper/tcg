@@ -8,6 +8,10 @@
   import Collection from "./Collection.svelte";
   import Decks from "./Decks.svelte";
   import RunScreen from "./RunScreen.svelte";
+  import Online from "./Online.svelte";
+  import { OnlineClient } from "../online/connection.ts";
+  import { RemoteSession } from "../online/remoteSession.ts";
+  import type { ServerMessage } from "@tcg/protocol";
   import CardTile from "./CardTile.svelte";
   import { deckLabel } from "./deckText.ts";
   import { profileStore } from "../meta/profileStore.svelte.ts";
@@ -21,9 +25,9 @@
     return detectLang(navigator.language);
   }
 
-  type Screen = "menu" | "collection" | "decks" | "expedition" | "draft" | "game";
+  type Screen = "menu" | "collection" | "decks" | "expedition" | "draft" | "online" | "game";
   /** What the current match is for: a free match, a match of a run, or a tutorial lesson. */
-  type Match = { kind: "free" } | { kind: "run"; mode: "expedition" | "draft" } | { kind: "lesson" };
+  type Match = { kind: "free" } | { kind: "run"; mode: "expedition" | "draft" } | { kind: "lesson" } | { kind: "online"; session: RemoteSession };
 
   let lang = $state<Lang>(savedLang());
   let tr = $derived(createTranslator(lang));
@@ -37,6 +41,12 @@
   let lesson = $state.raw<Lesson | null>(null);
   let showLessons = $state(false);
   let reward = $state.raw<MatchReward | null>(null);
+  /** One connection to the PvP server for the whole page. It opens on the first visit of the Online screen. */
+  let online: OnlineClient | null = null;
+  function onlineClient(): OnlineClient {
+    online ??= new OnlineClient();
+    return online;
+  }
 
   const playable = $derived(profileStore.profile.decks.filter((d) => deckProblems(profileStore.profile.collection, d.cards).length === 0));
 
@@ -79,6 +89,14 @@
     screen = "game";
   }
 
+  function startOnline(first: Extract<ServerMessage, { t: "state" }>) {
+    if (screen === "game") return;
+    lesson = null;
+    seed = newSeed();
+    match = { kind: "online", session: new RemoteSession(onlineClient(), first) };
+    screen = "game";
+  }
+
   function retryLesson() {
     const l = lesson;
     screen = "menu";
@@ -93,8 +111,8 @@
   }
 
   function finish(winner: PlayerId | null) {
-    const won = winner === 0;
-    if (match.kind === "free") {
+    const won = winner === (match.kind === "online" ? match.session.me : 0);
+    if (match.kind === "free" || match.kind === "online") {
       reward = profileStore.update((p) => recordMatch(p, won));
       screen = "menu";
     } else if (match.kind === "run") {
@@ -107,7 +125,11 @@
   /** Leaving a run match before the end counts as a loss. */
   function exitGame() {
     if (match.kind === "run") finish(1);
-    else screen = "menu";
+    else if (match.kind === "online") {
+      // The match goes on in the server: the Online screen can resume it.
+      if (match.session.over) finish(match.session.state.outcome?.winner ?? null);
+      else screen = "online";
+    } else screen = "menu";
   }
 </script>
 
@@ -122,6 +144,7 @@
       {seed}
       {lesson}
       {decks}
+      createSession={match.kind === "online" ? (hooks) => (match as { session: RemoteSession }).session.attach(hooks) : undefined}
       onFinish={match.kind === "lesson" ? undefined : finish}
       onNext={nextLesson}
       onRetry={retryLesson}
@@ -132,6 +155,8 @@
   <Collection {tr} onBack={() => (screen = "menu")} />
 {:else if screen === "decks"}
   <Decks {tr} onBack={() => (screen = "menu")} />
+{:else if screen === "online"}
+  <Online {tr} client={onlineClient()} onMatch={startOnline} onBack={() => (screen = "menu")} />
 {:else if screen === "expedition" || screen === "draft"}
   {@const mode = screen}
   <RunScreen {tr} kind={mode} onPlay={(deck, foe) => startRunMatch(mode, deck, foe)} onBack={() => (screen = "menu")} />
@@ -179,6 +204,7 @@
     <button class="primary" onclick={startFree} disabled={playable.length === 0}>{tr.t("ui.start")}</button>
 
     <h2>{tr.t("meta.modes")}</h2>
+    <button onclick={() => (screen = "online")}>{tr.t("online.title")}</button>
     <button onclick={() => (screen = "expedition")}>{tr.t("meta.expedition")}</button>
     <button onclick={() => (screen = "draft")}>{tr.t("meta.draft")}</button>
     <button onclick={() => (screen = "collection")}>{tr.t("meta.collection")} · {tr.t("meta.shards", { count: profileStore.profile.collection.shards })}</button>

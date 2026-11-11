@@ -492,5 +492,45 @@
     "runDeck_other": "Il tuo mazzo ({{count}} carte)",
     "freeMatch": "Sfida libera",
     "modes": "Modalità"
+  },
+  "online": {
+    "title": "Online",
+    "status": {
+      "connecting": "Connessione…",
+      "online": "Connesso",
+      "offline": "Non connesso"
+    },
+    "name": "Il tuo nome",
+    "quickTitle": "Partita rapida",
+    "quick": "Cerca un avversario",
+    "searching": "Cerco un avversario…",
+    "privateTitle": "Partita con un amico",
+    "create": "Crea una partita",
+    "shareCode": "Dai questo codice al tuo amico:",
+    "waitingFriend": "La partita inizia quando il tuo amico entra.",
+    "codePlaceholder": "Codice di 6 caratteri",
+    "join": "Entra",
+    "badCode": "Il codice ha 6 lettere o cifre.",
+    "noDeck": "Non hai un mazzo valido. Crea un mazzo nella schermata Mazzi.",
+    "activeMatches": "Partite in corso",
+    "versus": "Contro {{name}}",
+    "resume": "Riprendi",
+    "note": "Il server controlla le regole di ogni azione. Se perdi la connessione, la partita continua: riprendila da questa schermata.",
+    "opponentTurn": "Turno dell'avversario",
+    "timer": "Tempo: {{seconds}} s",
+    "concede": "Abbandona",
+    "concedeConfirm": "Vuoi abbandonare la partita? Perdi la partita.",
+    "errors": {
+      "badMessage": "Il server non capisce il messaggio. Ricarica la pagina.",
+      "notLoggedIn": "Il server non ti conosce ancora. Attendi la connessione.",
+      "badDeck": "Il server rifiuta il mazzo: il mazzo non rispetta le regole.",
+      "noMatch": "La partita non esiste o è già finita.",
+      "notYourTurn": "Attendi il tuo turno.",
+      "illegal": "Il server rifiuta questa azione.",
+      "stale": "La tua vista era vecchia. Ecco la vista nuova.",
+      "busy": "Il server è occupato. Riprova tra poco.",
+      "rateLimited": "Mandi troppi messaggi. Attendi qualche secondo.",
+      "version": "Il server usa una versione nuova. Ricarica la pagina."
+    }
   }
 }
