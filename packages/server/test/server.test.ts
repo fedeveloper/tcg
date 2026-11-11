@@ -244,3 +244,13 @@ describe("WebSocket server", () => {
     b.ws.close();
   });
 });
+
+describe("PvP soak", () => {
+  it("plays matches with reconnections and no synchronization errors", async () => {
+    const { runSoak } = await import("../src/soak.ts");
+    const r = runSoak({ games: 4, seed: 3, reconnectEvery: 2 });
+    expect(r.errors).toEqual([]);
+    expect(r.games).toBe(4);
+    expect(r.reconnections).toBe(2);
+  });
+});

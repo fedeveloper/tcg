@@ -95,3 +95,12 @@ Lo script esegue il build del client e del server, copia i file con `rsync` e ri
 
 Un test misura la memoria del server con 10 partite attive. Il test fallisce sopra 200 MB.
 L'unità systemd limita Node.js a 256 MB di heap e il servizio a 300 MB.
+
+## Test di sincronizzazione
+
+`pnpm soak:pvp --games 100` gioca 100 partite tramite il server. Il comando è il criterio di uscita della fase 4.
+Ogni giocatore sceglie le azioni solo dalla sua vista, con l'IA facile.
+Ogni quinta partita, un giocatore perde la connessione e riprende la partita.
+Alla fine di ogni partita, il comando ricostruisce la partita dal replay e confronta ogni vista ricevuta.
+Il comando fallisce quando il server rifiuta un'azione legale o quando una vista è diversa dal replay.
+La CI esegue questo comando.

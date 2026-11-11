@@ -3,5 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "dependencies": { "@tcg/ai": "workspace:*", "@tcg/cards": "workspace:*", "@tcg/engine": "workspace:*", "@tcg/i18n": "workspace:*" }
+  "dependencies": {
+    "@tcg/ai": "workspace:*",
+    "@tcg/cards": "workspace:*",
+    "@tcg/engine": "workspace:*",
+    "@tcg/i18n": "workspace:*",
+    "@tcg/server": "workspace:*"
+  }
 }

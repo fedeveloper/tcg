@@ -22,7 +22,8 @@
     "build": "pnpm --filter @tcg/client build",
     "check:client": "pnpm --filter @tcg/client check",
     "server": "tsx packages/server/src/main.ts",
-    "build:server": "node packages/server/scripts/build.mjs"
+    "build:server": "node packages/server/scripts/build.mjs",
+    "soak:pvp": "tsx packages/tools/src/pvp-soak.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.0",

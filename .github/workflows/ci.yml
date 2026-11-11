@@ -33,6 +33,8 @@ jobs:
         run: pnpm sim --games 30 --ai easy --decks starter
       - name: Simulation with the medium AI
         run: pnpm sim --games 10 --ai medium --decks starter
+      - name: PvP soak test (100 matches through the server)
+        run: pnpm soak:pvp --games 100
       - name: Client build
         run: pnpm build
       - name: Server build
