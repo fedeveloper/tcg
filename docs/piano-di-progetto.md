@@ -585,5 +585,5 @@ Il proprietario del progetto ha risposto alle decisioni aperte l'11 novembre 202
 | Punto | Stato |
 |---|---|
 | Prova del server sul Raspberry Pi 3B o sul ThinkPad T480 | Da fare, con `docs/guida-installazione.md`. |
-| Plancia verticale | A fine progetto: una versione grafica verticale da confrontare con quella orizzontale, forse come opzione del giocatore. |
+| Plancia verticale | Fatta (fase 8 della grafica). Federico tiene le due plance: la verticale sul telefono in verticale, l'orizzontale altrove. L'opzione "Plancia" cambia la scelta. |
 | Miglioramento dell'IA difficile (opzionale) | Oggi vince il 53% delle partite contro la media. La regolazione automatica dei pesi non ha migliorato il risultato (verifica su 320 partite nuove). Il passo utile è aggiungere voci nuove alla valutazione, per esempio la qualità delle carte in mano. |

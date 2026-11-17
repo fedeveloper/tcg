@@ -19,7 +19,8 @@
   let { tr, deck, onSave, onCancel }: Props = $props();
 
   // The editor works on a copy. The profile changes only on Save.
-  let name = $state(untrack(() => deck.name));
+  // A starter deck shows its translated name: "Copia di Fucina". Saving it makes a new deck.
+  let name = $state(untrack(() => (deck.id.startsWith("starter-") ? tr.t("meta.copyOf", { name: tr.t(`deckNames.${deck.name}`) }) : deck.name)));
   let cards = $state<Record<string, number>>(untrack(() => ({ ...deck.cards })));
   let faction = $state(ALL);
   let text = $state("");
@@ -58,8 +59,7 @@
   function save() {
     // A changed starter deck becomes a new deck, so the starter decks stay as they are.
     const id = isStarter ? `deck-${Date.now()}` : deck.id;
-    const label = isStarter && name === deck.name ? tr.t("meta.copyOf", { name: tr.t(`deckNames.${deck.name}`) }) : name;
-    onSave({ id, name: label.trim().slice(0, 40) || tr.t("meta.newDeck"), cards: { ...cards } });
+    onSave({ id, name: name.trim().slice(0, 40) || tr.t("meta.newDeck"), cards: { ...cards } });
   }
 </script>
 

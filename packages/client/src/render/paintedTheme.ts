@@ -418,32 +418,35 @@ export class PaintedTheme implements Theme {
       .poly([cx, cy - 8, cx + 22, cy, cx, cy + 8, cx - 22, cy]).fill({ color: GOLD, alpha: 0.12 }).stroke({ color: GOLD, alpha: 0.6, width: 0.8 })
       .poly([cx, cy - 4.5, cx + 13, cy, cx, cy + 4.5, cx - 13, cy]).stroke({ color: GOLD, alpha: 0.3, width: 0.6 });
     // The picture: the middle of the illustration in a small brass frame.
+    // A cropped texture, not a mask: a mask breaks the sprite batch and costs frames on a phone.
     const W = 38;
     const H = 26;
-    const frame = new Graphics().roundRect(cx - W / 2 - 1, 2, W + 2, H + 2, 3).fill({ color: 0x0f1a2a }).stroke({ color: GOLD, width: 1 });
+    const back = new Graphics().roundRect(cx - W / 2 - 1, 2, W + 2, H + 2, 3).fill({ color: 0x0f1a2a });
     const picture = new Sprite(Texture.EMPTY);
     picture.position.set(cx - W / 2, 3);
-    const mask = new Graphics().roundRect(cx - W / 2, 3, W, H, 2.5).fill(0xffffff);
-    picture.mask = mask;
+    const border = new Graphics().roundRect(cx - W / 2 - 1, 2, W + 2, H + 2, 3).stroke({ color: GOLD, width: 1 });
+    const frame = new Container();
+    frame.addChild(back, picture, border);
     const text = new Text({ text: "", style: { fontFamily: "Alegreya, Georgia, serif", fontWeight: "700", fontSize: 6, fill: 0xfff1c0, stroke: { color: 0x0a0f1d, width: 2 } }, resolution: this.resolution * 2 });
     text.anchor.set(0.5, 0);
     text.position.set(cx, H + 5);
-    v.addChild(base, frame, picture, mask, text);
+    v.addChild(base, frame, text);
     let shown: string | undefined;
     v.setName = (n, cardId) => {
       const has = !!n && !!cardId;
-      frame.visible = picture.visible = has;
+      frame.visible = has;
       text.text = n ?? "";
       if (!has || cardId === shown) return;
       shown = cardId;
       picture.texture = Texture.EMPTY;
       void smallArt(cardId!)?.then((t) => {
         if (v.destroyed || shown !== cardId) return;
-        picture.texture = t;
-        // Cover the frame with the picture.
+        // Cover the frame with the middle of the picture.
         const k = Math.max(W / t.width, H / t.height);
+        const fw = W / k;
+        const fh = H / k;
+        picture.texture = new Texture({ source: t.source, frame: new Rectangle(t.frame.x + (t.width - fw) / 2, t.frame.y + (t.height - fh) / 2, fw, fh) });
         picture.scale.set(k);
-        picture.position.set(cx - (t.width * k) / 2, 3 + H / 2 - (t.height * k) / 2);
       });
     };
     v.setName(name);
@@ -511,8 +514,13 @@ export class PaintedTheme implements Theme {
       gsap.to(g.scale, { x: 44 * k, y: 44 * k, duration: 0.25, ease: "power2.out" });
       gsap.to(ring.scale, { x: 44 / 30, y: 44 / 30, duration: 0.25, ease: "power2.out" });
       gsap.to(c, { alpha: 0, duration: 0.25, ease: "power1.in", onComplete: () => c.destroy({ children: true }) });
+      // A tween that ends after the destroy would write to a destroyed object.
+      const scales = [c, g.scale, ring.scale];
+      c.on("destroyed", () => gsap.killTweensOf(scales));
       return c;
     }
+    const targets = [g, g.scale];
+    g.on("destroyed", () => gsap.killTweensOf(targets));
     return g;
   }
 
