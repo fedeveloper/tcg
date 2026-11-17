@@ -55,7 +55,7 @@
   const rules = $derived(cardRulesText(tr, def));
 </script>
 
-<article class="card f-{def.faction} r-{def.rarity}" class:keeper class:rite={!keeper} class:shine style="font-size: {width / 16}px" aria-label={cardName(tr, def.id)}>
+<article class="hd-card f-{def.faction} r-{def.rarity}" class:keeper class:rite={!keeper} class:shine style="font-size: {width / 16}px" aria-label={cardName(tr, def.id)}>
   <div class="art">
     {#if art}<img src={art} alt="" draggable="false" />{/if}
   </div>
@@ -78,7 +78,7 @@
 </article>
 
 <style>
-  .card {
+  .hd-card {
     /* Faction colors: --c main, --d dark, --l light (style guide, section 3). */
     --c: #8a8a8a; --d: #2b2e33; --l: #e8e4da;
     --gold: #d9b56a; --gold-d: #7a5a24; --ink: #2a1f16; --paper: #efe3c8;

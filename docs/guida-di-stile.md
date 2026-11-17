@@ -76,6 +76,10 @@ Per un Custode con un'emozione (per esempio "Lanciabraci"), scrivi l'emozione de
 | File di uscita | `Pictures\local-image\generated-images\tcg-<lotto>\<cardId>.png` |
 | Tempo | circa 32 secondi per immagine |
 
+**Rifacimento.** Il modello a volte copia il personaggio dell'ancora della fazione (il vecchio marinaio dei Neutrali, il polpo dell'Abisso, il golem di rame degli Ingranaggi). In questo caso rifai l'immagine con un seme nuovo e con la sola ancora del gioco (3B) come riferimento. Scrivi la regola dei riferimenti al singolare: `Use image 1 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy its buildings or composition.` Descrivi nel soggetto i tratti del personaggio (età, capelli, abiti) e scrivi `no armor` se serve. Nel file `meta` scrivi la formula `rifacimento (solo 3B)`.
+
+Se il soggetto non chiede un faro, aggiungi dopo la regola dei riferimenti: `Do not paint any lighthouse, tower or house unless the description asks for one.`
+
 Durante ogni lotto, mostra a Federico una barra di avanzamento con il numero di immagini finite e il tempo stimato.
 
 ## 6. Carta
@@ -91,6 +95,11 @@ La carta HD è il componente [`HdCard.svelte`](../packages/client/src/ui/HdCard.
 | Testo | Pergamena: parole chiave in grassetto, poi le regole, poi la frase di colore in corsivo |
 | Attacco | Rombo rosso in basso a sinistra (solo Custodi) |
 | Tenuta | Scudo grigio-blu in basso a destra (solo Custodi) |
+| Emblema | Medaglione in basso al centro, con il simbolo della fazione in SVG |
+| Cornice del Rito | Illustrazione ad arco, nome su un nastro, pergamena con il bordo inferiore arrotondato |
+| Riflesso | Solo carte rare e leggendarie, fuori dalla mano. Fermo con "movimento ridotto" |
+
+Il dorso della carta è [`CardBack.svelte`](../packages/client/src/ui/CardBack.svelte).
 
 Per vedere tutte le carte HD, apri `localhost:5173/#carte-hd`.
 
