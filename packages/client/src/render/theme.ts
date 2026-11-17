@@ -47,7 +47,7 @@ export interface BeaconView extends Container {
 
 /**
  * The visual theme. The placeholder theme draws simple shapes (plan, section 6.9).
- * The pixel art theme replaces it: it implements the same interface with sprites.
+ * The painted theme (paintedTheme.ts) replaces it: it implements the same interface with painted art.
  */
 export interface Theme {
   /** Text resolution: the canvas scale, so text stays sharp. */

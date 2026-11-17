@@ -7,9 +7,9 @@ import damagedUrl from "../../../../assets/board/web/beacon-damaged.webp?url";
 import outUrl from "../../../../assets/board/web/beacon-out.webp?url";
 import woodUrl from "../../../../assets/ui/web/legno.webp?url";
 import { HEIGHT, ORIENTATION, PIER_Y, TIDE, VIEW_HEIGHT, WIDTH, type Rect } from "./layout.ts";
-import { type Art, SpriteTheme } from "./spriteTheme.ts";
+import { hdArtUrl } from "./art.ts";
 import { MEDALS } from "./medals.ts";
-import { FACTION_COLORS, type FxKind, type BeaconLook, type BeaconView, type KeeperLook, type KeeperView, type SiteView } from "./theme.ts";
+import { FACTION_COLORS, type BeaconLook, type BeaconView, type Dissolve, type FxKind, type KeeperLook, type KeeperView, type SiteView, type Theme } from "./theme.ts";
 
 let damageFontReady = false;
 
@@ -113,21 +113,55 @@ const AURA: Record<string, { color: number; size: number; alpha: number; rhythm:
   abyss: { color: 0x5fc8ff, size: 40, alpha: 0.35, rhythm: "pulse" },
 };
 
-/**
- * The painted theme: a painted sea and painted Beacons (graphics plan, phase 3).
- * Keepers are painted medallions (phase 5). Sites and the effects still come from the pixel art theme until phase 6.
- */
-export class PaintedTheme extends SpriteTheme {
-  constructor(
-    art: Art,
-    private readonly painted: PaintedArt,
-    resolution: number,
-    reduced: () => boolean = () => false,
-  ) {
-    super(art, resolution, reduced);
-  }
+const artTextures = new Map<string, Promise<Texture>>();
 
-  override background(): Container {
+/** Loads the small illustration of a card once (192 x 137). */
+function smallArt(cardId: string): Promise<Texture> | null {
+  const url = hdArtUrl(cardId, "sm");
+  if (!url) return null;
+  let t = artTextures.get(cardId);
+  if (!t) {
+    t = linear(url);
+    artTextures.set(cardId, t);
+  }
+  return t;
+}
+
+/** The dither dissolve: the pixels of a dying keeper vanish with a 4x4 Bayer pattern. */
+const DITHER_FRAGMENT = `
+in vec2 vTextureCoord;
+out vec4 finalColor;
+uniform sampler2D uTexture;
+uniform float uThreshold;
+uniform float uPixel;
+// Ordered dither 4x4 (Bayer) without arrays: it also compiles on WebGL 1.
+float bayer2(vec2 a) {
+  a = floor(a);
+  return fract(a.x / 2.0 + a.y * a.y * 0.75);
+}
+float bayer4(vec2 a) {
+  return bayer2(0.5 * a) * 0.25 + bayer2(a);
+}
+void main() {
+  vec4 color = texture(uTexture, vTextureCoord);
+  vec2 p = floor(gl_FragCoord.xy / uPixel);
+  float limit = bayer4(p) + 0.03;
+  finalColor = limit < uThreshold ? vec4(0.0) : color;
+}`;
+
+/**
+ * The painted theme (graphics plan, phases 3 to 8): a painted sea, painted Beacons,
+ * keepers as painted medallions, and soft light effects. It is the only theme of the game with art.
+ */
+export class PaintedTheme implements Theme {
+  constructor(
+    private readonly painted: PaintedArt,
+    public resolution: number,
+    /** True while "Reduce animations" is on: the sea moves 4 times slower. */
+    private readonly reduced: () => boolean = () => false,
+  ) {}
+
+  background(): Container {
     const c = new Container();
     const vertical = ORIENTATION === "vertical";
     const sea = new Sprite(vertical ? this.painted.seaTall : this.painted.sea);
@@ -207,7 +241,7 @@ export class PaintedTheme extends SpriteTheme {
   }
 
   /** A cell is a soft ring of light on the water. */
-  override slot(r: Rect, mine: boolean): Container {
+  slot(r: Rect, mine: boolean): Container {
     const g = new Graphics();
     const cx = r.x + r.w / 2;
     const cy = r.y + r.h / 2 + 12;
@@ -221,8 +255,7 @@ export class PaintedTheme extends SpriteTheme {
    * It has a ring in the faction color, a shadow and a reflection on the water.
    * The body (squash and stretch) turns around the bottom of the medallion.
    */
-  override keeper(r: Rect, look: KeeperLook): KeeperView {
-    if (!MEDALS[look.cardId]) return super.keeper(r, look);
+  keeper(r: Rect, look: KeeperLook): KeeperView {
     const c = new Container() as KeeperView;
     c.position.set(r.x + r.w / 2, r.y + r.h / 2);
     c.hitArea = new Rectangle(-r.w / 2, -r.h / 2, r.w, r.h);
@@ -322,7 +355,7 @@ export class PaintedTheme extends SpriteTheme {
     return c;
   }
 
-  override beacon(r: Rect, look: BeaconLook): BeaconView {
+  beacon(r: Rect, look: BeaconLook): BeaconView {
     const c = new Container() as BeaconView;
     c.position.set(r.x, r.y);
     let state = beaconState(look.light);
@@ -375,20 +408,50 @@ export class PaintedTheme extends SpriteTheme {
     return c;
   }
 
-  /** The Site cell: a golden diamond on the water, under the Site picture. */
-  override site(r: Rect, name: string | null): SiteView {
-    const v = super.site(r, name);
+  /** The Site cell: a golden diamond on the water, with the Site picture and its name above it. */
+  site(r: Rect, name: string | null): SiteView {
+    const v = new Container() as SiteView;
+    v.position.set(r.x, r.y);
     const cx = r.w / 2;
     const cy = r.h / 2 + 12;
     const base = new Graphics()
       .poly([cx, cy - 8, cx + 22, cy, cx, cy + 8, cx - 22, cy]).fill({ color: GOLD, alpha: 0.12 }).stroke({ color: GOLD, alpha: 0.6, width: 0.8 })
       .poly([cx, cy - 4.5, cx + 13, cy, cx, cy + 4.5, cx - 13, cy]).stroke({ color: GOLD, alpha: 0.3, width: 0.6 });
-    v.addChildAt(base, 0);
+    // The picture: the middle of the illustration in a small brass frame.
+    const W = 38;
+    const H = 26;
+    const frame = new Graphics().roundRect(cx - W / 2 - 1, 2, W + 2, H + 2, 3).fill({ color: 0x0f1a2a }).stroke({ color: GOLD, width: 1 });
+    const picture = new Sprite(Texture.EMPTY);
+    picture.position.set(cx - W / 2, 3);
+    const mask = new Graphics().roundRect(cx - W / 2, 3, W, H, 2.5).fill(0xffffff);
+    picture.mask = mask;
+    const text = new Text({ text: "", style: { fontFamily: "Alegreya, Georgia, serif", fontWeight: "700", fontSize: 6, fill: 0xfff1c0, stroke: { color: 0x0a0f1d, width: 2 } }, resolution: this.resolution * 2 });
+    text.anchor.set(0.5, 0);
+    text.position.set(cx, H + 5);
+    v.addChild(base, frame, picture, mask, text);
+    let shown: string | undefined;
+    v.setName = (n, cardId) => {
+      const has = !!n && !!cardId;
+      frame.visible = picture.visible = has;
+      text.text = n ?? "";
+      if (!has || cardId === shown) return;
+      shown = cardId;
+      picture.texture = Texture.EMPTY;
+      void smallArt(cardId!)?.then((t) => {
+        if (v.destroyed || shown !== cardId) return;
+        picture.texture = t;
+        // Cover the frame with the picture.
+        const k = Math.max(W / t.width, H / t.height);
+        picture.scale.set(k);
+        picture.position.set(cx - (t.width * k) / 2, 3 + H / 2 - (t.height * k) / 2);
+      });
+    };
+    v.setName(name);
     return v;
   }
 
   /** The tide gauge: a brass rule with 11 marks. The middle mark is larger. */
-  override tideGauge(): Container {
+  tideGauge(): Container {
     const w = TIDE.cell * TIDE.cells;
     const g = new Graphics()
       .roundRect(TIDE.x - 3, TIDE.y + 2, w + 6, 12, 6).fill({ color: 0x0f1a2a, alpha: 0.85 }).stroke({ color: GOLD, width: 1 })
@@ -403,7 +466,7 @@ export class PaintedTheme extends SpriteTheme {
   }
 
   /** Damage and heal numbers: large painted digits with a dark outline (graphics plan, phase 6). */
-  override floatingText(text: string, color: number): Container {
+  floatingText(text: string, color: number): Container {
     // A bitmap font: the digits are drawn once, so a new number costs no text rendering.
     if (!damageFontReady) {
       BitmapFont.install({
@@ -421,7 +484,7 @@ export class PaintedTheme extends SpriteTheme {
   }
 
   /** Soft light effects in place of the pixel sprites: sparks, puffs of mist and hit flashes. */
-  override fx(kind: FxKind, tint = 0xffffff): Container {
+  fx(kind: FxKind, tint = 0xffffff): Container {
     const g = new Sprite(this.painted.glow);
     g.anchor.set(0.5);
     const k = 1 / this.painted.glow.width;
@@ -438,21 +501,23 @@ export class PaintedTheme extends SpriteTheme {
       gsap.to(g.scale, { x: 22 * k, y: 16 * k, duration: 0.5, ease: "power2.out" });
       gsap.to(g, { alpha: 0, duration: 0.5, ease: "power1.in", onComplete: () => g.destroy() });
     } else {
-      // Hit: a bright flash and a ring that opens.
+      // Hit: a bright flash and a ring that opens. A sprite cannot have children: a container holds both.
+      const c = new Container();
       g.blendMode = "add";
       g.tint = tint;
       g.scale.set(30 * k);
       const ring = new Graphics().circle(0, 0, 6).stroke({ color: tint === 0xffffff ? 0xffe0b0 : tint, width: 1.5 });
-      g.addChild(ring);
-      ring.scale.set(this.painted.glow.width / 30);
+      c.addChild(g, ring);
       gsap.to(g.scale, { x: 44 * k, y: 44 * k, duration: 0.25, ease: "power2.out" });
-      gsap.to(g, { alpha: 0, duration: 0.25, ease: "power1.in", onComplete: () => g.destroy() });
+      gsap.to(ring.scale, { x: 44 / 30, y: 44 / 30, duration: 0.25, ease: "power2.out" });
+      gsap.to(c, { alpha: 0, duration: 0.25, ease: "power1.in", onComplete: () => c.destroy({ children: true }) });
+      return c;
     }
     return g;
   }
 
   /** A valid cell: a glowing ring that pulses, not only a color. */
-  override highlight(r: Rect): Container {
+  highlight(r: Rect): Container {
     const g = new Graphics();
     const x = r.x + 2;
     const y = r.y + 2;
@@ -461,5 +526,57 @@ export class PaintedTheme extends SpriteTheme {
     const tween = gsap.to(g, { alpha: 0.4, duration: 0.6, repeat: -1, yoyo: true, ease: "sine.inOut" });
     g.on("destroyed", () => tween.kill());
     return g;
+  }
+
+  /** The tide marker: a red and white buoy that bobs on the gauge. */
+  tideMarker(): Container {
+    const c = new Container();
+    c.y = TIDE.y;
+    const buoy = new Graphics()
+      .moveTo(0, -2).lineTo(0, 3).stroke({ color: 0x3a2a1a, width: 1 })
+      .poly([0, -2, 3.5, -0.5, 0, 1]).fill({ color: 0xfbd35a })
+      .ellipse(0, 8, 4.5, 5).fill({ color: 0xd9483a }).stroke({ color: 0x1a0d08, width: 0.8 })
+      .rect(-4.4, 7, 8.8, 2.2).fill({ color: 0xf6f3e4 })
+      .ellipse(-1.5, 6, 1.2, 1.6).fill({ color: 0xffffff, alpha: 0.5 });
+    c.addChild(buoy);
+    const bob = gsap.to(buoy, { y: -1, duration: 1.2, repeat: -1, yoyo: true, ease: "sine.inOut" });
+    c.on("destroyed", () => bob.kill());
+    return c;
+  }
+
+  /** A played card: its illustration in a brass frame flies to the target. */
+  cardGhost(cardId: string): Container | null {
+    const load = smallArt(cardId);
+    if (!load) return null;
+    const c = new Container();
+    const W = 58;
+    const H = 42;
+    const frame = new Graphics().roundRect(-W / 2 - 1.5, -H / 2 - 1.5, W + 3, H + 3, 4).fill({ color: 0x0f1a2a }).stroke({ color: GOLD, width: 1.5 });
+    const picture = new Sprite(Texture.EMPTY);
+    picture.anchor.set(0.5);
+    c.addChild(frame, picture);
+    void load.then((t) => {
+      if (c.destroyed) return;
+      picture.texture = t;
+      picture.scale.set(W / t.width, H / t.height);
+    });
+    return c;
+  }
+
+  dissolve(target: Container): Dissolve {
+    const filter = new Filter({
+      glProgram: GlProgram.from({ vertex: defaultFilterVert, fragment: DITHER_FRAGMENT, name: "dither-dissolve" }),
+      resources: { dither: { uThreshold: { value: 0, type: "f32" }, uPixel: { value: this.resolution, type: "f32" } } },
+    });
+    target.filters = [filter];
+    const uniforms = filter.resources.dither.uniforms as { uThreshold: number };
+    return {
+      get threshold() {
+        return uniforms.uThreshold;
+      },
+      set threshold(v: number) {
+        uniforms.uThreshold = v;
+      },
+    };
   }
 }

@@ -20,7 +20,7 @@ import { beaconRect, center, forward, HEIGHT, ORIENTATION, sameLane, siteRect, s
 import type { BeaconView, FxKind, KeeperLook, KeeperView, SiteView, Theme } from "./theme.ts";
 import type { Step } from "../game/session.ts";
 
-/** Colours of the "Fari 32" palette for numbers and sparks. */
+/** Colours for numbers and sparks. */
 const PALETTE = { coral: 0xe8766a, glow: 0xfbd35a, sprout: 0xb5d665 } as const;
 const FACTION_GLOW: Record<string, number> = {
   forge: 0xf29a2e,

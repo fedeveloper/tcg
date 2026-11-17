@@ -19,23 +19,25 @@ L'input resta bloccato durante le animazioni. Un clic sul campo accelera l'anima
 | `src/game/session.ts` | Sequenza delle azioni del giocatore, dell'IA e delle animazioni. Nessun codice DOM. |
 | `src/game/selection.ts` | Selezione con il clic: carta, poi slot, corsia o bersaglio. |
 | `src/game/aiDriver.ts`, `src/game/aiWorker.ts` | IA nel Web Worker (browser) o nello stesso thread (test). |
-| `src/render/layout.ts` | Geometria del campo 480 × 270, presa da `assets/sheets/board.json`. |
+| `src/render/layout.ts` | Geometria delle due plance: orizzontale 480 × 270 e verticale 270 × 392. |
 | `src/render/theme.ts` | Interfaccia `Theme` e tema provvisorio `ShapeTheme` (forme semplici). |
 | `src/render/board.ts` | Campo PixiJS, stato visivo, animazioni per evento. |
 | `src/ui/App.svelte`, `src/ui/Game.svelte` | Menu, mano, pulsanti, cronaca, schermata finale. |
 
 ## Tema grafico
 
-Il campo usa il tema `SpriteTheme` (`src/render/spriteTheme.ts`). Il tema implementa l'interfaccia `Theme`.
+Il campo usa il tema `PaintedTheme` (`src/render/paintedTheme.ts`). Il tema implementa l'interfaccia `Theme`.
+I dettagli dello stile sono in [guida-di-stile.md](guida-di-stile.md) e in [piano-grafica.md](piano-grafica.md).
 
-- `loadArt()` carica gli spritesheet e i font di `assets/`. Vite copia i file nella build.
-- `PixelFont` e `PixelText` disegnano il testo con i font Faro e Faro Mini.
-- Il tema `ShapeTheme` resta come riserva. Il client lo usa se il caricamento degli sprite fallisce.
-- La mano mostra carte complete in pixel art. Il componente `PixelCard.svelte` disegna illustrazione, cornice, nome, costo e statistiche su un canvas 64 × 88 (`pixelCanvas.ts`).
-- Un Custode senza sprite usa lo sprite di riserva `keeper/unknown/idle`. Una carta senza illustrazione mostra un riquadro grigio.
-- La scena occupa tutto lo schermo (piano della grafica, fase 0). La mano, la Brace e il pulsante principale stanno sul molo, in basso nella scena.
+- `loadPainted()` carica il mare, i Fari dipinti e il legno del molo. I medaglioni dei Custodi e le illustrazioni piccole si caricano alla prima richiesta.
+- I Custodi sono medaglioni rotondi (`assets/art/web/medal/`). I Luoghi mostrano la loro illustrazione in una cornice d'ottone.
+- I numeri dei danni usano il font bitmap "tcg-damage" (Alegreya). Gli effetti sono luci morbide: scintille, sbuffi, colpi.
+- Il tema `ShapeTheme` resta come riserva. Il client lo usa se il caricamento delle immagini fallisce.
+- La mano mostra le carte HD (`HdCard.svelte`). `src/render/art.ts` dà l'URL di ogni illustrazione nelle 3 misure.
+- La scena occupa tutto lo schermo (piano della grafica, fase 0). Sulla plancia orizzontale la mano, la Brace e il pulsante principale stanno sul molo, in basso nella scena.
+- La plancia verticale (fase 8) mette la mano sotto la scena. L'opzione "Plancia" sceglie: Automatica, Orizzontale, Verticale.
 - La variabile CSS `--u` vale un pixel della scena in pixel CSS. Gli elementi DOM sopra il canvas usano `--u` per posizione e dimensione.
-- La cronaca e l'elenco del campo sono in un pannello a destra (pulsante "Cronaca"). La lingua e "Riduci le animazioni" sono nel menu "Opzioni".
+- La cronaca e l'elenco del campo sono in un pannello a destra (pulsante "Cronaca"). La lingua, la plancia e "Riduci le animazioni" sono nel menu "Opzioni".
 
 Tre metodi di `Theme` sono opzionali: `fx` (scintille, sbuffi, colpi), `cardGhost` (illustrazione della carta giocata) e `dissolve` (dissolvenza a dithering).
 `BoardView.animateEvent` applica i tempi di `assets/animations/animations.json`. Vedi [animazioni.md](animazioni.md).
@@ -104,14 +106,14 @@ Il client calcola le azioni legali solo per l'interfaccia. Il server controlla d
 - Sotto 700 px di larghezza e in verticale, il canvas mostra solo la parte alta della scena (`VIEW_HEIGHT` = 186 pixel). La mano resta in basso come un ventaglio.
 - La riga del giocatore resta sopra la mano, con il pulsante principale sempre visibile.
 - Le carte della mano sono piccole. Il testo delle regole appare solo nella scheda della carta.
-- La plancia resta orizzontale e si adatta alla larghezza. Una plancia verticale richiede nuova grafica.
+- Il telefono in verticale usa la plancia verticale (fase 8 della grafica). Con l'opzione "Orizzontale" la plancia orizzontale si adatta alla larghezza.
 - Un test e2e controlla il layout su un telefono di 412 × 915 px: mano su una riga, pulsante visibile, nessuno scorrimento orizzontale.
 
 ## Prestazioni (sezione 7.5 del piano)
 
 - L'obiettivo è 60 fotogrammi al secondo su un telefono di fascia media del 2022.
-- `PixelCard` disegna una carta solo quando la carta cambia. Una cache tiene le carte già disegnate (al massimo 300).
-- Prima di questa cache, ogni aggiornamento dello stato ridisegnava tutte le carte della mano, con circa 10 canvas per carta.
+- Le carte della mano sono HTML e CSS (`HdCard.svelte`): nessun canvas per carta.
+- La plancia verticale disegna al massimo i pixel della plancia orizzontale sullo stesso schermo. `PERF_BOARD=horizontal` misura la plancia orizzontale.
 - `PERF=1 pnpm e2e perf` misura una partita su un telefono con la CPU rallentata 4 volte. Il test fallisce sotto 50 fps.
 - Il test non è nella CI, perché il risultato dipende dalla macchina.
 

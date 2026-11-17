@@ -2,8 +2,8 @@ import type { Lane, PlayerId, Row } from "@tcg/engine";
 
 /**
  * Board geometry. There are two boards (graphics plan, phase 8):
- * - horizontal: lanes in rows, the viewer on the left, the opponent on the right
- *   (assets/sheets/board.json). Each lane is a row of 7 cells of 48x48: Beacon, Back, Front, Site, Front, Back, Beacon.
+ * - horizontal: lanes in rows, the viewer on the left, the opponent on the right.
+ *   Each lane is a row of 7 cells of 48x48: Beacon, Back, Front, Site, Front, Back, Beacon.
  * - vertical: lanes in columns, the viewer at the bottom, the opponent at the top.
  *
  * The values below are live bindings: setBoardOrientation() changes them before a game builds its board.

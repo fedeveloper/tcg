@@ -279,6 +279,8 @@ Stato: fatta il 17/11/2026, in attesa della scelta di Federico.
 
 Quando tutte le schermate usano i nuovi asset, togli `SpriteTheme`, gli spritesheet pixel art e gli script di `assets/src/` che non servono più.
 
+Stato: fatta il 17/11/2026. `PaintedTheme` non estende più `SpriteTheme`: ha il suo Luogo dipinto, la boa della Marea, la carta giocata con l'illustrazione e la dissolvenza. Tolti `spriteTheme.ts`, `pixelCanvas.ts`, `PixelCard.svelte`, `cardArt.ts` e le cartelle `assets/src`, `sheets`, `fonts`, `palette`, `preview`. I file restano nella cronologia di git. `ShapeTheme` resta come riserva.
+
 ### Ordine e dipendenze
 
 ```
