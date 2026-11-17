@@ -204,7 +204,7 @@ Criterio di fine: un giocatore nuovo distingue corsie, file e Fari senza il tuto
 
 Criterio di fine: il nome, il costo, l'Attacco e la Tenuta si leggono a 1366 × 768 senza ingrandire.
 
-Stato: fatta il 17/11/2026. Tutte le 151 carte del gioco hanno un'illustrazione dipinta (164 immagini generate sull'OMEN, 23 rifatte). La mano usa `HdCard` a ventaglio, con l'anteprima grande al passaggio del mouse. I Riti hanno una cornice ad arco, ogni fazione ha un emblema, le carte rare e leggendarie hanno un riflesso animato in CSS (non uno shader). Il dorso è `CardBack.svelte`. Il criterio di fine è verificato a 1366 × 768. Passo 3 (atlante) rimandato: la mano carica file `sm` da circa 10 KB (1,4 MB per tutte le carte), uno per carta e solo quando serve. Rivaluta l'atlante nella fase 8, con le misure sul telefono lento.
+Stato: fatta il 17/11/2026. Tutte le 154 carte del gioco (con le 3 pedine evocate) hanno un'illustrazione dipinta (164 immagini generate sull'OMEN, 23 rifatte). La mano usa `HdCard` a ventaglio, con l'anteprima grande al passaggio del mouse. I Riti hanno una cornice ad arco, ogni fazione ha un emblema, le carte rare e leggendarie hanno un riflesso animato in CSS (non uno shader). Il dorso è `CardBack.svelte`. Il criterio di fine è verificato a 1366 × 768. Passo 3 (atlante) rimandato: la mano carica file `sm` da circa 10 KB (1,4 MB per tutte le carte), uno per carta e solo quando serve. Rivaluta l'atlante nella fase 8, con le misure sul telefono lento.
 
 ### Fase 5: Custodi sul campo
 
@@ -218,6 +218,8 @@ Gli sprite animati della pixel art spariscono. Un Custode sul campo diventa un *
 Criterio di fine: ogni Custode si riconosce dal medaglione a 1366 × 768.
 
 NOTA: questa soluzione evita 91 animazioni a fotogrammi. Le animazioni a fotogrammi con i modelli locali non sono coerenti.
+
+Stato: fatta il 17/11/2026. I 90 Custodi (con le pedine) hanno un medaglione rotondo di 192 px in `assets/art/web/medal/`, ritagliato da `assets/art/build.py` con i punti di `assets/art/crops.json`. `PaintedTheme.keeper` mostra il medaglione con l'anello della fazione, l'Attacco (rombo rosso) e la Tenuta (scudo blu), l'ombra e il riflesso. Il medaglione respira (±2%) e si ferma con "movimento ridotto" o quando il Custode è appena entrato. Il colpo subito ha un lampo rosso. Scatto in avanti (`LaneClash`) e morte (dissolvenza e particelle) esistono già nella plancia (piano di progetto, sezione 7.2). Prestazioni sul telefono lento: 52 fps (prima 50).
 
 ### Fase 6: effetti e "juice"
 

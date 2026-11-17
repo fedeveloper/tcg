@@ -7,7 +7,30 @@ import outUrl from "../../../../assets/board/web/beacon-out.webp?url";
 import woodUrl from "../../../../assets/ui/web/legno.webp?url";
 import { HEIGHT, TIDE, VIEW_HEIGHT, WIDTH, type Rect } from "./layout.ts";
 import { type Art, SpriteTheme } from "./spriteTheme.ts";
-import type { BeaconLook, BeaconView, SiteView } from "./theme.ts";
+import { FACTION_COLORS, type BeaconLook, type BeaconView, type KeeperLook, type KeeperView, type SiteView } from "./theme.ts";
+
+/** The round keeper medallions (graphics plan, phase 5), cut by assets/art/build.py. */
+const MEDALS: Record<string, string> = {};
+for (const [path, url] of Object.entries(
+  import.meta.glob("../../../../assets/art/web/medal/*.webp", { query: "?url", import: "default", eager: true }) as Record<string, string>,
+)) {
+  const id = /([^/]+)\.webp$/.exec(path)?.[1];
+  if (id) MEDALS[id] = url;
+}
+
+const medalTextures = new Map<string, Promise<Texture>>();
+
+/** Loads the medallion of a keeper once. Many keepers of the same card share the texture. */
+function medalTexture(cardId: string): Promise<Texture> | null {
+  const url = MEDALS[cardId];
+  if (!url) return null;
+  let t = medalTextures.get(cardId);
+  if (!t) {
+    t = linear(url);
+    medalTextures.set(cardId, t);
+  }
+  return t;
+}
 
 /** The painted textures of the board (graphics plan, phase 3). */
 export interface PaintedArt {
@@ -78,10 +101,15 @@ const PIER_Y = 178;
 const BEACON_H = 58;
 const GOLD = 0xd9b56a;
 const FOAM = 0xc9e4e3;
+/** The radius of a keeper medallion and the height of its centre, in scene pixels from the cell centre. */
+const MEDAL_R = 15;
+const MEDAL_Y = -3;
+/** The stat badges: Attack on the left, Hold on the right. */
+const STAT_FONT = { fontFamily: "Alegreya, Georgia, serif", fontWeight: "700", fontSize: 9 } as const;
 
 /**
  * The painted theme: a painted sea and painted Beacons (graphics plan, phase 3).
- * Keepers, Sites, the tide and the effects still come from the pixel art theme until phases 5 and 6.
+ * Keepers are painted medallions (phase 5). Sites and the effects still come from the pixel art theme until phase 6.
  */
 export class PaintedTheme extends SpriteTheme {
   constructor(
@@ -139,6 +167,86 @@ export class PaintedTheme extends SpriteTheme {
     g.ellipse(cx, cy, 19, 7).fill({ color: FOAM, alpha: 0.1 }).stroke({ color: mine ? FOAM : 0xe8b0a0, alpha: 0.45, width: 0.8 });
     g.ellipse(cx, cy, 14, 4.5).stroke({ color: FOAM, alpha: 0.18, width: 0.6 });
     return g;
+  }
+
+  /**
+   * A keeper is a round medallion cut from its card illustration (graphics plan, phase 5).
+   * It has a ring in the faction color, a shadow and a reflection on the water.
+   * The body (squash and stretch) turns around the bottom of the medallion.
+   */
+  override keeper(r: Rect, look: KeeperLook): KeeperView {
+    if (!MEDALS[look.cardId]) return super.keeper(r, look);
+    const c = new Container() as KeeperView;
+    c.position.set(r.x + r.w / 2, r.y + r.h / 2);
+    c.hitArea = new Rectangle(-r.w / 2, -r.h / 2, r.w, r.h);
+    const bottom = MEDAL_Y + MEDAL_R;
+    // The shadow and the reflection stay on the water: they do not squash.
+    const shadow = new Graphics().ellipse(0, bottom + 1, MEDAL_R * 0.95, 3.2).fill({ color: 0x050a12, alpha: 0.45 });
+    const reflection = new Sprite(Texture.EMPTY);
+    reflection.anchor.set(0.5, 0);
+    reflection.alpha = 0.22;
+    reflection.position.set(0, bottom + 2);
+    const body = new Container();
+    body.position.set(0, bottom);
+    // The breath: a slow scale of 2% on an inner container, so it never fights the board's squash.
+    const breath = new Container();
+    breath.position.set(0, -MEDAL_R);
+    const picture = new Sprite(Texture.EMPTY);
+    picture.anchor.set(0.5);
+    const ring = new Graphics();
+    breath.addChild(picture, ring);
+    body.addChild(breath);
+    const stats = new Container();
+    const attackBadge = new Graphics()
+      .poly([0, -6, 6, 0, 0, 6, -6, 0]).fill({ color: 0x8e2a1f }).stroke({ color: GOLD, width: 1 });
+    attackBadge.position.set(-MEDAL_R + 1, bottom - 3);
+    const holdBadge = new Graphics()
+      .poly([-5.5, -5.5, 5.5, -5.5, 5.5, 1, 0, 6.5, -5.5, 1]).fill({ color: 0x2d4560 }).stroke({ color: GOLD, width: 1 });
+    holdBadge.position.set(MEDAL_R - 1, bottom - 3);
+    const attack = new Text({ text: "", style: { ...STAT_FONT, fill: 0xfff4e0 }, resolution: this.resolution * 2 });
+    attack.anchor.set(0.5, 0.55);
+    attack.position.copyFrom(attackBadge.position);
+    const hold = new Text({ text: "", style: { ...STAT_FONT, fill: 0xfff4e0 }, resolution: this.resolution * 2 });
+    hold.anchor.set(0.5, 0.6);
+    hold.position.copyFrom(holdBadge.position);
+    stats.addChild(attackBadge, holdBadge, attack, hold);
+    c.addChild(shadow, reflection, body, stats);
+    c.body = body;
+
+    const breathe = gsap.to(breath.scale, { x: 1.02, y: 1.02, duration: 1.6 + Math.random() * 0.4, repeat: -1, yoyo: true, ease: "sine.inOut", delay: Math.random() });
+    c.on("destroyed", () => breathe.kill());
+
+    let shown = "";
+    let mine = look.mine;
+    const show = (cardId: string) => {
+      shown = cardId;
+      void medalTexture(cardId)?.then((t) => {
+        if (c.destroyed || shown !== cardId) return;
+        picture.texture = t;
+        picture.scale.set(((mine ? 1 : -1) * MEDAL_R * 2) / t.width, (MEDAL_R * 2) / t.height);
+        reflection.texture = t;
+        reflection.scale.set(((mine ? 1 : -1) * MEDAL_R * 1.6) / t.width, (-MEDAL_R * 0.7) / t.height);
+      });
+    };
+    c.update = (l: KeeperLook) => {
+      mine = l.mine;
+      if (l.cardId !== shown) show(l.cardId);
+      const color = FACTION_COLORS[l.faction];
+      ring.clear()
+        .circle(0, 0, MEDAL_R).stroke({ color, width: 2.2 })
+        .circle(0, 0, MEDAL_R + 1.4).stroke({ color: GOLD, width: 0.8 })
+        .circle(0, 0, MEDAL_R - 1.3).stroke({ color: 0x000000, alpha: 0.35, width: 0.6 });
+      // A keeper that entered in this round waits: it is darker and it does not breathe.
+      picture.tint = l.fresh ? 0x8a8aa8 : 0xffffff;
+      reflection.tint = color;
+      breathe.paused(l.fresh || this.reduced());
+      if (l.fresh || this.reduced()) breath.scale.set(1);
+      attack.text = String(l.attack);
+      hold.text = String(l.hold);
+      hold.style.fill = l.hold < l.maxHold ? 0xffb0a0 : 0xfff4e0;
+    };
+    c.update(look);
+    return c;
   }
 
   override beacon(r: Rect, look: BeaconLook): BeaconView {
