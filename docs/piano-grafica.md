@@ -254,6 +254,13 @@ Stato: fatta il 17/11/2026. Solo codice, senza immagini nuove.
 
 Criterio di fine: ogni schermata rispetta il criterio della sezione 1.
 
+Stato (17/11/2026): fatti i passi 1, 2 e 8.
+
+- Titolo: sfondo `assets/ui/web/titolo.webp` (l'ancora del gioco 3B, da `assets/ui/originals/key/`), logo dorato, menu verticale a sinistra. Il faro resta visibile a destra.
+- Sfida libera: stendardi delle fazioni (`Banner.svelte`) per il proprio mazzo e per l'avversario, 3 pulsanti per la difficoltà. Lingua con 2 pulsanti in alto a destra.
+- Fine partita: il faro acceso per la vittoria, grigio per la sconfitta, raggi di luce animati. Le carte della ricompensa si girano una dopo l'altra.
+- Restano i passi 3-7: Collezione, Editor dei mazzi, Spedizione, Draft, Online.
+
 ### Fase 8: plancia verticale
 
 Questa fase era già prevista a fine progetto (piano di progetto, sezione 12).

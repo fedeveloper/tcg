@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { STARTER_DECKS, expandDeck } from "@tcg/cards";
+  import { CARDS, STARTER_DECKS, expandDeck } from "@tcg/cards";
   import { createTranslator, detectLang, LANGUAGES, type Lang } from "@tcg/i18n";
   import type { AiLevel } from "@tcg/ai";
   import type { PlayerId } from "@tcg/engine";
@@ -14,8 +14,11 @@
   import { RemoteSession } from "../online/remoteSession.ts";
   import { ReplaySession } from "../online/replaySession.ts";
   import type { Replay, ServerMessage } from "@tcg/protocol";
-  import CardTile from "./CardTile.svelte";
-  import { deckLabel } from "./deckText.ts";
+  import CardBack from "./CardBack.svelte";
+  import HdCard from "./HdCard.svelte";
+  import Banner from "./Banner.svelte";
+  import { deckFaction, deckLabel } from "./deckText.ts";
+  import titleUrl from "../../../../assets/ui/web/titolo.webp?url";
   import { profileStore } from "../meta/profileStore.svelte.ts";
   import { LESSONS, type Lesson } from "../tutorial/lessons.ts";
 
@@ -171,65 +174,74 @@
   {@const mode = screen}
   <RunScreen {tr} kind={mode} onPlay={(deck, foe) => startRunMatch(mode, deck, foe)} onBack={() => (screen = "menu")} />
 {:else}
-  <main class="menu panel">
-    <h1>{tr.t("ui.title")}</h1>
-    {#if reward}
-      <section class="reward panel paper">
+  <main class="title" style="--key: url({titleUrl})">
+    <nav class="lang" aria-label={tr.t("ui.language")}>
+      {#each LANGUAGES as l}<button class:on={lang === l} aria-pressed={lang === l} onclick={() => (lang = l)}>{l.toUpperCase()}</button>{/each}
+    </nav>
+    <section class="left">
+      <h1><span class="logo">{tr.t("ui.title")}</span><span class="tagline">{tr.t("ui.tagline")}</span></h1>
+      <div class="modes">
+        <button onclick={() => (showLessons = !showLessons)} aria-expanded={showLessons}>{tr.t("tutorial.title")}</button>
+        {#if showLessons}
+          <ol class="lessons">
+            {#each LESSONS as l, i}
+              <li><button onclick={() => startLesson(l)}>{tr.t("tutorial.lesson", { n: i + 1 })}: {tr.t(`tutorial.lessons.${l.id}.title`)}</button></li>
+            {/each}
+          </ol>
+        {/if}
+        <button onclick={() => (screen = "expedition")}>{tr.t("meta.expedition")}</button>
+        <button onclick={() => (screen = "draft")}>{tr.t("meta.draft")}</button>
+        <button onclick={() => (screen = "online")}>{tr.t("online.title")}</button>
+        <button onclick={() => (screen = "collection")}>{tr.t("meta.collection")} <small>{tr.t("meta.shards", { count: profileStore.profile.collection.shards })}</small></button>
+        <button onclick={() => (screen = "decks")}>{tr.t("meta.decks")}</button>
+      </div>
+      <p class="stats">{tr.t("meta.record", { wins: profileStore.profile.wins, losses: profileStore.profile.losses })}</p>
+    </section>
+
+    <section class="free panel">
+      <h2>{tr.t("meta.freeMatch")}</h2>
+      <h3>{tr.t("ui.yourDeck")}</h3>
+      <div class="banners">
+        {#each playable as d (d.id)}
+          <Banner faction={deckFaction(d.cards)} label={deckLabel(tr, d)} selected={d.id === (playable.find((x) => x.id === deckId) ?? playable[0])?.id} onclick={() => (deckId = d.id)} />
+        {/each}
+      </div>
+      <h3>{tr.t("ui.opponentDeck")}</h3>
+      <div class="banners small">
+        {#each Object.keys(STARTER_DECKS) as d}
+          <Banner faction={deckFaction(STARTER_DECKS[d]!)} label={tr.t(`deckNames.${d}`)} selected={d === opponentDeck} onclick={() => (opponentDeck = d)} />
+        {/each}
+      </div>
+      <h3>{tr.t("ui.difficulty")}</h3>
+      <div class="levels" role="group" aria-label={tr.t("ui.difficulty")}>
+        {#each ["easy", "medium", "hard"] as const as l}
+          <button class:on={level === l} aria-pressed={level === l} onclick={() => (level = l)}>{tr.t(`ui.levels.${l}`)}</button>
+        {/each}
+      </div>
+      <button class="primary play" onclick={startFree} disabled={playable.length === 0}>{tr.t("ui.start")}</button>
+    </section>
+  </main>
+
+  {#if reward}
+    <div class="reward-back">
+      <section class="reward panel">
         <h3>{tr.t("meta.reward")}</h3>
         {#if reward.kind === "cards"}
-          <div class="grid">{#each reward.cards as id}<CardTile {tr} cardId={id} />{/each}</div>
+          <div class="flips">
+            {#each reward.cards as id, i}
+              <div class="flip" style="--i: {i}">
+                <div class="face back"><CardBack width={150} /></div>
+                <div class="face front"><HdCard def={CARDS[id]!} {tr} width={150} /></div>
+              </div>
+            {/each}
+          </div>
         {:else}
-          <p>{tr.t("meta.shardsGained", { count: reward.shards })}</p>
+          <p class="shards">{tr.t("meta.shardsGained", { count: reward.shards })}</p>
         {/if}
-        <button onclick={() => (reward = null)}>{tr.t("meta.continue")}</button>
+        <button class="primary" onclick={() => (reward = null)}>{tr.t("meta.continue")}</button>
       </section>
-    {/if}
-    <label>
-      {tr.t("ui.language")}
-      <select bind:value={lang}>
-        {#each LANGUAGES as l}<option value={l}>{l.toUpperCase()}</option>{/each}
-      </select>
-    </label>
-
-    <h2>{tr.t("meta.freeMatch")}</h2>
-    <label>
-      {tr.t("ui.yourDeck")}
-      <select bind:value={deckId}>
-        {#each playable as d (d.id)}<option value={d.id}>{deckLabel(tr, d)}</option>{/each}
-      </select>
-    </label>
-    <label>
-      {tr.t("ui.opponentDeck")}
-      <select bind:value={opponentDeck}>
-        {#each Object.keys(STARTER_DECKS) as d}<option value={d}>{tr.t(`deckNames.${d}`)}</option>{/each}
-      </select>
-    </label>
-    <label>
-      {tr.t("ui.difficulty")}
-      <select bind:value={level}>
-        <option value="easy">{tr.t("ui.levels.easy")}</option>
-        <option value="medium">{tr.t("ui.levels.medium")}</option>
-        <option value="hard">{tr.t("ui.levels.hard")}</option>
-      </select>
-    </label>
-    <button class="primary" onclick={startFree} disabled={playable.length === 0}>{tr.t("ui.start")}</button>
-
-    <h2>{tr.t("meta.modes")}</h2>
-    <button onclick={() => (screen = "online")}>{tr.t("online.title")}</button>
-    <button onclick={() => (screen = "expedition")}>{tr.t("meta.expedition")}</button>
-    <button onclick={() => (screen = "draft")}>{tr.t("meta.draft")}</button>
-    <button onclick={() => (screen = "collection")}>{tr.t("meta.collection")} · {tr.t("meta.shards", { count: profileStore.profile.collection.shards })}</button>
-    <button onclick={() => (screen = "decks")}>{tr.t("meta.decks")}</button>
-    <button onclick={() => (showLessons = !showLessons)}>{tr.t("tutorial.title")}</button>
-    {#if showLessons}
-      <ol class="lessons">
-        {#each LESSONS as l, i}
-          <li><button onclick={() => startLesson(l)}>{tr.t("tutorial.lesson", { n: i + 1 })}: {tr.t(`tutorial.lessons.${l.id}.title`)}</button></li>
-        {/each}
-      </ol>
-    {/if}
-    <p class="stats">{tr.t("meta.record", { wins: profileStore.profile.wins, losses: profileStore.profile.losses })}</p>
-  </main>
+    </div>
+  {/if}
 {/if}
 
 {#key screen}
@@ -237,13 +249,55 @@
 {/key}
 
 <style>
-  .menu { max-width: 440px; margin: 6vh auto; padding: 20px 24px 16px; display: flex; flex-direction: column; gap: 12px; }
-  h1 { color: var(--accent); font-size: 40px; margin: 0 0 8px; text-align: center; }
-  h2 { font-size: 19px; margin: 10px 0 0; color: var(--gold); border-bottom: 1px solid rgb(217 181 106 / 0.35); padding-bottom: 2px; }
-  .lessons { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
-  .lessons button { width: 100%; text-align: left; }
-  label { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .reward h3 { margin: 0 0 8px; }
-  .grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
-  .stats { font-size: 12px; opacity: 0.7; }
+  /* Title screen (graphics plan, phase 7): the lighthouse in the storm, the logo and a vertical menu. */
+  .title {
+    position: relative; min-height: 100dvh; display: grid; grid-template-columns: minmax(240px, 320px) minmax(300px, 440px); justify-content: start; align-items: center;
+    gap: 24px; padding: 48px clamp(16px, 5vw, 72px);
+    background: linear-gradient(90deg, rgb(6 10 20 / 0.8) 0, rgb(6 10 20 / 0.45) 50%, rgb(6 10 20 / 0) 70%), var(--key) 75% center / cover no-repeat, #0b1220;
+  }
+  .lang { position: absolute; top: 12px; right: 16px; display: flex; gap: 4px; }
+  .lang button { padding: 4px 10px; font-size: 13px; min-height: 0; }
+  .lang .on, .levels .on { border-color: var(--gold); color: #fff4dc; box-shadow: 0 0 0 1px var(--gold), 0 0 10px rgb(251 211 90 / 0.35); }
+  .left { display: flex; flex-direction: column; gap: 18px; }
+  h1 { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+  .logo {
+    font-family: Alegreya, Georgia, serif; font-weight: 700; font-size: clamp(44px, 6vw, 76px); line-height: 0.95; letter-spacing: 0.02em; text-transform: uppercase;
+    text-shadow: none; background: linear-gradient(#fff8dc, #f6cd6a 50%, #d0903a); -webkit-background-clip: text; background-clip: text; color: transparent;
+    filter: drop-shadow(0 2px 0 #3a2410) drop-shadow(0 0 18px rgb(251 211 90 / 0.35));
+  }
+  .tagline { font-family: Alegreya, Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #d9e6ee; text-shadow: 0 1px 3px #000; }
+  .modes { display: flex; flex-direction: column; gap: 8px; }
+  .modes > button { font-size: 18px; padding: 10px 16px; text-align: left; display: flex; justify-content: space-between; align-items: baseline; }
+  .modes small { font-size: 12px; color: var(--gold); }
+  .lessons { margin: 0 0 0 12px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .lessons button { width: 100%; text-align: left; font-size: 14px; }
+  .stats { font-size: 13px; color: #c9d6dc; text-shadow: 0 1px 2px #000; margin: 0; }
+  .free { padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+  h2 { font-size: 22px; margin: 0; color: var(--gold); border-bottom: 1px solid rgb(217 181 106 / 0.35); padding-bottom: 4px; }
+  h3 { font-size: 13px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: 0.08em; color: #cdbf9c; }
+  .banners { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; max-height: 260px; overflow: auto; padding: 4px; }
+  .banners.small { grid-template-columns: repeat(3, 1fr); }
+  .banners.small :global(.banner) { min-height: 52px; }
+  .banners.small :global(.label) { font-size: 14px; }
+  .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .play { margin-top: 8px; font-size: 22px; padding: 12px; }
+
+  /* Reward: the cards turn one after the other. */
+  .reward-back { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgb(0 0 0 / 0.65); }
+  .reward { padding: 18px 22px; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 100%; }
+  .reward h3 { font-size: 22px; color: var(--gold); text-transform: none; letter-spacing: 0; margin: 0; }
+  .flips { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .flip { position: relative; width: 150px; aspect-ratio: 5 / 7; perspective: 800px; }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; animation: 0.6s cubic-bezier(0.3, 0, 0.2, 1) calc(0.4s + var(--i) * 0.35s) both; }
+  .back { animation-name: turn-back; }
+  .front { animation-name: turn-front; }
+  @keyframes turn-back { from { transform: rotateY(0); } to { transform: rotateY(180deg); } }
+  @keyframes turn-front { from { transform: rotateY(-180deg); } to { transform: rotateY(0); } }
+  .shards { font-size: 20px; color: #bfe8ff; text-shadow: 0 0 10px rgb(127 216 255 / 0.6); }
+  @media (prefers-reduced-motion: reduce) { .face { animation-duration: 0.01s; animation-delay: 0s; } }
+
+  @media (max-width: 760px) {
+    .title { grid-template-columns: 1fr; align-items: start; padding: 48px 16px 24px; background-position: 30% center; }
+    .modes > button { font-size: 16px; padding: 8px 12px; }
+  }
 </style>

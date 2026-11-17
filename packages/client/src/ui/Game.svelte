@@ -16,6 +16,7 @@
   import { loadArt } from "../render/spriteTheme.ts";
   import { loadPainted, PaintedTheme } from "../render/paintedTheme.ts";
   import HdCard from "./HdCard.svelte";
+  import keyArtUrl from "../../../../assets/ui/web/titolo.webp?url";
   import type { CardFace } from "./pixelCanvas.ts";
 
   interface Props {
@@ -387,6 +388,12 @@
     const key = w === null ? "draw" : w === me ? "win" : "lose";
     return `${tr.t(`events.GameOver.${key}`)} ${tr.t(`events.reasons.${game.outcome.reason}`)}`;
   });
+  /** The mood of the result screen: "win", "lose" or "draw". */
+  const mood = $derived.by(() => {
+    if (lessonResult) return lessonResult === "done" ? "win" : "lose";
+    const w = game?.outcome?.winner;
+    return w === undefined || w === null ? "draw" : w === me ? "win" : "lose";
+  });
 </script>
 
 <svelte:window onkeydown={onKey} />
@@ -579,26 +586,33 @@
       </div>
     {/if}
 
-    {#if lessonResult}
-      <div class="over">
-        <h2>{tr.t(lessonResult === "done" ? "tutorial.done" : "tutorial.failed")}</h2>
-        {#if lessonResult === "done" && hasNext}
-          <button class="primary" onclick={() => onNext?.()}>{tr.t("tutorial.next")}</button>
-        {/if}
-        {#if lessonResult === "failed"}
-          <button class="primary" onclick={() => onRetry?.()}>{tr.t("tutorial.retry")}</button>
-        {/if}
-        <button onclick={onExit}>{tr.t("tutorial.back")}</button>
-      </div>
-    {:else if result}
-      <div class="over">
-        <h2>{result}</h2>
-        <p>{tr.t("ui.finalScore", { you: totalLight(game, me), opponent: totalLight(game, foe) })}</p>
-        {#if onFinish}
-          <button class="primary" onclick={() => onFinish(game?.outcome?.winner ?? null)}>{tr.t("meta.continue")}</button>
-        {:else}
-          <button class="primary" onclick={onExit}>{tr.t("ui.newGame")}</button>
-        {/if}
+    {#if lessonResult || result}
+      <div class="over {mood}" style="--key: url({keyArtUrl})">
+        <div class="result">
+          <div class="art" aria-hidden="true"><span class="rays"></span></div>
+          {#if lessonResult}
+            <h2>{tr.t(lessonResult === "done" ? "tutorial.done" : "tutorial.failed")}</h2>
+            <div class="actions">
+              {#if lessonResult === "done" && hasNext}
+                <button class="primary" onclick={() => onNext?.()}>{tr.t("tutorial.next")}</button>
+              {/if}
+              {#if lessonResult === "failed"}
+                <button class="primary" onclick={() => onRetry?.()}>{tr.t("tutorial.retry")}</button>
+              {/if}
+              <button onclick={onExit}>{tr.t("tutorial.back")}</button>
+            </div>
+          {:else}
+            <h2>{result}</h2>
+            <p class="score">{tr.t("ui.finalScore", { you: totalLight(game, me), opponent: totalLight(game, foe) })}</p>
+            <div class="actions">
+              {#if onFinish}
+                <button class="primary" onclick={() => onFinish(game?.outcome?.winner ?? null)}>{tr.t("meta.continue")}</button>
+              {:else}
+                <button class="primary" onclick={onExit}>{tr.t("ui.newGame")}</button>
+              {/if}
+            </div>
+          {/if}
+        </div>
       </div>
     {/if}
   {/if}
@@ -676,8 +690,22 @@
   .zoom-text h3 { margin: 0 0 8px; color: var(--accent); }
   .zoom-text .kw { color: var(--accent); }
   .zoom-text .flavor { font-style: italic; color: var(--muted); }
-  .over { position: fixed; inset: 0; z-index: 25; background: rgba(0, 0, 0, 0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
-  .over h2 { color: var(--accent); text-align: center; padding: 0 16px; }
+  /* Result screen (graphics plan, phase 7): the lighthouse lit for a win, dark and grey for a loss. */
+  .over { position: fixed; inset: 0; z-index: 25; background: rgb(3 6 12 / 0.72); display: flex; align-items: center; justify-content: center; padding: 16px; animation: over-in 0.35s ease-out both; }
+  .result { position: relative; width: min(520px, 100%); border-radius: 12px; overflow: hidden; box-shadow: var(--frame), 0 12px 40px rgb(0 0 0 / 0.6); background: linear-gradient(rgb(12 18 28 / 0.75), rgb(8 12 20 / 0.92)), var(--wood) center / 320px; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 18px; animation: result-in 0.5s cubic-bezier(0.2, 1.4, 0.4, 1) 0.1s both; }
+  .art { position: relative; width: 100%; aspect-ratio: 2.2; background: var(--key) 70% 35% / cover; overflow: hidden; }
+  .art::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 40%, rgb(8 12 20 / 0.95)); }
+  .rays { position: absolute; left: 70%; top: 32%; width: 200%; aspect-ratio: 1; transform: translate(-50%, -50%); background: repeating-conic-gradient(rgb(255 230 150 / 0.22) 0 6deg, transparent 6deg 18deg); mask: radial-gradient(closest-side, #000 20%, transparent); animation: rays 18s linear infinite; mix-blend-mode: screen; }
+  .lose .art, .draw .art { filter: grayscale(0.85) brightness(0.55) contrast(1.1); }
+  .lose .rays, .draw .rays { display: none; }
+  .over h2 { margin: -28px 0 0; position: relative; color: #fff1c0; font-size: clamp(24px, 4vw, 34px); text-align: center; padding: 0 16px; text-shadow: 0 2px 0 #3a2410, 0 0 18px rgb(251 211 90 / 0.5); }
+  .lose h2 { color: #c8d4e0; text-shadow: 0 2px 0 #0a1018, 0 0 14px rgb(120 160 200 / 0.4); }
+  .score { margin: 0; color: #e6dcc4; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  @keyframes over-in { from { opacity: 0; } }
+  @keyframes result-in { from { opacity: 0; transform: translateY(20px) scale(0.92); } }
+  @keyframes rays { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .over, .result, .rays { animation: none; } }
 
   /* Phone in portrait: the board shows the top of the scene. The hand is a fan at the bottom (plan, section 7.5). */
   .portrait { position: static; display: flex; flex-direction: column; min-height: 100dvh; overflow: visible; }

@@ -303,6 +303,7 @@
   },
   "ui": {
     "title": "High Tides",
+    "tagline": "Accendi i Fari. Domina la Marea.",
     "subtitle": "Interfaccia testuale. Scrivi il numero di un'azione e premi Invio.",
     "help": "Comandi: un numero sceglie un'azione. \"c N\" mostra la carta N della mano. \"k\" mostra le parole chiave. \"q\" esce.",
     "round": "Round {{round}}",
