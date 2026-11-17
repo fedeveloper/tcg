@@ -13,7 +13,8 @@
   import { BoardView, type BoardClick } from "../render/board.ts";
   import { HEIGHT, VIEW_HEIGHT, WIDTH, type Rect } from "../render/layout.ts";
   import { ShapeTheme, type Theme } from "../render/theme.ts";
-  import { loadArt, SpriteTheme } from "../render/spriteTheme.ts";
+  import { loadArt } from "../render/spriteTheme.ts";
+  import { loadPainted, PaintedTheme } from "../render/paintedTheme.ts";
   import PixelCard from "./PixelCard.svelte";
   import type { CardFace } from "./pixelCanvas.ts";
 
@@ -141,10 +142,11 @@
     let disposed = false;
     void (async () => {
       await app!.init({ width: WIDTH * scale, height: HEIGHT * scale, antialias: false, background: "#1a1423", preference: "webgl" });
-      // The pixel art theme needs the spritesheets. The shape theme is the fallback.
+      // The painted theme needs the spritesheets and the painted textures. The shape theme is the fallback.
       let theme: Theme;
       try {
-        theme = new SpriteTheme(await loadArt(), scale, () => speed.reduced);
+        const [art, painted] = await Promise.all([loadArt(), loadPainted()]);
+        theme = new PaintedTheme(art, painted, scale, () => speed.reduced);
       } catch (err) {
         console.warn("Sprites not loaded, using shapes", err);
         theme = new ShapeTheme(scale);

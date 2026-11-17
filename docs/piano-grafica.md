@@ -180,6 +180,10 @@ Criterio di fine: nessun controllo con lo stile del browser in tutto il client.
 
 ### Fase 3: campo di gioco
 
+Stato: prima versione il 17/11/2026. Nuovo tema `PaintedTheme` (`packages/client/src/render/paintedTheme.ts`): mare dipinto con onde animate da un filtro, Faro dipinto in 3 stati, celle come anelli di luce, Luogo come rombo dorato, Marea su un righello d'ottone, celle valide con un contorno luminoso. Custodi, Luoghi ed effetti restano in pixel art fino alle fasi 5 e 6. Asset in `assets/board/` (`python3 assets/board/build.py`). Prestazioni sul telefono lento: 50 fps (prima 59).
+
+![Fase 3](img/piano-grafica/fase3-campo.png)
+
 1. Genera lo sfondo del campo: un mare tra due scogliere, vista dall'alto obliqua, 1920 × 1080 (generato a 1344 × 768 e ingrandito).
 2. Disegna le celle come aree luminose sull'acqua, non come scogli disegnati nello sfondo. Lo sfondo non cambia con il layout.
 3. Genera il Faro con 3 stati. Genera lo stato acceso con `z-image-turbo`, poi crea gli stati danneggiato e spento con la modifica di `flux2-klein-4b` (stesso faro, stesso punto di vista).
