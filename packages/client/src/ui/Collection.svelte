@@ -58,6 +58,6 @@
   header, .filters, .detail { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 10px; }
   h2 { margin: 0; color: var(--accent); }
   .shards { font-weight: bold; }
-  .detail { position: sticky; top: 0; z-index: 1; padding: 8px; background: var(--bg, #0e1420); border: 1px solid #334; border-radius: 6px; }
+  .detail { position: sticky; top: 0; z-index: 1; padding: 10px; border-radius: 8px; background: linear-gradient(rgb(10 15 25 / 0.75), rgb(10 15 25 / 0.85)), var(--wood) center / 320px; box-shadow: var(--frame); }
   .grid { display: flex; flex-wrap: wrap; gap: 8px; }
 </style>

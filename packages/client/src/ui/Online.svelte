@@ -151,14 +151,14 @@
   {#if error}<p class="error" role="alert">{error}</p>{/if}
 
   {#if hosting}
-    <section class="box">
+    <section class="box panel">
       <p>{tr.t("online.shareCode")}</p>
       <p class="code">{hosting.code}</p>
       <p class="hint">{tr.t("online.waitingFriend")}</p>
       <button onclick={cancelHost}>{tr.t("ui.cancel")}</button>
     </section>
   {:else if queued}
-    <section class="box">
+    <section class="box panel">
       <p>{tr.t("online.searching")}</p>
       <button onclick={leaveQueue}>{tr.t("ui.cancel")}</button>
     </section>
@@ -213,8 +213,8 @@
   .status.online { color: #6fcf8a; }
   .status.offline { color: #e0605a; }
   .status.connecting { color: var(--muted); }
-  .box { border: 1px solid var(--accent); border-radius: 8px; padding: 12px; text-align: center; }
-  .code { font-size: 32px; letter-spacing: 6px; color: var(--accent); margin: 4px 0; font-family: monospace; }
+  .box { text-align: center; }
+  .code { font-size: 32px; letter-spacing: 6px; color: var(--accent); margin: 4px 0; font-family: var(--serif); }
   .error { color: #e0605a; margin: 0; }
   .hint { color: var(--muted); font-size: 12px; }
   ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }

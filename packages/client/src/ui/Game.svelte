@@ -606,7 +606,7 @@
   .timer.low { color: #e0605a; }
   .hint { color: var(--muted); font-size: 12px; }
   .options-wrap { position: relative; }
-  .options { position: absolute; right: 0; top: calc(100% + 4px); z-index: 20; display: flex; flex-direction: column; gap: 8px; background: var(--panel); border: 1px solid #3b5b70; border-radius: 4px; padding: 10px 12px; white-space: nowrap; }
+  .options { position: absolute; right: 0; top: calc(100% + 4px); z-index: 20; display: flex; flex-direction: column; gap: 8px; background: linear-gradient(rgb(12 18 28 / 0.72), rgb(8 12 20 / 0.85)), var(--wood) center / 320px; box-shadow: var(--frame); border-radius: 8px; padding: 12px 14px; white-space: nowrap; }
   .motion { display: flex; align-items: center; gap: 6px; cursor: pointer; }
 
   .stage { position: relative; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -641,13 +641,13 @@
   .card:hover:not(.dim), .card:focus-visible { transform: translateY(calc(-30 * var(--u))) scale(1.25); z-index: 5; background: transparent; }
   .card.selected { transform: translateY(calc(-14 * var(--u))); filter: drop-shadow(0 0 6px var(--accent)); z-index: 4; }
   .card.dim { filter: brightness(0.6) saturate(0.7); }
-  .card .rules { display: none; position: absolute; left: 50%; bottom: calc(100% + 2 * var(--u)); transform: translateX(-50%); width: calc(90 * var(--u)); flex-direction: column; gap: calc(1 * var(--u)); background: rgba(15, 23, 34, 0.95); border: 1px solid #3b5b70; border-radius: 4px; padding: calc(2 * var(--u)); font-size: calc(3.6 * var(--u)); text-align: left; color: var(--ink); }
+  .card .rules { display: none; position: absolute; left: 50%; bottom: calc(100% + 2 * var(--u)); transform: translateX(-50%); width: calc(90 * var(--u)); flex-direction: column; gap: calc(1 * var(--u)); background: var(--paper) center / 256px; box-shadow: var(--frame); border-radius: 6px; padding: calc(2 * var(--u)); font-size: calc(3.6 * var(--u)); text-align: left; color: var(--paper-ink); }
   .card:hover .rules, .card:focus-visible .rules { display: flex; }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
 
   /* Log and keyboard list: a drawer on the right. */
-  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(380px, 90vw); z-index: 15; background: var(--panel); border-left: 1px solid #3b5b70; padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow: auto; font-size: 12px; transform: translateX(100%); visibility: hidden; transition: transform 0.18s ease-out, visibility 0.18s; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(380px, 90vw); z-index: 15; background: linear-gradient(rgb(12 18 28 / 0.72), rgb(8 12 20 / 0.85)), var(--wood) center / 320px; box-shadow: inset 2px 0 0 var(--gold-d), -4px 0 14px rgb(0 0 0 / 0.5); padding: 14px; display: flex; flex-direction: column; gap: 10px; overflow: auto; font-size: 14px; transform: translateX(100%); visibility: hidden; transition: transform 0.18s ease-out, visibility 0.18s; }
   .drawer.open { transform: none; visibility: visible; }
   .drawer .close { align-self: flex-end; }
   .log { display: flex; flex-direction: column; gap: 2px; }
@@ -656,7 +656,7 @@
   .field .keeper { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
   .zoom { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 30; padding: 16px; }
-  .zoom-card { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; background: var(--panel); border-radius: 8px; padding: 16px; max-width: 640px; max-height: 100%; overflow: auto; }
+  .zoom-card { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; background: linear-gradient(rgb(12 18 28 / 0.72), rgb(8 12 20 / 0.85)), var(--wood) center / 320px; box-shadow: var(--frame); border-radius: 10px; padding: 16px; max-width: 640px; max-height: 100%; overflow: auto; }
   .zoom-text { flex: 1; min-width: 200px; font-size: 14px; }
   .zoom-text h3 { margin: 0 0 8px; color: var(--accent); }
   .zoom-text .kw { color: var(--accent); }

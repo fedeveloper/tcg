@@ -170,10 +170,10 @@
   {@const mode = screen}
   <RunScreen {tr} kind={mode} onPlay={(deck, foe) => startRunMatch(mode, deck, foe)} onBack={() => (screen = "menu")} />
 {:else}
-  <main class="menu">
+  <main class="menu panel">
     <h1>{tr.t("ui.title")}</h1>
     {#if reward}
-      <section class="reward">
+      <section class="reward panel paper">
         <h3>{tr.t("meta.reward")}</h3>
         {#if reward.kind === "cards"}
           <div class="grid">{#each reward.cards as id}<CardTile {tr} cardId={id} />{/each}</div>
@@ -232,13 +232,12 @@
 {/if}
 
 <style>
-  .menu { max-width: 420px; margin: 6vh auto; padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
-  h1 { color: var(--accent); font-size: 28px; margin: 0 0 8px; }
-  h2 { font-size: 16px; margin: 10px 0 0; opacity: 0.8; }
+  .menu { max-width: 440px; margin: 6vh auto; padding: 20px 24px 16px; display: flex; flex-direction: column; gap: 12px; }
+  h1 { color: var(--accent); font-size: 40px; margin: 0 0 8px; text-align: center; }
+  h2 { font-size: 19px; margin: 10px 0 0; color: var(--gold); border-bottom: 1px solid rgb(217 181 106 / 0.35); padding-bottom: 2px; }
   .lessons { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
   .lessons button { width: 100%; text-align: left; }
   label { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .reward { border: 1px solid var(--accent); border-radius: 8px; padding: 10px; }
   .reward h3 { margin: 0 0 8px; }
   .grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
   .stats { font-size: 12px; opacity: 0.7; }
