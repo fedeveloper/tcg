@@ -8,3 +8,6 @@ __pycache__/
 # Playwright
 playwright-report/
 test-results/
+
+# Originals of the card illustrations (graphics plan, section 6.4)
+assets/art/originals/
