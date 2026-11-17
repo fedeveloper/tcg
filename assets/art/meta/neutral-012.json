@@ -1,0 +1,14 @@
+{
+  "cardId": "neutral-012",
+  "model": "flux2-klein-4b",
+  "seed": 3007,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png"
+  ],
+  "prompt": "Use image 1 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy its buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a glass bottle with a rolled paper scroll inside drifting on calm waves at sunset, the scroll is blank, dynamic close view, motion and light trails. Faction colors: slate, stone gray, sand and white, plain harbor materials, weathered wood and rope. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4c/neutral-012.png",
+  "formula": "rifacimento (solo 3B)",
+  "web": "dall'originale 1344x960"
+}

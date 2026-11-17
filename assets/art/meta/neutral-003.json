@@ -1,0 +1,14 @@
+{
+  "cardId": "neutral-003",
+  "model": "flux2-klein-4b",
+  "seed": 3002,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png"
+  ],
+  "prompt": "Use image 1 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy its buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a nimble young pirate woman with a red bandana and a curved blade leaping between sharp sea rocks at the foot of a cliff, character in the left third, her face visible and sly. Faction colors: slate, stone gray, sand and white, plain harbor materials, weathered wood and rope. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4c/neutral-003.png",
+  "formula": "rifacimento (solo 3B)",
+  "web": "dall'originale 1344x960"
+}
