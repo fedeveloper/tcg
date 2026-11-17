@@ -33,16 +33,18 @@ Il campo usa il tema `SpriteTheme` (`src/render/spriteTheme.ts`). Il tema implem
 - Il tema `ShapeTheme` resta come riserva. Il client lo usa se il caricamento degli sprite fallisce.
 - La mano mostra carte complete in pixel art. Il componente `PixelCard.svelte` disegna illustrazione, cornice, nome, costo e statistiche su un canvas 64 × 88 (`pixelCanvas.ts`).
 - Un Custode senza sprite usa lo sprite di riserva `keeper/unknown/idle`. Una carta senza illustrazione mostra un riquadro grigio.
-- Il canvas mostra solo la parte alta della scena (`VIEW_HEIGHT` = 186 pixel). La mano è sotto il canvas.
+- La scena occupa tutto lo schermo (piano della grafica, fase 0). La mano, la Brace e il pulsante principale stanno sul molo, in basso nella scena.
+- La variabile CSS `--u` vale un pixel della scena in pixel CSS. Gli elementi DOM sopra il canvas usano `--u` per posizione e dimensione.
+- La cronaca e l'elenco del campo sono in un pannello a destra (pulsante "Cronaca"). La lingua e "Riduci le animazioni" sono nel menu "Opzioni".
 
 Tre metodi di `Theme` sono opzionali: `fx` (scintille, sbuffi, colpi), `cardGhost` (illustrazione della carta giocata) e `dissolve` (dissolvenza a dithering).
 `BoardView.animateEvent` applica i tempi di `assets/animations/animations.json`. Vedi [animazioni.md](animazioni.md).
 
-L'opzione "Riduci le animazioni" è nell'intestazione della partita. Il client salva la scelta in `localStorage`.
+L'opzione "Riduci le animazioni" è nel menu "Opzioni" della partita. Il client salva la scelta in `localStorage`.
 Alla prima visita il client segue l'impostazione `prefers-reduced-motion` del sistema operativo.
 Con l'opzione attiva, `BoardView` dimezza i tempi, disattiva la scossa, l'hit stop e lo squash and stretch, e genera 3 particelle su 10.
 
-Il campo usa una scala intera (×1, ×2, ×3) e il filtro `nearest`, come chiede il piano (sezione 7.2).
+Il canvas disegna la scena con una scala intera e il filtro `nearest`. Poi il CSS adatta il canvas allo spazio libero con una scala continua: la scena riempie lo schermo.
 
 ## Tutorial
 
@@ -99,7 +101,7 @@ Il client calcola le azioni legali solo per l'interfaccia. Il server controlla d
 
 ## Telefono in verticale (sezione 7.5 del piano)
 
-- Sotto 700 px di larghezza e in verticale, la mano resta in basso come un ventaglio.
+- Sotto 700 px di larghezza e in verticale, il canvas mostra solo la parte alta della scena (`VIEW_HEIGHT` = 186 pixel). La mano resta in basso come un ventaglio.
 - La riga del giocatore resta sopra la mano, con il pulsante principale sempre visibile.
 - Le carte della mano sono piccole. Il testo delle regole appare solo nella scheda della carta.
 - La plancia resta orizzontale e si adatta alla larghezza. Una plancia verticale richiede nuova grafica.
