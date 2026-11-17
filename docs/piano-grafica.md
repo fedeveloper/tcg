@@ -136,6 +136,10 @@ Ogni fase è una PR separata. Ogni fase ha un criterio di fine verificabile con 
 
 ### Fase 0: layout a schermo pieno (subito, solo codice)
 
+Stato: fatta il 17/11/2026 (stessa PR del piano). La mano resta nel DOM, sopra il canvas, con le misure della scena. Le carte diventano sprite PixiJS nella fase 4.
+
+![Fase 0 a 1920 × 1080](img/piano-grafica/fase0-1920.png)
+
 Questa fase dà il miglioramento più grande con il costo più basso. La fase usa ancora gli asset pixel art.
 
 1. Togli il limite di 1440 px e il limite del 62% in `Game.svelte`.

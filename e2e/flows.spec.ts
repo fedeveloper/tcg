@@ -106,3 +106,24 @@ test.describe("phone in portrait", () => {
     expect(width).toBeLessThanOrEqual(412);
   });
 });
+
+for (const viewport of [{ width: 1920, height: 1080 }, { width: 1366, height: 768 }]) {
+  test.describe(`full screen board at ${viewport.width}x${viewport.height}`, () => {
+    test.use({ viewport });
+    test("the scene fills the screen and the page does not scroll", async ({ page }) => {
+      await openMenu(page);
+      await page.getByRole("button", { name: "Gioca", exact: true }).click();
+      await waitForBoard(page);
+      const scene = (await page.locator(".scene").boundingBox())!;
+      // Graphics plan, phase 0: the scene covers at least 85% of the screen (16:9 scene, a thin bar on top).
+      expect((scene.width * scene.height) / (viewport.width * viewport.height)).toBeGreaterThan(0.85);
+      const size = await page.locator("html").evaluate((el) => [el.scrollWidth, el.scrollHeight]);
+      expect(size[0]).toBeLessThanOrEqual(viewport.width);
+      expect(size[1]).toBeLessThanOrEqual(viewport.height);
+      // The hand and the main button are inside the scene.
+      const card = (await page.locator(".hand .card").first().boundingBox())!;
+      expect(card.y + card.height).toBeLessThanOrEqual(scene.y + scene.height + 1);
+      await expect(page.locator(".me button.primary")).toBeInViewport();
+    });
+  });
+}

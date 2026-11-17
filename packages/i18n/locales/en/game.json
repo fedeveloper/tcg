@@ -357,6 +357,7 @@
     "yourTurn": "Your turn.",
     "waiting": "The opponent acts...",
     "log": "Log",
+    "options": "Options",
     "menu": "Menu",
     "stats": "{{attack}}/{{hold}}",
     "moveHint": "Click one of your Keepers to move it (1 Ember).",
