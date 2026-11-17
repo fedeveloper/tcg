@@ -231,6 +231,16 @@ Stato: fatta il 17/11/2026. I 90 Custodi (con le pedine) hanno un medaglione rot
 
 Criterio di fine: il test `PERF=1 pnpm e2e perf` resta sopra 50 fps.
 
+Stato: fatta il 17/11/2026. Solo codice, senza immagini nuove.
+
+- Luce: alone che tremola per la Fucina, alone che pulsa per il Vespro e l'Abisso, riflesso dei Fari sull'acqua. Le altre fazioni non hanno alone, per le prestazioni.
+- Parole chiave: quando un Custode entra, ogni parola chiave ha particelle con colore e direzione propri (`KEYWORD_FX` in `board.ts`).
+- Numeri di danno: font bitmap Alegreya con contorno, comparsa con rimbalzo, numeri da 3 in su più grandi.
+- Effetti `spark`, `puff` e `hit` dipinti (luce morbida) al posto degli sprite in pixel art.
+- Transizione: `Wave.svelte`, un'onda attraversa lo schermo in 0,7 s. È spenta con "movimento ridotto".
+- Parallasse: il mare segue il mouse di pochi pixel. Non c'è sul telefono.
+- Prestazioni sul telefono lento: 53 fps. Gli aloni usano il blending normale: uno sprite "add" tra sprite normali spezza il batch.
+
 ### Fase 7: menu e schermate secondarie
 
 1. Schermata del titolo: illustrazione del faro nella tempesta, logo, menu verticale.

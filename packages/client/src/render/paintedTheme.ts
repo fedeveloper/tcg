@@ -1,4 +1,4 @@
-import { Assets, Container, defaultFilterVert, Filter, GlProgram, Graphics, Rectangle, Sprite, Text, Texture, TilingSprite } from "pixi.js";
+import { Assets, BitmapFont, BitmapText, Container, defaultFilterVert, Filter, GlProgram, Graphics, Rectangle, Sprite, Text, Texture, TilingSprite } from "pixi.js";
 import { gsap } from "gsap";
 import seaUrl from "../../../../assets/board/web/sea.webp?url";
 import litUrl from "../../../../assets/board/web/beacon-lit.webp?url";
@@ -7,7 +7,7 @@ import outUrl from "../../../../assets/board/web/beacon-out.webp?url";
 import woodUrl from "../../../../assets/ui/web/legno.webp?url";
 import { HEIGHT, TIDE, VIEW_HEIGHT, WIDTH, type Rect } from "./layout.ts";
 import { type Art, SpriteTheme } from "./spriteTheme.ts";
-import { FACTION_COLORS, type BeaconLook, type BeaconView, type KeeperLook, type KeeperView, type SiteView } from "./theme.ts";
+import { FACTION_COLORS, type FxKind, type BeaconLook, type BeaconView, type KeeperLook, type KeeperView, type SiteView } from "./theme.ts";
 
 /** The round keeper medallions (graphics plan, phase 5), cut by assets/art/build.py. */
 const MEDALS: Record<string, string> = {};
@@ -17,6 +17,8 @@ for (const [path, url] of Object.entries(
   const id = /([^/]+)\.webp$/.exec(path)?.[1];
   if (id) MEDALS[id] = url;
 }
+
+let damageFontReady = false;
 
 const medalTextures = new Map<string, Promise<Texture>>();
 
@@ -107,6 +109,14 @@ const MEDAL_Y = -3;
 /** The stat badges: Attack on the left, Hold on the right. */
 const STAT_FONT = { fontFamily: "Alegreya, Georgia, serif", fontWeight: "700", fontSize: 9 } as const;
 
+/** The light around a medallion: a color and a rhythm for each faction (graphics plan, phase 6). */
+/** Only the factions of light have an aura: fewer large sprites keep the frame rate on slow phones. */
+const AURA: Record<string, { color: number; size: number; alpha: number; rhythm: "flicker" | "pulse" }> = {
+  forge: { color: 0xff8a3a, size: 46, alpha: 0.55, rhythm: "flicker" },
+  vesper: { color: 0xc9a4ff, size: 44, alpha: 0.5, rhythm: "pulse" },
+  abyss: { color: 0x5fc8ff, size: 40, alpha: 0.35, rhythm: "pulse" },
+};
+
 /**
  * The painted theme: a painted sea and painted Beacons (graphics plan, phase 3).
  * Keepers are painted medallions (phase 5). Sites and the effects still come from the pixel art theme until phase 6.
@@ -124,8 +134,7 @@ export class PaintedTheme extends SpriteTheme {
   override background(): Container {
     const c = new Container();
     const sea = new Sprite(this.painted.sea);
-    sea.width = WIDTH;
-    sea.height = PIER_Y + 4;
+    sea.height = PIER_Y + 6;
     const filter = new Filter({
       glProgram: GlProgram.from({ vertex: defaultFilterVert, fragment: WAVES_FRAGMENT, name: "sea-waves" }),
       resources: { waves: { uTime: { value: 0, type: "f32" }, uAmount: { value: 0.0022, type: "f32" } } },
@@ -155,7 +164,22 @@ export class PaintedTheme extends SpriteTheme {
       .rect(0, 0, WIDTH, 10).fill({ color: 0x0a0f1d, alpha: 0.35 })
       .rect(0, VIEW_HEIGHT - 6, WIDTH, 6).fill({ color: 0x0a0f1d, alpha: 0.2 });
     c.addChild(sea, pier, edge, shade);
-    c.on("destroyed", () => tween.kill());
+    // Light parallax: the sea follows the mouse by a few pixels (graphics plan, phase 6).
+    sea.width = WIDTH + 8;
+    sea.x = -4;
+    const drift = { x: -4, y: 0 };
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType !== "mouse" || this.reduced()) return;
+      const kx = e.clientX / window.innerWidth - 0.5;
+      const ky = e.clientY / window.innerHeight - 0.5;
+      gsap.to(drift, { x: -4 - kx * 6, y: -ky * 3, duration: 0.8, ease: "power2.out", overwrite: true, onUpdate: () => sea.position.set(drift.x, drift.y) });
+    };
+    window.addEventListener("pointermove", onMove);
+    c.on("destroyed", () => {
+      tween.kill();
+      gsap.killTweensOf(drift);
+      window.removeEventListener("pointermove", onMove);
+    });
     return c;
   }
 
@@ -210,8 +234,32 @@ export class PaintedTheme extends SpriteTheme {
     hold.anchor.set(0.5, 0.6);
     hold.position.copyFrom(holdBadge.position);
     stats.addChild(attackBadge, holdBadge, attack, hold);
-    c.addChild(shadow, reflection, body, stats);
+    // The faction light around the medallion: firelight flickers, the Vesper lanterns pulse.
+    const aura = new Sprite(this.painted.glow);
+    aura.anchor.set(0.5);
+    // Normal blending keeps the board in few draw calls: an "add" sprite between normal sprites breaks the batch.
+    aura.position.set(0, MEDAL_Y);
+    let auraTween: gsap.core.Tween | null = null;
+    let auraFaction = "";
+    const setAura = (faction: string) => {
+      if (faction === auraFaction) return;
+      auraFaction = faction;
+      auraTween?.kill();
+      const a = AURA[faction];
+      aura.visible = !!a;
+      if (!a) return;
+      aura.tint = a.color;
+      aura.scale.set(a.size / this.painted.glow.width);
+      aura.alpha = a.alpha;
+      if (a.rhythm === "flicker") {
+        auraTween = gsap.to(aura, { alpha: `random(${a.alpha * 0.45}, ${a.alpha})`, duration: "random(0.12, 0.26)", repeat: -1, repeatRefresh: true, ease: "none" });
+      } else {
+        auraTween = gsap.to(aura, { alpha: a.alpha * 0.4, duration: 1.8, repeat: -1, yoyo: true, ease: "sine.inOut" });
+      }
+    };
+    c.addChild(aura, shadow, reflection, body, stats);
     c.body = body;
+    c.on("destroyed", () => auraTween?.kill());
 
     const breathe = gsap.to(breath.scale, { x: 1.02, y: 1.02, duration: 1.6 + Math.random() * 0.4, repeat: -1, yoyo: true, ease: "sine.inOut", delay: Math.random() });
     c.on("destroyed", () => breathe.kill());
@@ -239,6 +287,8 @@ export class PaintedTheme extends SpriteTheme {
       // A keeper that entered in this round waits: it is darker and it does not breathe.
       picture.tint = l.fresh ? 0x8a8aa8 : 0xffffff;
       reflection.tint = color;
+      setAura(l.faction);
+      auraTween?.paused(this.reduced());
       breathe.paused(l.fresh || this.reduced());
       if (l.fresh || this.reduced()) breath.scale.set(1);
       attack.text = String(l.attack);
@@ -271,16 +321,27 @@ export class PaintedTheme extends SpriteTheme {
     const light = new Text({ text: "", style: { fontFamily: "Alegreya, Georgia, serif", fontWeight: "700", fontSize: 10, fill: 0xfbd35a }, resolution: this.resolution * 2 });
     light.anchor.set(0.5, 0.55);
     light.position.copyFrom(badge.position);
-    c.addChild(glow, sprite, badge, light);
-    c.on("destroyed", () => breathe.kill());
+    // The lamp light on the water: a long soft glint that breathes with the lamp.
+    const glint = new Sprite(this.painted.glow);
+    glint.anchor.set(0.5);
+    glint.position.set(r.w / 2 + (look.mine ? 14 : -14), r.h + 2);
+    glint.scale.set(36 / this.painted.glow.width, 6 / this.painted.glow.height);
+    glint.alpha = 0.45;
+    const glintTween = gsap.to(glint, { alpha: 0.2, duration: 1.4, repeat: -1, yoyo: true, ease: "sine.inOut" });
+    c.addChild(glint, glow, sprite, badge, light);
+    c.on("destroyed", () => {
+      breathe.kill();
+      glintTween.kill();
+    });
     c.update = (l: BeaconLook) => {
       const next = beaconState(l.light);
       if (next !== state) {
         state = next;
         sprite.texture = this.painted.beacon[state];
       }
-      glow.visible = state !== "out";
+      glow.visible = glint.visible = state !== "out";
       glow.tint = state === "lit" ? 0xffffff : 0xff8a3a;
+      glint.tint = glow.tint;
       glow.scale.set((state === "lit" ? 30 : 18) / this.painted.glow.width);
       badge.visible = light.visible = l.light > 0;
       light.text = String(l.light);
@@ -314,6 +375,55 @@ export class PaintedTheme extends SpriteTheme {
       const x = TIDE.x + i * TIDE.cell + TIDE.cell / 2;
       const mid = i === (TIDE.cells - 1) / 2;
       g.rect(x - 0.5, TIDE.y + (mid ? 3 : 6), 1, mid ? 10 : 4).fill({ color: GOLD, alpha: mid ? 1 : 0.6 });
+    }
+    return g;
+  }
+
+  /** Damage and heal numbers: large painted digits with a dark outline (graphics plan, phase 6). */
+  override floatingText(text: string, color: number): Container {
+    // A bitmap font: the digits are drawn once, so a new number costs no text rendering.
+    if (!damageFontReady) {
+      BitmapFont.install({
+        name: "tcg-damage",
+        style: { fontFamily: "Alegreya, Georgia, serif", fontWeight: "700", fontSize: 32, fill: 0xffffff, stroke: { color: 0x1a0d08, width: 6 } },
+        chars: [["0", "9"], "+-×"],
+        resolution: Math.max(1, this.resolution / 2),
+      });
+      damageFontReady = true;
+    }
+    const t = new BitmapText({ text, style: { fontFamily: "tcg-damage", fontSize: 16 } });
+    t.tint = color;
+    t.anchor.set(0.5);
+    return t;
+  }
+
+  /** Soft light effects in place of the pixel sprites: sparks, puffs of mist and hit flashes. */
+  override fx(kind: FxKind, tint = 0xffffff): Container {
+    const g = new Sprite(this.painted.glow);
+    g.anchor.set(0.5);
+    const k = 1 / this.painted.glow.width;
+    if (kind === "spark") {
+      g.blendMode = "add";
+      g.tint = tint;
+      g.scale.set(9 * k);
+      gsap.to(g.scale, { x: 2 * k, y: 2 * k, duration: 0.4, ease: "power1.in" });
+      gsap.to(g, { alpha: 0, duration: 0.4, ease: "power1.in", onComplete: () => g.destroy() });
+    } else if (kind === "puff") {
+      g.tint = tint === 0xffffff ? 0xc9d6dc : tint;
+      g.alpha = 0.6;
+      g.scale.set(8 * k);
+      gsap.to(g.scale, { x: 22 * k, y: 16 * k, duration: 0.5, ease: "power2.out" });
+      gsap.to(g, { alpha: 0, duration: 0.5, ease: "power1.in", onComplete: () => g.destroy() });
+    } else {
+      // Hit: a bright flash and a ring that opens.
+      g.blendMode = "add";
+      g.tint = tint;
+      g.scale.set(30 * k);
+      const ring = new Graphics().circle(0, 0, 6).stroke({ color: tint === 0xffffff ? 0xffe0b0 : tint, width: 1.5 });
+      g.addChild(ring);
+      ring.scale.set(this.painted.glow.width / 30);
+      gsap.to(g.scale, { x: 44 * k, y: 44 * k, duration: 0.25, ease: "power2.out" });
+      gsap.to(g, { alpha: 0, duration: 0.25, ease: "power1.in", onComplete: () => g.destroy() });
     }
     return g;
   }

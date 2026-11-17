@@ -9,6 +9,7 @@
   import Decks from "./Decks.svelte";
   import RunScreen from "./RunScreen.svelte";
   import Online from "./Online.svelte";
+  import Wave from "./Wave.svelte";
   import { OnlineClient } from "../online/connection.ts";
   import { RemoteSession } from "../online/remoteSession.ts";
   import { ReplaySession } from "../online/replaySession.ts";
@@ -230,6 +231,10 @@
     <p class="stats">{tr.t("meta.record", { wins: profileStore.profile.wins, losses: profileStore.profile.losses })}</p>
   </main>
 {/if}
+
+{#key screen}
+  <Wave />
+{/key}
 
 <style>
   .menu { max-width: 440px; margin: 6vh auto; padding: 20px 24px 16px; display: flex; flex-direction: column; gap: 12px; }
