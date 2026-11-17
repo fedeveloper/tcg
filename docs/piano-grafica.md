@@ -87,7 +87,7 @@ Quindi le regole hanno due livelli. Il livello del gioco vince sempre sul livell
 | **Gioco** (tutte le 154 carte) | Tecnica pittorica, spessore dei contorni, tipo di luce (calda contro fredda), proporzioni dei personaggi, inquadratura, mondo marino con i fari | 2 **ancore del gioco**: immagini approvate da Federico, presenti come riferimento in ogni generazione. Frase di stile del gioco in ogni prompt. |
 | **Fazione** | Colori dominanti, materiali, ambienti, forma dei costumi e degli oggetti | 1–2 **ancore della fazione**. Frase della fazione dopo la frase del gioco. |
 
-- `flux2-klein-4b` accetta fino a 4 immagini di riferimento. Ogni generazione usa 2 ancore del gioco + 2 ancore della fazione.
+- `flux2-klein-4b` accetta fino a 4 immagini di riferimento. Ogni generazione usa 2 riferimenti: l'ancora del gioco 3B e l'ancora della fazione. Con l'ancora 2B il modello copia il ragazzo in ogni carta (prova del 17/11/2026). Formula completa in [guida-di-stile.md](guida-di-stile.md), sezione 4.
 - Una carta che non rispetta il livello del gioco viene scartata, anche se rispetta la fazione.
 - Controllo: prima del merge, affianca le carte di una fazione e anche le carte di fazioni diverse. Le carte di fazioni diverse devono sembrare dello stesso gioco.
 
@@ -153,6 +153,8 @@ Questa fase dà il miglioramento più grande con il costo più basso. La fase us
 Criterio di fine: a 1920 × 1080 la scena occupa almeno il 90% dello schermo e la pagina non scorre.
 
 ### Fase 1: bibbia dello stile
+
+Stato: fatta il 17/11/2026 (PR #21 e PR successiva). Ancore, prompt e carta HD sono in [guida-di-stile.md](guida-di-stile.md).
 
 1. Crea una tavola di riferimento per l'identità del gioco con `z-image-turbo`: 8–12 immagini con fari, mare e personaggi neutri.
 2. Scegli con Federico le 2 **ancore del gioco** e la frase di stile del gioco (sezione 3.1.1).

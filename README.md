@@ -8,7 +8,7 @@ Meccaniche profonde, grafica in pixel art con animazioni fluide.
 Il piano di progetto è in [docs/piano-di-progetto.md](docs/piano-di-progetto.md).
 Il piano per la grafica è in [docs/piano-grafica.md](docs/piano-grafica.md).
 Le scelte del motore delle regole sono in [docs/motore.md](docs/motore.md).
-Le regole della pixel art sono in [docs/guida-di-stile.md](docs/guida-di-stile.md).
+Le regole grafiche sono in [docs/guida-di-stile.md](docs/guida-di-stile.md).
 Le specifiche di animazione sono in [docs/animazioni.md](docs/animazioni.md).
 Il server PvP e il deploy sul Raspberry Pi sono in [docs/server.md](docs/server.md).
 
