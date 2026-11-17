@@ -77,6 +77,20 @@ Ho avviato il client e ho preso screenshot a 1920 × 1080, 1366 × 768 e 412 × 
 - **Colori di fazione.** Ogni fazione ha i suoi colori dominanti (tabella in [guida-di-stile.md](guida-di-stile.md), sezione 3). I colori dominanti coprono almeno metà dell'immagine.
 - **Una frase di stile fissa.** Tutti i prompt finiscono con la stessa frase di stile (sezione 6.4). La frase garantisce la coerenza.
 
+### 3.1.1 Coerenza a due livelli
+
+Federico vuole illustrazioni coerenti tra loro: prima un'identità del gioco, poi un'identità per ogni fazione (17/11/2026).
+Quindi le regole hanno due livelli. Il livello del gioco vince sempre sul livello della fazione.
+
+| Livello | Cosa resta uguale | Strumento |
+|---|---|---|
+| **Gioco** (tutte le 154 carte) | Tecnica pittorica, spessore dei contorni, tipo di luce (calda contro fredda), proporzioni dei personaggi, inquadratura, mondo marino con i fari | 2 **ancore del gioco**: immagini approvate da Federico, presenti come riferimento in ogni generazione. Frase di stile del gioco in ogni prompt. |
+| **Fazione** | Colori dominanti, materiali, ambienti, forma dei costumi e degli oggetti | 1–2 **ancore della fazione**. Frase della fazione dopo la frase del gioco. |
+
+- `flux2-klein-4b` accetta fino a 4 immagini di riferimento. Ogni generazione usa 2 ancore del gioco + 2 ancore della fazione.
+- Una carta che non rispetta il livello del gioco viene scartata, anche se rispetta la fazione.
+- Controllo: prima del merge, affianca le carte di una fazione e anche le carte di fazioni diverse. Le carte di fazioni diverse devono sembrare dello stesso gioco.
+
 Prove del 17/11/2026 con i modelli locali (anteprime ridotte):
 
 ![Prove dello stile dipinto](img/piano-grafica/prove-stile-dipinto.jpg)
@@ -136,13 +150,15 @@ Criterio di fine: a 1920 × 1080 la scena occupa almeno il 90% dello schermo e l
 
 ### Fase 1: bibbia dello stile
 
-1. Crea una tavola di riferimento (mood board) per ogni fazione con `z-image-turbo`: 8–12 immagini per fazione.
-2. Scegli con Federico 2 immagini di riferimento per fazione. Queste immagini diventano le "ancore" per `flux2-klein-4b`.
-3. Fissa la frase di stile e un modello di prompt per ogni tipo di carta (Custode, Rito, Reliquia, Luogo).
-4. Produci 1 carta completa per fazione: illustrazione, cornice, testo.
-5. Riscrivi [guida-di-stile.md](guida-di-stile.md) per lo stile dipinto. La versione pixel art resta nella cronologia di git.
+1. Crea una tavola di riferimento per l'identità del gioco con `z-image-turbo`: 8–12 immagini con fari, mare e personaggi neutri.
+2. Scegli con Federico le 2 **ancore del gioco** e la frase di stile del gioco (sezione 3.1.1).
+3. Crea una tavola di riferimento per ogni fazione con `flux2-klein-4b` e le ancore del gioco: 6–8 immagini per fazione.
+4. Scegli con Federico 1–2 **ancore per ogni fazione** e la frase della fazione.
+5. Fissa un modello di prompt per ogni tipo di carta (Custode, Rito, Reliquia, Luogo).
+6. Produci 1 carta completa per fazione: illustrazione, cornice, testo.
+7. Riscrivi [guida-di-stile.md](guida-di-stile.md) per lo stile dipinto. La versione pixel art resta nella cronologia di git.
 
-Criterio di fine: Federico approva le 6 carte di prova. Solo dopo parte la produzione in serie.
+Criterio di fine: Federico approva le 6 carte di prova, affiancate. Solo dopo parte la produzione in serie.
 
 ### Fase 2: kit dell'interfaccia
 
@@ -231,7 +247,7 @@ Fase 0 ──► Fase 1 ──► Fase 2 ──► Fase 3 ──► Fase 4 ─�
 
 ### Fuori da questo piano
 
-- **Audio.** Oggi il gioco non ha suoni né musica. Un gioco senza audio sembra incompleto. Serve un piano separato.
+- **Audio.** Oggi il gioco non ha suoni né musica. Per ora resta così (Federico, 17/11/2026).
 
 ## 6. Immagini con i modelli locali
 
@@ -256,7 +272,7 @@ ATTENZIONE: sull'OMEN usa solo la cartella `tcg`. Non usare mai la cartella `rog
 | Uso | Modello | Destinazione |
 |---|---|---|
 | Mood board delle 6 fazioni | `z-image-turbo` | Solo riferimento |
-| 154 illustrazioni delle carte | `flux2-klein-4b` con 2 ancore della fazione | Carte, medaglioni dei Custodi |
+| 154 illustrazioni delle carte | `flux2-klein-4b` con 2 ancore del gioco + 2 della fazione | Carte, medaglioni dei Custodi |
 | Faro (3 stati) | `z-image-turbo`, poi modifica con `flux2-klein-4b` | Campo |
 | Sfondo del campo | `z-image-turbo` | Campo |
 | Sfondi di titolo, mappa, vittoria e sconfitta | `z-image-turbo` | Menu |
@@ -271,8 +287,8 @@ ATTENZIONE: sull'OMEN usa solo la cartella `tcg`. Non usare mai la cartella `rog
 
 ### 6.4 Pipeline delle illustrazioni
 
-1. Scrivi il prompt in inglese con il modello della fase 1: soggetto, scena, composizione, luce, poi la frase di stile fissa.
-2. Genera 4 varianti con `flux2-klein-4b` e le 2 ancore della fazione come riferimento.
+1. Scrivi il prompt in inglese con il modello della fase 1: soggetto, scena, composizione, luce, poi la frase del gioco e la frase della fazione.
+2. Genera 4 varianti con `flux2-klein-4b` e 4 riferimenti: 2 ancore del gioco e 2 ancore della fazione.
 3. Scegli una variante. Controlla silhouette, colori di fazione e assenza di testo.
 4. Correggi i difetti (mani, occhi, oggetti in più) con la modifica di `flux2-klein-4b`.
 5. Esegui `pnpm art` (nuovo script): ridimensiona nelle 3 misure, converte in WebP, aggiorna l'atlante.
@@ -286,7 +302,7 @@ ATTENZIONE: sull'OMEN usa solo la cartella `tcg`. Non usare mai la cartella `rog
 3. Il thread copia le immagini scelte nel container e le elabora con lo script del repository.
 4. Il thread mette nel repository solo le versioni WebP e i file `.json`.
 
-NOTA: l'OMEN deve restare acceso durante la generazione. 154 illustrazioni × 4 varianti a circa 30 secondi richiedono circa 5 ore di GPU, più le correzioni. Conviene generare di notte, una fazione per notte.
+NOTA: l'OMEN genera solo durante le sessioni di lavoro con Federico, non di notte (Federico, 17/11/2026). 154 illustrazioni × 4 varianti a circa 30 secondi richiedono circa 5 ore di GPU, più le correzioni. Una fazione (circa 26 carte) richiede circa 1 ora: una fazione per sessione.
 
 ### 6.6 Trasparenza sull'IA generativa
 
@@ -317,7 +333,7 @@ Con l'opzione C i modelli locali dipingono. Claude scrive prompt, sceglie le var
 
 | Rischio | Effetto | Contromisura |
 |---|---|---|
-| Le 154 illustrazioni non sono coerenti | Carte di stile diverso nella stessa fazione | Usa sempre le 2 ancore della fazione e la frase di stile fissa. Controlla le carte di una fazione affiancate prima del merge. |
+| Le 154 illustrazioni non sono coerenti | Carte di stile diverso nella stessa fazione | Usa sempre le ancore del gioco e della fazione (sezione 3.1.1). Controlla le carte affiancate, anche tra fazioni diverse, prima del merge. |
 | Difetti tipici dell'IA (mani, occhi, oggetti strani) | Immagini che sembrano sbagliate | Passo di correzione (6.4, punto 4). Composizioni con il soggetto di 3/4 o di spalle quando serve. |
 | Giudizio negativo dei giocatori sulla grafica IA | Il gioco sembra meno curato | Dichiarazione chiara, qualità alta, interfaccia e cornici disegnate a mano. |
 | Peso del download | Caricamento lento, soprattutto sul telefono | WebP, 3 misure, caricamento progressivo. Obiettivo: meno di 25 MB per tutte le illustrazioni. |
@@ -331,12 +347,10 @@ Decisioni prese:
 
 1. **Direzione artistica:** opzione C, illustrazioni dipinte in alta risoluzione (Federico, 17/11/2026).
 2. **Piattaforma:** solo browser, con supporto per lo smartphone. Per ora niente Steam (Federico, 17/11/2026).
-
-Decisioni aperte:
-
-1. **Fase 0:** può partire subito? La fase 0 serve a ogni direzione.
-2. **Generazione notturna:** l'OMEN può restare acceso di notte per le illustrazioni?
-3. **Audio:** apro un piano separato?
+3. **Fase 0:** parte subito (Federico, 17/11/2026).
+4. **Generazione:** l'OMEN genera solo durante le sessioni di lavoro con Federico (17/11/2026).
+5. **Audio:** per ora niente audio (Federico, 17/11/2026).
+6. **Coerenza:** illustrazioni coerenti prima come gioco, poi per fazione (Federico, 17/11/2026). Vedi la sezione 3.1.1.
 
 ## 10. Appendice: pubblicazione su Steam (opzionale)
 
