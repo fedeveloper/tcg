@@ -7,16 +7,8 @@ import outUrl from "../../../../assets/board/web/beacon-out.webp?url";
 import woodUrl from "../../../../assets/ui/web/legno.webp?url";
 import { HEIGHT, TIDE, VIEW_HEIGHT, WIDTH, type Rect } from "./layout.ts";
 import { type Art, SpriteTheme } from "./spriteTheme.ts";
+import { MEDALS } from "./medals.ts";
 import { FACTION_COLORS, type FxKind, type BeaconLook, type BeaconView, type KeeperLook, type KeeperView, type SiteView } from "./theme.ts";
-
-/** The round keeper medallions (graphics plan, phase 5), cut by assets/art/build.py. */
-const MEDALS: Record<string, string> = {};
-for (const [path, url] of Object.entries(
-  import.meta.glob("../../../../assets/art/web/medal/*.webp", { query: "?url", import: "default", eager: true }) as Record<string, string>,
-)) {
-  const id = /([^/]+)\.webp$/.exec(path)?.[1];
-  if (id) MEDALS[id] = url;
-}
 
 let damageFontReady = false;
 

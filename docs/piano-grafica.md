@@ -254,12 +254,13 @@ Stato: fatta il 17/11/2026. Solo codice, senza immagini nuove.
 
 Criterio di fine: ogni schermata rispetta il criterio della sezione 1.
 
-Stato (17/11/2026): fatti i passi 1, 2 e 8.
+Stato: fatta il 17/11/2026.
 
 - Titolo: sfondo `assets/ui/web/titolo.webp` (l'ancora del gioco 3B, da `assets/ui/originals/key/`), logo dorato, menu verticale a sinistra. Il faro resta visibile a destra.
 - Sfida libera: stendardi delle fazioni (`Banner.svelte`) per il proprio mazzo e per l'avversario, 3 pulsanti per la difficoltà. Lingua con 2 pulsanti in alto a destra.
 - Fine partita: il faro acceso per la vittoria, grigio per la sconfitta, raggi di luce animati. Le carte della ricompensa si girano una dopo l'altra.
-- Restano i passi 3-7: Collezione, Editor dei mazzi, Spedizione, Draft, Online.
+- Seconda parte (stesso giorno): tutte le liste mostrano la carta HD (`CardTile` usa `HdCard`). Filtri delle fazioni a icone (`FactionFilter.svelte`). Collezione con scheda grande e animazione di creazione. Editor dei mazzi con curva dei costi e trascinamento tra collezione e mazzo. Lista dei mazzi con stendardi. Spedizione con una mappa tra isole sul mare dipinto, un'isola per avversario e una corona per l'ultimo. Draft con 3 carte grandi distribuite con un'animazione. Online con avatar (il medaglione della fazione del mazzo), stato della connessione, codice in tessere dorate e radar di ricerca.
+- Al posto delle buste (il gioco non ha buste) la Collezione anima la creazione di una carta.
 
 ### Fase 8: plancia verticale
 

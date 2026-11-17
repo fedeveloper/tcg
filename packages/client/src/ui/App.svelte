@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { CARDS, STARTER_DECKS, expandDeck } from "@tcg/cards";
+  import { STARTER_DECKS, expandDeck } from "@tcg/cards";
   import { createTranslator, detectLang, LANGUAGES, type Lang } from "@tcg/i18n";
   import type { AiLevel } from "@tcg/ai";
   import type { PlayerId } from "@tcg/engine";
@@ -14,8 +14,7 @@
   import { RemoteSession } from "../online/remoteSession.ts";
   import { ReplaySession } from "../online/replaySession.ts";
   import type { Replay, ServerMessage } from "@tcg/protocol";
-  import CardBack from "./CardBack.svelte";
-  import HdCard from "./HdCard.svelte";
+  import CardFlips from "./CardFlips.svelte";
   import Banner from "./Banner.svelte";
   import { deckFaction, deckLabel } from "./deckText.ts";
   import titleUrl from "../../../../assets/ui/web/titolo.webp?url";
@@ -227,14 +226,7 @@
       <section class="reward panel">
         <h3>{tr.t("meta.reward")}</h3>
         {#if reward.kind === "cards"}
-          <div class="flips">
-            {#each reward.cards as id, i}
-              <div class="flip" style="--i: {i}">
-                <div class="face back"><CardBack width={150} /></div>
-                <div class="face front"><HdCard def={CARDS[id]!} {tr} width={150} /></div>
-              </div>
-            {/each}
-          </div>
+          <CardFlips {tr} cards={reward.cards} />
         {:else}
           <p class="shards">{tr.t("meta.shardsGained", { count: reward.shards })}</p>
         {/if}
@@ -286,15 +278,7 @@
   .reward-back { position: fixed; inset: 0; z-index: 40; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgb(0 0 0 / 0.65); }
   .reward { padding: 18px 22px; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 100%; }
   .reward h3 { font-size: 22px; color: var(--gold); text-transform: none; letter-spacing: 0; margin: 0; }
-  .flips { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-  .flip { position: relative; width: 150px; aspect-ratio: 5 / 7; perspective: 800px; }
-  .face { position: absolute; inset: 0; backface-visibility: hidden; animation: 0.6s cubic-bezier(0.3, 0, 0.2, 1) calc(0.4s + var(--i) * 0.35s) both; }
-  .back { animation-name: turn-back; }
-  .front { animation-name: turn-front; }
-  @keyframes turn-back { from { transform: rotateY(0); } to { transform: rotateY(180deg); } }
-  @keyframes turn-front { from { transform: rotateY(-180deg); } to { transform: rotateY(0); } }
   .shards { font-size: 20px; color: #bfe8ff; text-shadow: 0 0 10px rgb(127 216 255 / 0.6); }
-  @media (prefers-reduced-motion: reduce) { .face { animation-duration: 0.01s; animation-delay: 0s; } }
 
   @media (max-width: 760px) {
     .title { grid-template-columns: 1fr; align-items: start; padding: 48px 16px 24px; background-position: 30% center; }
