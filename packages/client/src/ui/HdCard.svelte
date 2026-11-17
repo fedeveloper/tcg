@@ -16,6 +16,16 @@
   export function hdArtUrl(cardId: string, size: "lg" | "md" | "sm"): string | null {
     return ART[`${size}/${cardId}`] ?? null;
   }
+
+  /** The emblem of each faction: one SVG path in a 24x24 box (graphics plan, phase 4, step 1). */
+  export const EMBLEM: Record<string, string> = {
+    forge: "M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-4-1-6 1-9z",
+    sprout: "M5 19C5 10 11 4 20 4c0 9-6 15-15 15zm0 0 9-9",
+    neutral: "M12 3a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 4v13m-6-6a6 6 0 0 0 12 0m-9-4h6",
+    abyss: "M2 13c3-3 5-3 8 0s5 3 8 0 3-2 4-2M2 18c3-3 5-3 8 0s5 3 8 0 3-2 4-2M12 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6z",
+    gear: "M19.1 10.6 22.4 10.7 22.4 13.3 19.1 13.4 18.7 14.7 18.0 16.0 20.3 18.5 18.5 20.3 16.0 18.0 14.8 18.6 13.4 19.1 13.3 22.4 10.7 22.4 10.6 19.1 9.3 18.7 8.0 18.0 5.5 20.3 3.7 18.5 6.0 16.0 5.4 14.8 4.9 13.4 1.6 13.3 1.6 10.7 4.9 10.6 5.3 9.3 6.0 8.0 3.7 5.5 5.5 3.7 8.0 6.0 9.2 5.4 10.6 4.9 10.7 1.6 13.3 1.6 13.4 4.9 14.7 5.3 16.0 6.0 18.5 3.7 20.3 5.5 18.0 8.0 18.6 9.2Z M12 9a3 3 0 1 0 0 6 3 3 0 1 0 0-6Z",
+    vesper: "M16 3a9 9 0 1 0 5 13A7 7 0 0 1 16 3z",
+  };
 </script>
 
 <script lang="ts">
@@ -27,17 +37,25 @@
     tr: Translator;
     /** Width of the card in CSS pixels. The height is 1.4 times the width. */
     width?: number;
+    /** Attack and Hold to show instead of the printed ones (an Echo copy is 1/1). */
+    attack?: number;
+    hold?: number;
+    /** The animated shine of rare and legendary cards. Off in long lists and with reduced motion. */
+    foil?: boolean;
   }
-  let { def, tr, width = 320 }: Props = $props();
+  let { def, tr, width = 320, attack, hold, foil = true }: Props = $props();
 
   const size = $derived(width * (globalThis.devicePixelRatio ?? 1) > 400 ? "lg" : width * (globalThis.devicePixelRatio ?? 1) > 200 ? "md" : "sm");
   const art = $derived(hdArtUrl(def.id, size));
   const keeper = $derived(def.type === "keeper");
+  const shine = $derived(foil && (def.rarity === "rare" || def.rarity === "legendary"));
+  const atk = $derived(attack ?? def.attack ?? 0);
+  const hld = $derived(hold ?? def.hold ?? 1);
   const keywords = $derived(def.keywords.map((k) => keywordName(tr, k)).join(", "));
   const rules = $derived(cardRulesText(tr, def));
 </script>
 
-<article class="card f-{def.faction} r-{def.rarity}" class:keeper style="font-size: {width / 16}px" aria-label={cardName(tr, def.id)}>
+<article class="card f-{def.faction} r-{def.rarity}" class:keeper class:rite={!keeper} class:shine style="font-size: {width / 16}px" aria-label={cardName(tr, def.id)}>
   <div class="art">
     {#if art}<img src={art} alt="" draggable="false" />{/if}
   </div>
@@ -52,9 +70,10 @@
     {#each rules as line}<p>{line}</p>{/each}
     <p class="flavor">{cardFlavor(tr, def.id)}</p>
   </div>
+  <svg class="emblem" fill-rule="evenodd" viewBox="0 0 24 24" aria-hidden="true"><path d={EMBLEM[def.faction] ?? EMBLEM.neutral} /></svg>
   {#if keeper}
-    <div class="stat atk" title={tr.t("stats.attack", { value: def.attack ?? 0 })}>{def.attack ?? 0}</div>
-    <div class="stat hold" title={tr.t("stats.hold", { value: def.hold ?? 1 })}>{def.hold ?? 1}</div>
+    <div class="stat atk" class:up={atk > (def.attack ?? 0)} class:down={atk < (def.attack ?? 0)} title={tr.t("stats.attack", { value: atk })}>{atk}</div>
+    <div class="stat hold" class:up={hld > (def.hold ?? 1)} class:down={hld < (def.hold ?? 1)} title={tr.t("stats.hold", { value: hld })}>{hld}</div>
   {/if}
 </article>
 
@@ -96,6 +115,32 @@
     box-shadow: 0 0 0 0.1em var(--gold), 0 0 0 0.22em var(--gold-d);
   }
   .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* Rites, Relics and Sites: an arched window and a ribbon for the name. */
+  .rite .art { border-radius: 50% 50% 0.2em 0.2em / 22% 22% 0.2em 0.2em; }
+  .rite .name { border-radius: 0.15em; clip-path: polygon(0 0, 100% 0, 96% 50%, 100% 100%, 0 100%, 4% 50%); margin-inline: 0.1em; }
+  .rite .text { border-radius: 0.3em 0.3em 1.2em 1.2em; }
+
+  /* The emblem of the faction, at the bottom of the frame. */
+  .emblem {
+    position: absolute; left: 50%; bottom: -0.15em; transform: translateX(-50%);
+    width: 1.5em; height: 1.5em; padding: 0.22em; box-sizing: border-box;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--c) 80%, white 15%), color-mix(in srgb, var(--c) 70%, black));
+    box-shadow: 0 0 0 0.09em var(--gold), 0 0 0 0.17em var(--gold-d), 0 0.1em 0.25em rgb(0 0 0 / 0.6);
+    fill: var(--l); stroke: var(--l); stroke-width: 0; overflow: visible;
+  }
+  .f-sprout .emblem path, .f-neutral .emblem path, .f-abyss .emblem path { fill: none; stroke-width: 2; stroke-linecap: round; }
+
+  /* Foil: a light band that crosses rare and legendary cards. */
+  .shine::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: linear-gradient(115deg, transparent 35%, rgb(255 250 220 / 0.32) 45%, rgb(190 230 255 / 0.22) 50%, transparent 60%);
+    background-size: 250% 100%; mix-blend-mode: screen;
+    animation: shine 4.5s ease-in-out infinite;
+  }
+  .r-legendary.shine::after { background-image: linear-gradient(115deg, transparent 30%, rgb(255 200 250 / 0.3) 42%, rgb(255 245 200 / 0.35) 50%, rgb(180 240 255 / 0.3) 58%, transparent 70%); }
+  @keyframes shine { 0%, 15% { background-position: 120% 0; } 70%, 100% { background-position: -20% 0; } }
+  @media (prefers-reduced-motion: reduce) { .shine::after { animation: none; background-position: 50% 0; opacity: 0.5; } }
 
   .cost {
     position: absolute; top: -0.35em; left: -0.35em;
@@ -178,6 +223,8 @@
     outline: none;
   }
   .hold { right: -0.25em; }
+  .stat.up { color: #b6f5a6; }
+  .stat.down { color: #ffb0a0; }
   .hold::before {
     background: linear-gradient(160deg, #9fb3c4, #3d5468);
     clip-path: polygon(0 0, 100% 0, 100% 55%, 50% 100%, 0 55%);

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { CARDS } from "@tcg/cards";
   import { createTranslator, detectLang } from "@tcg/i18n";
+  import CardBack from "./CardBack.svelte";
   import HdCard from "./HdCard.svelte";
 
   /** The test cards of phase 1 of the graphics plan: one Keeper per faction, plus a Rite and a Site. */
@@ -19,6 +20,7 @@
       {@const def = CARDS[id]}
       {#if def}<HdCard {def} {tr} {width} />{/if}
     {/each}
+    <CardBack {width} />
   </section>
 </main>
 
