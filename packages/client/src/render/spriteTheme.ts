@@ -191,13 +191,13 @@ function beaconState(light: number): "lit" | "damaged" | "out" {
 /** The pixel art theme: sprites from assets/sheets and the Faro fonts. */
 export class SpriteTheme implements Theme {
   constructor(
-    private readonly art: Art,
+    protected readonly art: Art,
     public resolution: number,
     /** True while "Reduce animations" is on: the sea moves 4 times slower. */
-    private readonly reduced: () => boolean = () => false,
+    protected readonly reduced: () => boolean = () => false,
   ) {}
 
-  private anim(source: Spritesheet, name: string, loop = true): AnimatedSprite {
+  protected anim(source: Spritesheet, name: string, loop = true): AnimatedSprite {
     const s = new AnimatedSprite(this.frames(source, name));
     s.animationSpeed = IDLE_SPEED;
     s.loop = loop;
@@ -245,7 +245,7 @@ export class SpriteTheme implements Theme {
   }
 
   /** The board picture already shows the slots. The empty container only takes the clicks. */
-  slot(): Container {
+  slot(_r?: Rect, _mine?: boolean): Container {
     return new Container();
   }
 
