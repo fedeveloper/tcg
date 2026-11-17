@@ -20,7 +20,7 @@ import { beaconRect, center, forward, HEIGHT, ORIENTATION, sameLane, siteRect, s
 import type { BeaconView, FxKind, KeeperLook, KeeperView, SiteView, Theme } from "./theme.ts";
 import type { Step } from "../game/session.ts";
 
-/** Colours of the "Fari 32" palette for numbers and sparks. */
+/** Colours for numbers and sparks. */
 const PALETTE = { coral: 0xe8766a, glow: 0xfbd35a, sprout: 0xb5d665 } as const;
 const FACTION_GLOW: Record<string, number> = {
   forge: 0xf29a2e,
@@ -197,6 +197,8 @@ export class BoardView {
     }
     for (const [id, view] of this.keepers) {
       if (!alive.has(id)) {
+        // A tween that still waits in a timeline must not start on a destroyed view.
+        gsap.killTweensOf([view, view.scale, ...(view.body ? [view.body.scale] : [])]);
         view.destroy();
         this.keepers.delete(id);
       }
@@ -341,7 +343,14 @@ export class BoardView {
         const dissolve = this.theme.dissolve?.(ghost);
         if (dissolve) tl.to(dissolve, { threshold: 1, duration: 0.22, ease: "power1.in" }, pos + 0.42);
         else tl.to(ghost, { alpha: 0, duration: 0.22, ease: "steps(4)" }, pos + 0.42);
-        tl.call(() => ghost.destroy({ children: true }), undefined, pos + 0.64);
+        tl.call(
+          () => {
+            gsap.killTweensOf([ghost, ghost.scale]);
+            ghost.destroy({ children: true });
+          },
+          undefined,
+          pos + 0.64,
+        );
         return;
       }
       case "KeeperSummoned": {

@@ -14,7 +14,7 @@
     "check:i18n": "tsx packages/tools/src/check-i18n.ts",
     "sim": "tsx packages/tools/src/sim.ts",
     "play": "tsx packages/tools/src/cli.ts",
-    "assets": "python3 assets/src/build.py",
+    "assets": "python3 assets/art/build.py && python3 assets/board/build.py && python3 assets/ui/build.py",
     "art": "python3 assets/art/build.py",
     "check": "pnpm typecheck && pnpm check:client && pnpm test && pnpm validate:cards && pnpm check:i18n && pnpm sim --games 500 && pnpm build && pnpm build:server",
     "duel": "tsx packages/tools/src/duel.ts",

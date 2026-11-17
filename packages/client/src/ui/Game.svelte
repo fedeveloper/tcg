@@ -13,11 +13,9 @@
   import { BoardView, type BoardClick } from "../render/board.ts";
   import { HEIGHT, setBoardOrientation, VIEW_HEIGHT, WIDTH, type Rect } from "../render/layout.ts";
   import { ShapeTheme, type Theme } from "../render/theme.ts";
-  import { loadArt } from "../render/spriteTheme.ts";
   import { loadPainted, PaintedTheme } from "../render/paintedTheme.ts";
   import HdCard from "./HdCard.svelte";
   import keyArtUrl from "../../../../assets/ui/web/titolo.webp?url";
-  import type { CardFace } from "./pixelCanvas.ts";
 
   interface Props {
     tr: Translator;
@@ -153,7 +151,7 @@
   }
 
   /**
-   * The resolution of the canvas: an integer multiple of the scene, so the pixel art stays even.
+   * The resolution of the canvas: an integer multiple of the scene on the horizontal board.
    * CSS then scales the canvas to the exact size of the screen. The phone uses at most 2 device pixels per CSS pixel.
    */
   function renderScale(): number {
@@ -174,7 +172,7 @@
   const overlap = $derived(handSize > 1 ? Math.max(-6, (handSize * 60 - 288) / (handSize - 1)) : 0);
 
   onMount(() => {
-    TextureStyle.defaultOptions.scaleMode = "nearest";
+    TextureStyle.defaultOptions.scaleMode = "linear";
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(stage);
@@ -185,11 +183,11 @@
     let disposed = false;
     void (async () => {
       await app!.init({ width: Math.round(WIDTH * scale), height: Math.round(HEIGHT * scale), antialias: false, background: "#1a1423", preference: "webgl" });
-      // The painted theme needs the spritesheets and the painted textures. The shape theme is the fallback.
+      // The painted theme needs the painted textures. The shape theme is the fallback.
       let theme: Theme;
       try {
-        const [art, painted] = await Promise.all([loadArt(), loadPainted()]);
-        theme = new PaintedTheme(art, painted, scale, () => speed.reduced);
+        const painted = await loadPainted();
+        theme = new PaintedTheme(painted, scale, () => speed.reduced);
       } catch (err) {
         console.warn("Sprites not loaded, using shapes", err);
         theme = new ShapeTheme(scale);
@@ -316,18 +314,8 @@
     const def = inst ? CARDS[inst.cardId] : undefined;
     if (!def) return null;
     const echo = !!inst?.echoCopy;
-    const keeper = def.type === "keeper";
-    // The text box of the pixel card has one line: the keywords of a Keeper, or the type of the card.
-    const lines = [keeper && def.keywords.length ? def.keywords.map((k) => tr.t(`keywords.${k}.name`)).join(", ") : tr.t(`types.${def.type}`)];
-    const face: CardFace = {
-      cardId: def.id,
-      name: tr.t(`${def.id}.name`, { ns: "cards" }),
-      faction: def.faction,
-      cost: def.cost,
-      stats: keeper ? { attack: echo ? 1 : (def.attack ?? 0), hold: echo ? 1 : (def.hold ?? 1) } : undefined,
-      lines,
-    };
-    return { def, face, summary: cardSummary(tr, def), rules: cardRulesText(tr, def), echo };
+    const name = tr.t(`${def.id}.name`, { ns: "cards" });
+    return { def, name, summary: cardSummary(tr, def), rules: cardRulesText(tr, def), echo };
   }
 
   // ---------------------------------------------------------------- keyboard and screen readers (plan, section 7.4)
@@ -621,11 +609,11 @@
 
   {#if game}
     {#if zoom}
-      <div class="zoom" role="dialog" aria-modal="true" aria-label={zoom.face.name} tabindex="-1" onclick={() => (zoomId = null)} onkeydown={() => {}}>
+      <div class="zoom" role="dialog" aria-modal="true" aria-label={zoom.name} tabindex="-1" onclick={() => (zoomId = null)} onkeydown={() => {}}>
         <div class="zoom-card" role="presentation" onclick={(e) => e.stopPropagation()}>
           <HdCard def={zoom.def} {tr} width={280} attack={zoom.echo ? 1 : undefined} hold={zoom.echo ? 1 : undefined} />
           <div class="zoom-text">
-            <h3>{zoom.face.name}</h3>
+            <h3>{zoom.name}</h3>
             <p>{zoom.summary}{zoom.stats ? ` · ${tr.t("ui.current")}: ${zoom.stats}` : ""}</p>
             {#each zoom.keywords as line}<p class="kw">{line}</p>{/each}
             {#each zoom.rules as line}<p>{line}</p>{/each}
