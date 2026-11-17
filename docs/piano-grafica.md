@@ -219,7 +219,7 @@ Criterio di fine: ogni Custode si riconosce dal medaglione a 1366 × 768.
 
 NOTA: questa soluzione evita 91 animazioni a fotogrammi. Le animazioni a fotogrammi con i modelli locali non sono coerenti.
 
-Stato: fatta il 17/11/2026. I 90 Custodi (con le pedine) hanno un medaglione rotondo di 192 px in `assets/art/web/medal/`, ritagliato da `assets/art/build.py` con i punti di `assets/art/crops.json`. `PaintedTheme.keeper` mostra il medaglione con l'anello della fazione, l'Attacco (rombo rosso) e la Tenuta (scudo blu), l'ombra e il riflesso. Il medaglione respira (±2%) e si ferma con "movimento ridotto" o quando il Custode è appena entrato. Il colpo subito ha un lampo rosso. Scatto in avanti (`LaneClash`) e morte (dissolvenza e particelle) vengono dalla plancia della fase 7 del piano di progetto. Prestazioni sul telefono lento: 52 fps (prima 50).
+Stato: fatta il 17/11/2026. I 90 Custodi (con le pedine) hanno un medaglione rotondo di 192 px in `assets/art/web/medal/`, ritagliato da `assets/art/build.py` con i punti di `assets/art/crops.json`. `PaintedTheme.keeper` mostra il medaglione con l'anello della fazione, l'Attacco (rombo rosso) e la Tenuta (scudo blu), l'ombra e il riflesso. Il medaglione respira (±2%) e si ferma con "movimento ridotto" o quando il Custode è appena entrato. Il colpo subito ha un lampo rosso. Scatto in avanti (`LaneClash`) e morte (dissolvenza e particelle) esistono già nella plancia (piano di progetto, sezione 7.2). Prestazioni sul telefono lento: 52 fps (prima 50).
 
 ### Fase 6: effetti e "juice"
 
