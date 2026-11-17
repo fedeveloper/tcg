@@ -16,7 +16,7 @@ import {
   type Target,
 } from "@tcg/engine";
 import { cardName, laneName, type Translator } from "@tcg/i18n";
-import { beaconRect, center, onViewerSide, siteRect, slotRect, tideX, type Rect } from "./layout.ts";
+import { beaconRect, center, forward, HEIGHT, ORIENTATION, sameLane, siteRect, slotRect, TIDE, tideX, WIDTH, type Rect } from "./layout.ts";
 import type { BeaconView, FxKind, KeeperLook, KeeperView, SiteView, Theme } from "./theme.ts";
 import type { Step } from "../game/session.ts";
 
@@ -271,7 +271,7 @@ export class BoardView {
   }
 
   /** The particles of the keywords of a keeper that enters. */
-  private keywordFx(tl: gsap.core.Timeline, pos: number, cardId: string, x: number, y: number, dir: number): void {
+  private keywordFx(tl: gsap.core.Timeline, pos: number, cardId: string, x: number, y: number, dir: { x: number; y: number }): void {
     const keywords = CARDS[cardId]?.keywords ?? [];
     keywords.forEach((k, n) => {
       const fx = KEYWORD_FX[k];
@@ -284,9 +284,10 @@ export class BoardView {
       }
       for (let i = 0; i < 6; i++) {
         const spread = (i - 2.5) * 3;
+        const along = fx.dx * (14 + i);
         this.spawn(tl, at + i * 0.02, "spark", x + spread * Math.abs(fx.dy), y + spread * Math.abs(fx.dx) * 0.5, fx.tint, {
-          x: fx.dx * dir * (14 + i) + spread * 0.4,
-          y: fx.dy * (12 + i),
+          x: dir.x * along + spread * 0.4,
+          y: dir.y * along + fx.dy * (12 + i),
         });
       }
     });
@@ -323,8 +324,8 @@ export class BoardView {
         if (!ghost) return;
         const mine = e.player === this.viewer;
         const target = e.targets[0] ? this.rectOfTarget(before, e.targets[0]) : null;
-        const to = target ? center(target) : { x: mine ? 192 : 288, y: 100 };
-        const from = { x: mine ? 240 : 470, y: mine ? 200 : -24 };
+        const to = target ? center(target) : center(slotRect(this.viewer, e.player, 1, "front"));
+        const from = ORIENTATION === "vertical" ? { x: mine ? WIDTH / 2 : WIDTH - 20, y: mine ? HEIGHT + 20 : -24 } : { x: mine ? 240 : 470, y: mine ? 200 : -24 };
         ghost.position.set(from.x, from.y);
         ghost.visible = false;
         this.fx.addChild(ghost);
@@ -360,7 +361,7 @@ export class BoardView {
         this.spawn(tl, pos + 0.16, "puff", c.x - 10, c.y + 17, undefined, { x: -5, y: -2 });
         this.spawn(tl, pos + 0.16, "puff", c.x + 10, c.y + 17, undefined, { x: 5, y: -2 });
         this.squash(tl, body.scale, { x: 1, y: 1, duration: 0.23, ease: "elastic.out(1, 0.5)" }, pos + 0.23);
-        this.keywordFx(tl, pos + 0.24, e.cardId, c.x, c.y, onViewerSide(r) ? 1 : -1);
+        this.keywordFx(tl, pos + 0.24, e.cardId, c.x, c.y, forward(r));
         return;
       }
       case "KeeperMoved": {
@@ -377,10 +378,13 @@ export class BoardView {
         const view = this.keepers.get(e.keeper);
         if (!view) return;
         const lethal = this.keeperRect(after, e.keeper) === null;
-        const dir = view.x < 240 ? -1 : 1;
+        const r = this.keeperRect(before, e.keeper);
+        // The knock back goes away from the enemy.
+        const f = r ? forward(r) : { x: 0, y: 0 };
         const body = view.body ?? view;
         const pos = tl.duration();
         const x = view.x;
+        const y = view.y;
         this.spawn(tl, pos, "hit", x, view.y + 4);
         this.float(`-${e.amount}`, PALETTE.coral, { x, y: view.y - 12 }, tl, pos);
         this.shake(tl, pos, lethal ? 2 : e.amount >= 3 ? 1 : 0, 0.12);
@@ -388,12 +392,12 @@ export class BoardView {
         this.hitStop(tl, lethal ? 0.08 : e.amount >= 3 ? 0.06 : 0);
         const hit = tl.duration();
         // Knock back and squash, then an elastic return.
-        tl.to(view, { x: x + 3 * dir, duration: 0.06, ease: "power2.out" }, hit);
+        tl.to(view, { x: x - 3 * f.x, y: y - 3 * f.y, duration: 0.06, ease: "power2.out" }, hit);
         // A short red flash on the keeper.
         tl.set(view, { tint: 0xff6a5a }, pos);
         tl.set(view, { tint: 0xffffff }, hit + 0.1);
         this.squash(tl, body.scale, { x: 0.85, y: 1.12, duration: 0.06, ease: "power2.out" }, hit);
-        tl.to(view, { x, duration: 0.24, ease: "elastic.out(1, 0.4)" }, hit + 0.06);
+        tl.to(view, { x, y, duration: 0.24, ease: "elastic.out(1, 0.4)" }, hit + 0.06);
         this.squash(tl, body.scale, { x: 1, y: 1, duration: 0.24, ease: "elastic.out(1, 0.4)" }, hit + 0.06);
         return;
       }
@@ -480,27 +484,28 @@ export class BoardView {
         this.squash(tl, this.tideMarker.scale, { y: 1, duration: 0.2, ease: "back.out(2)" }, pos + 0.08);
         if (Math.abs(e.to) >= 2 && Math.abs(e.from) < 2) {
           // The tide crossed the threshold of Alta Marea or Riflusso.
-          this.spawn(tl, pos + 0.44, "puff", to - 5, 12, undefined, { x: -4, y: -3 });
-          this.spawn(tl, pos + 0.44, "puff", to + 5, 12, undefined, { x: 4, y: -3 });
+          this.spawn(tl, pos + 0.44, "puff", to - 5, TIDE.y + 8, undefined, { x: -4, y: -3 });
+          this.spawn(tl, pos + 0.44, "puff", to + 5, TIDE.y + 8, undefined, { x: 4, y: -3 });
         }
         return;
       }
       case "LaneClash": {
         // Anticipation: every keeper in the lane steps back 2 pixels, then lunges toward the enemy.
-        const laneY = slotRect(this.viewer, 0, e.lane, "front").y;
+        const laneRect = slotRect(this.viewer, 0, e.lane, "front");
         const views = [...this.keepers.entries()]
           .map(([id, v]) => ({ v, r: this.keeperRect(before, id) }))
-          .filter((x): x is { v: KeeperView; r: Rect } => !!x.r && x.r.y === laneY);
+          .filter((x): x is { v: KeeperView; r: Rect } => !!x.r && sameLane(x.r, laneRect));
         if (views.length === 0) return;
         const pos = tl.duration();
         for (const { v, r } of views) {
-          const dir = onViewerSide(r) ? 1 : -1;
-          const x = center(r).x;
+          const f = forward(r);
+          const { x, y } = center(r);
           const body = v.body ?? v;
-          tl.to(v, { x: x - 2 * dir, duration: 0.12, ease: "power2.out" }, pos);
-          tl.to(v, { x: x + 10 * dir, duration: 0.09, ease: "power4.in" }, pos + 0.12);
-          this.squash(tl, body.scale, { x: 1.15, y: 0.9, duration: 0.09, ease: "power4.in" }, pos + 0.12);
-          tl.to(v, { x, duration: 0.22, ease: "power2.out" }, pos + 0.27);
+          tl.to(v, { x: x - 2 * f.x, y: y - 2 * f.y, duration: 0.12, ease: "power2.out" }, pos);
+          tl.to(v, { x: x + 10 * f.x, y: y + 10 * f.y, duration: 0.09, ease: "power4.in" }, pos + 0.12);
+          // The stretch follows the lunge: wide on the horizontal board, tall on the vertical board.
+          this.squash(tl, body.scale, f.x !== 0 ? { x: 1.15, y: 0.9, duration: 0.09, ease: "power4.in" } : { x: 0.9, y: 1.15, duration: 0.09, ease: "power4.in" }, pos + 0.12);
+          tl.to(v, { x, y, duration: 0.22, ease: "power2.out" }, pos + 0.27);
           this.squash(tl, body.scale, { x: 1, y: 1, duration: 0.22, ease: "power2.out" }, pos + 0.27);
         }
         tl.to({}, { duration: 0.21 }, pos);

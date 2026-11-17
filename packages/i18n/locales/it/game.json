@@ -341,6 +341,11 @@
     "newGame": "Nuova partita",
     "start": "Gioca",
     "reducedMotion": "Riduci le animazioni",
+    "board": "Plancia",
+    "boardAuto": "Automatica",
+    "boardHorizontal": "Orizzontale",
+    "boardVertical": "Verticale",
+    "boardNext": "La plancia cambia dalla prossima partita.",
     "language": "Lingua",
     "difficulty": "Difficoltà",
     "levels": {
