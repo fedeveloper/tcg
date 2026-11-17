@@ -1,0 +1,15 @@
+{
+  "cardId": "neutral-008",
+  "model": "flux2-klein-4b",
+  "seed": 1057,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png",
+    "tcg-fase1/neutral-006.png"
+  ],
+  "prompt": "Use images 1 and 2 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy their characters, faces, buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a harpooner standing on the bow of a small boat throwing a long harpoon with a rope over the waves, character in the left third, face visible and focused. Faction colors: slate, stone gray, sand and white, plain harbor materials, weathered wood and rope. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4b/neutral-008.png",
+  "formula": "produzione (3B + ancora della fazione)",
+  "web": "dall'originale 1344x960"
+}

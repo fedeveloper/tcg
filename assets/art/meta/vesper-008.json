@@ -1,0 +1,15 @@
+{
+  "cardId": "vesper-008",
+  "model": "flux2-klein-4b",
+  "seed": 1125,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png",
+    "tcg-fase1/vesper-013.png"
+  ],
+  "prompt": "Use images 1 and 2 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy their characters, faces, buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a restless dark shadow figure with many faint faces in its body drifting over a graveyard by the sea, character in the left third. Faction colors: dusk purple, violet, lilac, with pale ghostly glow and white, mist and lanterns. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4b/vesper-008.png",
+  "formula": "produzione (3B + ancora della fazione)",
+  "web": "dall'originale 1344x960"
+}

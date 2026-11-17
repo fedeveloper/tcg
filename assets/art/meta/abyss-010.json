@@ -1,0 +1,15 @@
+{
+  "cardId": "abyss-010",
+  "model": "flux2-klein-4b",
+  "seed": 1079,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png",
+    "tcg-fase1/abyss-012.png"
+  ],
+  "prompt": "Use images 1 and 2 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy their characters, faces, buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a living undertow shaped like a figure of swirling water dragging sand and shells, character in the left third, face visible in the water. Faction colors: abyss navy, deep blue, sea blue, mist and pale foam, cold bioluminescent light in darkness. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4b/abyss-010.png",
+  "formula": "produzione (3B + ancora della fazione)",
+  "web": "dall'originale 1344x960"
+}

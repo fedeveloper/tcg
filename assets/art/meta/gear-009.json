@@ -1,0 +1,15 @@
+{
+  "cardId": "gear-009",
+  "model": "flux2-klein-4b",
+  "seed": 1102,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png",
+    "tcg-fase1/gear-011.png"
+  ],
+  "prompt": "Use images 1 and 2 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy their characters, faces, buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a steam powered battering ram on wheels charging along a pier, whistle blowing a jet of steam. Faction colors: dark wood, polished copper, tan and sand, brass gears and steam. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4b/gear-009.png",
+  "formula": "produzione (3B + ancora della fazione)",
+  "web": "dall'originale 1344x960"
+}
