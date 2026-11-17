@@ -22,7 +22,28 @@ import type { Step } from "../game/session.ts";
 
 /** Colours of the "Fari 32" palette for numbers and sparks. */
 const PALETTE = { coral: 0xe8766a, glow: 0xfbd35a, sprout: 0xb5d665 } as const;
-const FACTION_GLOW: Record<string, number> = { forge: 0xf29a2e, sprout: 0xb5d665, neutral: 0xf6f3e4 };
+const FACTION_GLOW: Record<string, number> = {
+  forge: 0xf29a2e,
+  sprout: 0xb5d665,
+  neutral: 0xf6f3e4,
+  abyss: 0x7fd8ff,
+  gear: 0xf0c27a,
+  vesper: 0xd2b4ff,
+};
+
+/**
+ * The particles of each keyword when a keeper enters (graphics plan, phase 6).
+ * dx and dy give the direction of the sparks: dx > 0 goes toward the enemy.
+ */
+const KEYWORD_FX: Record<string, { tint: number; dx: number; dy: number }> = {
+  rooted: { tint: 0x8fd16a, dx: 0, dy: 1 },
+  reach: { tint: 0x9fd8ff, dx: 0.6, dy: -1 },
+  overrun: { tint: 0xff8a3a, dx: 1, dy: -0.2 },
+  echo: { tint: 0xd2b4ff, dx: 0, dy: 0 },
+  wear: { tint: 0xb8b0a0, dx: -0.4, dy: -0.6 },
+  anchor: { tint: 0xe8c56a, dx: 0, dy: 1 },
+  surge: { tint: 0x6fe8e0, dx: 0.3, dy: -1 },
+};
 
 /** What the player clicked on the board. */
 export type BoardClick =
@@ -212,9 +233,13 @@ export class BoardView {
     t.position.set(at.x, at.y);
     t.alpha = 0;
     this.fx.addChild(t);
+    // The number pops out with a bounce, then rises and fades (graphics plan, phase 6).
+    const big = /\d+/.exec(text) && Number(/\d+/.exec(text)![0]) >= 3 ? 1.3 : 1;
+    t.scale.set(0.3);
     tl.to(t, { alpha: 1, duration: 0.08 }, pos);
-    tl.to(t, { y: at.y - 12, duration: 0.5, ease: "power1.out" }, pos);
-    tl.to(t, { alpha: 0, duration: 0.2, onComplete: () => t.destroy() }, pos + 0.4);
+    tl.to(t.scale, { x: big, y: big, duration: 0.28, ease: "back.out(3)" }, pos);
+    tl.to(t, { y: at.y - 14, duration: 0.7, ease: "power1.out" }, pos + 0.1);
+    tl.to(t, { alpha: 0, duration: 0.2, onComplete: () => t.destroy() }, pos + 0.6);
   }
 
   /** Adds an effect sprite to the timeline. Themes without effects skip it. */
@@ -243,6 +268,28 @@ export class BoardView {
       const a = (i / count) * Math.PI * 2 + 0.4;
       this.spawn(tl, pos + i * 0.012, "spark", x, y, tint, { x: Math.cos(a) * spread, y: Math.sin(a) * spread * 0.7 - 3 });
     }
+  }
+
+  /** The particles of the keywords of a keeper that enters. */
+  private keywordFx(tl: gsap.core.Timeline, pos: number, cardId: string, x: number, y: number, dir: number): void {
+    const keywords = CARDS[cardId]?.keywords ?? [];
+    keywords.forEach((k, n) => {
+      const fx = KEYWORD_FX[k];
+      if (!fx) return;
+      const at = pos + n * 0.08;
+      if (fx.dx === 0 && fx.dy === 0) {
+        // Echo: a ring that opens.
+        this.burst(tl, at, x, y, 8, 16, fx.tint);
+        return;
+      }
+      for (let i = 0; i < 6; i++) {
+        const spread = (i - 2.5) * 3;
+        this.spawn(tl, at + i * 0.02, "spark", x + spread * Math.abs(fx.dy), y + spread * Math.abs(fx.dx) * 0.5, fx.tint, {
+          x: fx.dx * dir * (14 + i) + spread * 0.4,
+          y: fx.dy * (12 + i),
+        });
+      }
+    });
   }
 
   /** Camera shake: at most 3 pixels (docs/animazioni.md). */
@@ -313,6 +360,7 @@ export class BoardView {
         this.spawn(tl, pos + 0.16, "puff", c.x - 10, c.y + 17, undefined, { x: -5, y: -2 });
         this.spawn(tl, pos + 0.16, "puff", c.x + 10, c.y + 17, undefined, { x: 5, y: -2 });
         this.squash(tl, body.scale, { x: 1, y: 1, duration: 0.23, ease: "elastic.out(1, 0.5)" }, pos + 0.23);
+        this.keywordFx(tl, pos + 0.24, e.cardId, c.x, c.y, onViewerSide(r) ? 1 : -1);
         return;
       }
       case "KeeperMoved": {
