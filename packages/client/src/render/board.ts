@@ -341,6 +341,9 @@ export class BoardView {
         const hit = tl.duration();
         // Knock back and squash, then an elastic return.
         tl.to(view, { x: x + 3 * dir, duration: 0.06, ease: "power2.out" }, hit);
+        // A short red flash on the keeper.
+        tl.set(view, { tint: 0xff6a5a }, pos);
+        tl.set(view, { tint: 0xffffff }, hit + 0.1);
         this.squash(tl, body.scale, { x: 0.85, y: 1.12, duration: 0.06, ease: "power2.out" }, hit);
         tl.to(view, { x, duration: 0.24, ease: "elastic.out(1, 0.4)" }, hit + 0.06);
         this.squash(tl, body.scale, { x: 1, y: 1, duration: 0.24, ease: "elastic.out(1, 0.4)" }, hit + 0.06);

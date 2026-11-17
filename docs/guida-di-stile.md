@@ -103,6 +103,10 @@ Il dorso della carta è [`CardBack.svelte`](../packages/client/src/ui/CardBack.s
 
 Per vedere tutte le carte HD, apri `localhost:5173/#carte-hd`.
 
+### Medaglione del Custode
+
+Sul campo un Custode è un medaglione rotondo, ritagliato dalla sua illustrazione. Il punto di ritaglio è in [`assets/art/crops.json`](../assets/art/crops.json): centro `x` e `y` (da 0 a 1 della larghezza e dell'altezza) e raggio `r` (da 0 a 1 dell'altezza). Il medaglione mostra il volto e le spalle. Per un animale o un oggetto, mostra la testa o la parte più riconoscibile. I medaglioni dell'avversario sono specchiati, così guardano verso il centro.
+
 ## 7. Font
 
 | Font | Uso | Licenza |
@@ -119,8 +123,9 @@ I font arrivano dai pacchetti `@fontsource/alegreya` e `@fontsource/alegreya-san
 3. Mostra l'immagine a Federico e ottieni la sua approvazione.
 4. Copia l'originale in `assets/art/originals/<cardId>.png`.
 5. Scrivi `assets/art/meta/<cardId>.json` con modello, seme, riferimenti e prompt.
-6. Esegui `corepack pnpm art`.
-7. Controlla la carta in `localhost:5173/#carte-hd`.
+6. Se la carta è un Custode, aggiungi il suo punto di ritaglio in `assets/art/crops.json`.
+7. Esegui `corepack pnpm art`.
+8. Controlla la carta in `localhost:5173/#carte-hd`.
 
 ## 9. Kit dell'interfaccia
 
