@@ -10,5 +10,3 @@ Per creare le versioni web:
 
 1. Copia gli originali in `assets/art/originals/`.
 2. Esegui `corepack pnpm art`.
-
-NOTA: le 8 carte di prova usano per ora le anteprime da 384 px. La versione `lg` è quindi sfocata.
