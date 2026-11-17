@@ -69,7 +69,7 @@
   </header>
 
   {#if reward}
-    <section>
+    <section class="panel">
       <h3>{tr.t("meta.reward")}</h3>
       {#if reward.shards}<p>{tr.t("meta.shardsGained", { count: reward.shards })}</p>{/if}
       <div class="grid">{#each reward.cards as id}<CardTile {tr} cardId={id} />{/each}</div>

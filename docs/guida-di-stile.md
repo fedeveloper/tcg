@@ -112,3 +112,29 @@ I font arrivano dai pacchetti `@fontsource/alegreya` e `@fontsource/alegreya-san
 5. Scrivi `assets/art/meta/<cardId>.json` con modello, seme, riferimenti e prompt.
 6. Esegui `corepack pnpm art`.
 7. Controlla la carta in `localhost:5173/#carte-hd`.
+
+## 9. Kit dell'interfaccia
+
+Il kit è in [`global.css`](../packages/client/src/ui/global.css). Ogni schermata usa il kit senza importare componenti.
+
+| Elemento | Come usarlo | Aspetto |
+|---|---|---|
+| Pulsante | `<button>` | Legno con cornice d'ottone. Stati: normale, sopra (più chiaro), premuto (più scuro, scende di 1 px), disattivato (grigio) |
+| Pulsante principale | `<button class="primary">` | Ottone con testo scuro e alone dorato |
+| Select | `<select>` | Legno incassato, freccia dorata |
+| Campo di testo | `<input type="text">` | Pergamena incassata |
+| Pannello | `class="panel"` | Legno scuro con cornice d'ottone |
+| Pannello di testo | `class="panel paper"` | Pergamena con cornice d'ottone |
+| Suggerimento | `data-tip="testo"` | Pergamena sopra l'elemento, al passaggio del mouse e con il focus della tastiera |
+
+Le texture sono in `assets/ui/web/` (512 × 512, ripetibili). Per crearle:
+
+1. Genera la texture con `z-image-turbo`, 1024 × 1024, con la frase `Seamless flat texture of ...`.
+2. Copia l'originale in `assets/ui/originals/<nome>.png`.
+3. Esegui `python3 assets/ui/build.py`. Lo script ritaglia il centro e rende i bordi continui.
+
+| Texture | Seme | Uso |
+|---|---|---|
+| `legno` | 401 | Pulsanti, select, pannelli |
+| `pergamena` | 402 | Campi di testo, suggerimenti, regole delle carte |
+| `ottone` | 403 | Pulsante principale |

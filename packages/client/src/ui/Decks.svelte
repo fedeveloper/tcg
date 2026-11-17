@@ -50,7 +50,7 @@
   header { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; }
   h2 { margin: 0; color: var(--accent); flex: 1; }
   ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
-  li { display: flex; gap: 10px; align-items: center; padding: 6px 8px; border: 1px solid #334; border-radius: 6px; }
+  li { display: flex; gap: 10px; align-items: center; padding: 8px 12px; border-radius: 8px; background: linear-gradient(90deg, rgb(10 15 25 / 0.55), rgb(10 15 25 / 0.8)), var(--wood) center / 320px; box-shadow: 0 0 0 1px var(--gold-d); }
   .name { flex: 1; font-weight: bold; }
   .bad { color: #ff9a8a; }
 </style>

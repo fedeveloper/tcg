@@ -168,6 +168,8 @@ Criterio di fine: Federico approva le 6 carte di prova, affiancate. Solo dopo pa
 
 ### Fase 2: kit dell'interfaccia
 
+Stato: fatta il 17/11/2026. Il kit è in CSS globale (`button`, `select`, `.panel`, `data-tip`), non in componenti Svelte: così ogni schermata lo usa senza modifiche. Le versioni PixiJS (passo 5) passano alla fase 3, insieme alla nuova scena. Dettagli in [guida-di-stile.md](guida-di-stile.md), sezione 9.
+
 1. Scegli i 2 font (licenza OFL) e verifica le lettere accentate.
 2. Disegna in SVG pannelli, bordi, pulsanti (4 stati: normale, sopra, premuto, disattivato) e icone.
 3. Genera texture di supporto (legno, ottone, pergamena) con `z-image-turbo`. Rendi le texture ripetibili con uno script.
