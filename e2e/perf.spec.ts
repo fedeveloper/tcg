@@ -11,6 +11,9 @@ test.skip(!process.env.PERF, "set PERF=1 to measure the frame rate");
 test.use({ viewport: { width: 412, height: 915 }, isMobile: true, hasTouch: true });
 
 test("a match on a slow phone keeps the frame rate", async ({ page, context }) => {
+  // PERF_BOARD=horizontal measures the horizontal board. The phone in portrait has the vertical board by default.
+  const board = process.env.PERF_BOARD;
+  if (board) await page.addInitScript((b) => localStorage.setItem("tcg.board", b), board);
   await page.goto("/");
   await page.getByRole("button", { name: /^Gioca$/ }).first().click();
   await waitForBoard(page);

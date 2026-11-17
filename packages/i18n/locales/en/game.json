@@ -341,6 +341,11 @@
     "newGame": "New game",
     "start": "Play",
     "reducedMotion": "Reduce animations",
+    "board": "Board",
+    "boardAuto": "Automatic",
+    "boardHorizontal": "Horizontal",
+    "boardVertical": "Vertical",
+    "boardNext": "The board changes from the next match.",
     "language": "Language",
     "difficulty": "Difficulty",
     "levels": {

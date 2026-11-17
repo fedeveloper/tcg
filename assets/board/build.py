@@ -2,6 +2,7 @@
 
 Usage: python3 assets/board/build.py
 - mare-502.png -> web/sea.webp: the sea behind the lanes, 1344 x 496.
+- mare-verticale-802.png -> web/sea-tall.webp: the sea of the vertical board (phase 8), 960 x 1344.
 - faro-<state>-<seed>.png -> web/beacon-<lit|damaged|out>.webp: the Beacon cut out of its plain gray background.
 """
 from pathlib import Path
@@ -55,9 +56,22 @@ def cut_out(img: Image.Image, halo: bool) -> Image.Image:
     return out.crop(out.getbbox())
 
 
+def tall_sea() -> Image.Image:
+    """The vertical sea with a softer golden path: the path runs under the middle lane and must not hide the keepers."""
+    a = np.asarray(Image.open(ORIG / "mare-verticale-802.png").convert("RGB"), dtype=np.float32)
+    warm = (a[..., 0] - a[..., 2]) / 255
+    gold = np.clip((warm - 0.12) * 4, 0, 1)
+    gold[:470] = 0  # Below the horizon only: the sky keeps its glow.
+    soft = np.asarray(Image.fromarray(gold.astype(np.float32) * 255).convert("L").filter(ImageFilter.GaussianBlur(6)), dtype=np.float32) / 255
+    water = np.array([38, 92, 96], dtype=np.float32)
+    out = a * (1 - soft[..., None] * 0.55) + water * soft[..., None] * 0.55
+    return Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+
+
 def main() -> None:
     WEB.mkdir(exist_ok=True)
     Image.open(ORIG / "mare-502.png").convert("RGB").save(WEB / "sea.webp", "WEBP", quality=82, method=6)
+    tall_sea().save(WEB / "sea-tall.webp", "WEBP", quality=80, method=6)
     print("sea: 1344x496")
     for state, name in BEACONS.items():
         b = cut_out(Image.open(ORIG / f"{name}.png"), halo=state == "lit")

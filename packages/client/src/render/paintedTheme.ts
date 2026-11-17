@@ -1,11 +1,12 @@
 import { Assets, BitmapFont, BitmapText, Container, defaultFilterVert, Filter, GlProgram, Graphics, Rectangle, Sprite, Text, Texture, TilingSprite } from "pixi.js";
 import { gsap } from "gsap";
 import seaUrl from "../../../../assets/board/web/sea.webp?url";
+import seaTallUrl from "../../../../assets/board/web/sea-tall.webp?url";
 import litUrl from "../../../../assets/board/web/beacon-lit.webp?url";
 import damagedUrl from "../../../../assets/board/web/beacon-damaged.webp?url";
 import outUrl from "../../../../assets/board/web/beacon-out.webp?url";
 import woodUrl from "../../../../assets/ui/web/legno.webp?url";
-import { HEIGHT, TIDE, VIEW_HEIGHT, WIDTH, type Rect } from "./layout.ts";
+import { HEIGHT, ORIENTATION, PIER_Y, TIDE, VIEW_HEIGHT, WIDTH, type Rect } from "./layout.ts";
 import { type Art, SpriteTheme } from "./spriteTheme.ts";
 import { MEDALS } from "./medals.ts";
 import { FACTION_COLORS, type FxKind, type BeaconLook, type BeaconView, type KeeperLook, type KeeperView, type SiteView } from "./theme.ts";
@@ -29,6 +30,8 @@ function medalTexture(cardId: string): Promise<Texture> | null {
 /** The painted textures of the board (graphics plan, phase 3). */
 export interface PaintedArt {
   sea: Texture;
+  /** The sea of the vertical board (graphics plan, phase 8). */
+  seaTall: Texture;
   wood: Texture;
   beacon: Record<BeaconState, Texture>;
   glow: Texture;
@@ -66,10 +69,10 @@ let cache: Promise<PaintedArt> | null = null;
 /** Loads the painted board textures and the Alegreya font. The result is shared between games. */
 export function loadPainted(): Promise<PaintedArt> {
   cache ??= (async () => {
-    const [sea, wood, lit, damaged, out] = await Promise.all([linear(seaUrl), linear(woodUrl), linear(litUrl), linear(damagedUrl), linear(outUrl)]);
+    const [sea, seaTall, wood, lit, damaged, out] = await Promise.all([linear(seaUrl), linear(seaTallUrl), linear(woodUrl), linear(litUrl), linear(damagedUrl), linear(outUrl)]);
     wood.source.addressMode = "repeat";
     await document.fonts.load('700 12px "Alegreya"').catch(() => undefined);
-    return { sea, wood, beacon: { lit, damaged, out }, glow: glowTexture() };
+    return { sea, seaTall, wood, beacon: { lit, damaged, out }, glow: glowTexture() };
   })();
   return cache;
 }
@@ -89,8 +92,9 @@ void main() {
   finalColor = texture(uTexture, uv);
 }`;
 
-/** The top of the pier, in scene pixels. Below it the hand lies on wooden planks. */
-const PIER_Y = 178;
+/** The horizon of the vertical sea: a fraction of the texture height, and its place in the scene. */
+const TALL_HORIZON = 465 / 1344;
+const TALL_HORIZON_Y = 66;
 /** The height of a painted Beacon on the board, in scene pixels. */
 const BEACON_H = 58;
 const GOLD = 0xd9b56a;
@@ -125,8 +129,11 @@ export class PaintedTheme extends SpriteTheme {
 
   override background(): Container {
     const c = new Container();
-    const sea = new Sprite(this.painted.sea);
-    sea.height = PIER_Y + 6;
+    const vertical = ORIENTATION === "vertical";
+    const sea = new Sprite(vertical ? this.painted.seaTall : this.painted.sea);
+    /** The water layer: it moves with the parallax. */
+    const water = new Container();
+    water.addChild(sea);
     const filter = new Filter({
       glProgram: GlProgram.from({ vertex: defaultFilterVert, fragment: WAVES_FRAGMENT, name: "sea-waves" }),
       resources: { waves: { uTime: { value: 0, type: "f32" }, uAmount: { value: 0.0022, type: "f32" } } },
@@ -155,16 +162,40 @@ export class PaintedTheme extends SpriteTheme {
     const shade = new Graphics()
       .rect(0, 0, WIDTH, 10).fill({ color: 0x0a0f1d, alpha: 0.35 })
       .rect(0, VIEW_HEIGHT - 6, WIDTH, 6).fill({ color: 0x0a0f1d, alpha: 0.2 });
-    c.addChild(sea, pier, edge, shade);
+    c.addChild(water, pier, edge, shade);
     // Light parallax: the sea follows the mouse by a few pixels (graphics plan, phase 6).
-    sea.width = WIDTH + 8;
-    sea.x = -4;
-    const drift = { x: -4, y: 0 };
+    // The sea covers the water area with 8 pixels to spare for the parallax. The vertical sea keeps its proportions.
+    let baseY = 0;
+    if (vertical) {
+      // The horizon of the vertical sea goes just under the opponent's Beacons: they stand against the sky.
+      const { width: tw, height: th } = sea.texture;
+      const k = Math.max((WIDTH + 8) / tw, (PIER_Y + 6 - TALL_HORIZON_Y) / (th * (1 - TALL_HORIZON)));
+      // Only the visible part of the texture, with 4 pixels to spare on each side for the parallax.
+      // The sky is a separate sprite without the wave filter: the filter works on the bounds of its sprite,
+      // so a smaller sprite keeps the frame rate on a phone, and the horizon stays straight.
+      const top = TALL_HORIZON_Y - th * TALL_HORIZON * k;
+      const left = (tw - (WIDTH + 8) / k) / 2;
+      const skyTop = (-4 - top) / k;
+      const horizon = th * TALL_HORIZON;
+      const sky = new Sprite(new Texture({ source: sea.texture.source, frame: new Rectangle(left, skyTop, (WIDTH + 8) / k, horizon - skyTop) }));
+      sky.scale.set(k);
+      sea.texture = new Texture({ source: sea.texture.source, frame: new Rectangle(left, horizon, (WIDTH + 8) / k, (PIER_Y + 6 - TALL_HORIZON_Y) / k) });
+      sea.scale.set(k);
+      sea.y = sky.height;
+      water.addChildAt(sky, 0);
+      baseY = -4;
+    } else {
+      sea.width = WIDTH + 8;
+      sea.height = PIER_Y + 6;
+    }
+    const baseX = -(sea.width - WIDTH) / 2;
+    water.position.set(baseX, baseY);
+    const drift = { x: baseX, y: baseY };
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse" || this.reduced()) return;
       const kx = e.clientX / window.innerWidth - 0.5;
       const ky = e.clientY / window.innerHeight - 0.5;
-      gsap.to(drift, { x: -4 - kx * 6, y: -ky * 3, duration: 0.8, ease: "power2.out", overwrite: true, onUpdate: () => sea.position.set(drift.x, drift.y) });
+      gsap.to(drift, { x: baseX - kx * 6, y: baseY - ky * 3, duration: 0.8, ease: "power2.out", overwrite: true, onUpdate: () => water.position.set(drift.x, drift.y) });
     };
     window.addEventListener("pointermove", onMove);
     c.on("destroyed", () => {

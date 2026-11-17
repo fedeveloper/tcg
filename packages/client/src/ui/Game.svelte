@@ -11,7 +11,7 @@
   import { LESSONS, type Lesson } from "../tutorial/lessons.ts";
   import { highlightPlaces, narrow, optionsForCard, optionsForKeeper, stageOf } from "../game/selection.ts";
   import { BoardView, type BoardClick } from "../render/board.ts";
-  import { HEIGHT, VIEW_HEIGHT, WIDTH, type Rect } from "../render/layout.ts";
+  import { HEIGHT, setBoardOrientation, VIEW_HEIGHT, WIDTH, type Rect } from "../render/layout.ts";
   import { ShapeTheme, type Theme } from "../render/theme.ts";
   import { loadArt } from "../render/spriteTheme.ts";
   import { loadPainted, PaintedTheme } from "../render/paintedTheme.ts";
@@ -102,7 +102,36 @@
 
   /** Phone in portrait: the board shows the top of the scene and the hand is below it. */
   const PORTRAIT = "(max-width: 700px) and (orientation: portrait)";
-  let portrait = $state(window.matchMedia(PORTRAIT).matches);
+
+  /**
+   * The board (graphics plan, phase 8): horizontal lanes, or vertical lanes with the player at the bottom.
+   * "auto" gives the vertical board to a phone in portrait. The choice holds for the whole match.
+   */
+  type BoardPref = "auto" | "horizontal" | "vertical";
+  const BOARD_KEY = "tcg.board";
+  function savedBoard(): BoardPref {
+    try {
+      const v = localStorage.getItem(BOARD_KEY);
+      return v === "horizontal" || v === "vertical" ? v : "auto";
+    } catch {
+      return "auto";
+    }
+  }
+  const initialBoard = savedBoard();
+  let boardPref = $state<BoardPref>(initialBoard);
+  const vertical = initialBoard === "vertical" || (initialBoard === "auto" && window.matchMedia(PORTRAIT).matches);
+  setBoardOrientation(vertical ? "vertical" : "horizontal");
+  $effect(() => {
+    try {
+      localStorage.setItem(BOARD_KEY, boardPref);
+    } catch {
+      // Private mode: the choice holds only for this page.
+    }
+  });
+
+  /** The page puts the hand below the board: a phone in portrait, or the vertical board. */
+  let phone = $state(window.matchMedia(PORTRAIT).matches);
+  let portrait = $state(vertical || window.matchMedia(PORTRAIT).matches);
   let stage: HTMLDivElement;
   /** CSS pixels for one pixel of the scene. The scale is continuous: the scene fills the screen. */
   let fit = $state(1);
@@ -111,10 +140,16 @@
   let optionsOpen = $state(false);
 
   function measure() {
-    portrait = window.matchMedia(PORTRAIT).matches;
+    phone = window.matchMedia(PORTRAIT).matches;
+    portrait = vertical || phone;
     if (!stage) return;
     const w = stage.clientWidth;
-    fit = portrait ? (w - 16) / WIDTH : Math.max(0.5, Math.min(w / WIDTH, stage.clientHeight / HEIGHT));
+    if (vertical) {
+      // The vertical board also fits the height of the window: the hand and the buttons need about 250 pixels below it.
+      fit = Math.max(0.5, Math.min((w - 16) / WIDTH, (window.innerHeight - 250) / HEIGHT));
+    } else {
+      fit = portrait ? (w - 16) / WIDTH : Math.max(0.5, Math.min(w / WIDTH, stage.clientHeight / HEIGHT));
+    }
   }
 
   /**
@@ -123,6 +158,13 @@
    */
   function renderScale(): number {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (vertical) {
+      // The vertical board has only painted art: the scale need not be an integer.
+      // It draws at most the pixels of the horizontal board on the same screen, so the frame rate stays the same.
+      const horizontal = Math.max(1, Math.ceil(((window.innerWidth - 16) / 480) * dpr));
+      const budget = Math.sqrt((480 * 270 * horizontal * horizontal) / (WIDTH * HEIGHT));
+      return Math.max(1, Math.min(budget, fit * dpr));
+    }
     const best = Math.min(window.screen.width / WIDTH, window.screen.height / HEIGHT, window.innerWidth / WIDTH);
     return Math.max(1, Math.min(5, Math.ceil(Math.max(best, fit) * dpr)));
   }
@@ -142,7 +184,7 @@
     app = new Application();
     let disposed = false;
     void (async () => {
-      await app!.init({ width: WIDTH * scale, height: HEIGHT * scale, antialias: false, background: "#1a1423", preference: "webgl" });
+      await app!.init({ width: Math.round(WIDTH * scale), height: Math.round(HEIGHT * scale), antialias: false, background: "#1a1423", preference: "webgl" });
       // The painted theme needs the spritesheets and the painted textures. The shape theme is the fallback.
       let theme: Theme;
       try {
@@ -476,7 +518,7 @@
   {/if}
 {/snippet}
 
-<div class="game" class:portrait>
+<div class="game" class:portrait class:vertical class:wide={vertical && !phone} style="--sw: {WIDTH * fit}px">
   <header>
     {#if game}
       <span>{game.phase === "mulligan" ? tr.t("ui.mulligan") : tr.t("ui.round", { round: game.round })}</span>
@@ -495,6 +537,14 @@
       {#if optionsOpen}
         <div class="options">
           <label class="motion"><input type="checkbox" bind:checked={reducedMotion} /> {tr.t("ui.reducedMotion")}</label>
+          <label class="motion">{tr.t("ui.board")}
+            <select bind:value={boardPref} aria-label={tr.t("ui.board")}>
+              <option value="auto">{tr.t("ui.boardAuto")}</option>
+              <option value="horizontal">{tr.t("ui.boardHorizontal")}</option>
+              <option value="vertical">{tr.t("ui.boardVertical")}</option>
+            </select>
+          </label>
+          {#if boardPref !== "auto" && (boardPref === "vertical") !== vertical}<span class="hint">{tr.t("ui.boardNext")}</span>{/if}
           <label class="motion">{tr.t("ui.language")}
             <select bind:value={lang} aria-label={tr.t("ui.language")}>
               <option value="it">IT</option>
@@ -512,7 +562,7 @@
 
   <div class="stage" bind:this={stage}>
     <div class="scene" style="--u: {fit}px; width: {WIDTH * fit}px; height: {sceneHeight * fit}px">
-      <div class="board" bind:this={host}></div>
+      <div class="board" style="width: {WIDTH * fit}px" bind:this={host}></div>
       {#if game}
         <div class="foe">
           <strong>{names ? names[foe] : tr.t("ui.opponent")}</strong>
@@ -711,6 +761,13 @@
   .portrait { position: static; display: flex; flex-direction: column; min-height: 100dvh; overflow: visible; }
   .portrait header { font-size: 12px; gap: 6px 10px; padding: 6px 8px; }
   .portrait .stage { display: block; padding: 0 8px; }
+  .portrait .scene { margin: 0 auto; }
+  /* The vertical board: the opponent's data stays small, at the right of the tide gauge. */
+  .vertical .foe { font-size: calc(5.5 * var(--u)); right: calc(5 * var(--u)); }
+  /* The free height goes around the board, not between the board and my buttons. */
+  .vertical .stage { flex: 1 0 auto; display: flex; flex-direction: column; justify-content: center; }
+  /* The vertical board on a wide screen: the lesson, the chain and the choices go to the left of the board. */
+  .wide .below { position: fixed; left: 16px; top: 52px; z-index: 4; width: calc((100vw - var(--sw)) / 2 - 32px); max-width: 340px; max-height: calc(100dvh - 300px); overflow: auto; font-size: 14px; }
   .portrait .foe { font-size: calc(7 * var(--u)); }
   .portrait .prompt { top: auto; bottom: calc(2 * var(--u)); transform: translateX(-50%); font-size: 12px; }
   .portrait .below { display: flex; flex-direction: column; gap: 6px; padding: 6px 8px; font-size: 12px; }

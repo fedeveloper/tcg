@@ -1,6 +1,6 @@
 import { Container, Graphics, Text } from "pixi.js";
 import type { Faction } from "@tcg/cards";
-import { TIDE, type Rect } from "./layout.ts";
+import { HEIGHT, siteRect, TIDE, WIDTH, type Rect } from "./layout.ts";
 
 /**
  * What a keeper shows. The board fills it from the game state.
@@ -92,9 +92,12 @@ export class ShapeTheme implements Theme {
   constructor(public resolution: number) {}
 
   background(): Container {
-    const g = new Graphics().rect(0, 0, 480, 270).fill(SEA);
-    // The site column in the middle of the board.
-    g.rect(216, 26, 48, 152).fill({ color: 0x173042 });
+    const g = new Graphics().rect(0, 0, WIDTH, HEIGHT).fill(SEA);
+    // The site cells in the middle of the board.
+    for (const lane of [0, 1, 2] as const) {
+      const r = siteRect(lane);
+      g.rect(r.x, r.y, r.w, r.h).fill({ color: 0x173042 });
+    }
     return g;
   }
 

@@ -104,6 +104,20 @@ test.describe("phone in portrait", () => {
     await expect(page.locator(".me button.primary")).toBeVisible();
     const width = await page.locator("html").evaluate((el) => el.scrollWidth);
     expect(width).toBeLessThanOrEqual(412);
+    // Graphics plan, phase 8: a phone in portrait gets the vertical board.
+    const scene = (await page.locator(".scene").boundingBox())!;
+    expect(scene.height).toBeGreaterThan(scene.width);
+  });
+
+  test("the options can keep the horizontal board", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("tcg.board", "horizontal"));
+    await openMenu(page);
+    await page.getByRole("button", { name: "Gioca", exact: true }).click();
+    await waitForBoard(page);
+    const scene = (await page.locator(".scene").boundingBox())!;
+    expect(scene.width).toBeGreaterThan(scene.height);
+    await page.getByRole("button", { name: "Opzioni" }).click();
+    await expect(page.getByRole("combobox", { name: "Plancia" })).toHaveValue("horizontal");
   });
 });
 

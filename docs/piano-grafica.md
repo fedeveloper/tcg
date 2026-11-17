@@ -268,6 +268,13 @@ Questa fase era già prevista a fine progetto (piano di progetto, sezione 12).
 Con lo stile dipinto la plancia verticale è soprattutto un lavoro di layout: spazio di progetto 1080 × 1920, corsie in colonna, uno sfondo verticale nuovo.
 Dopo questa fase Federico sceglie: tenere una sola plancia o offrirle entrambe.
 
+Stato: fatta il 17/11/2026, in attesa della scelta di Federico.
+- `layout.ts` ha due geometrie. `setBoardOrientation()` sceglie la plancia prima della partita. La plancia verticale misura 270 × 392 pixel di scena: 3 corsie in colonna (48 pixel con 24 di spazio), 7 file dai Fari avversari (in alto) ai miei (in basso).
+- Le animazioni usano `forward(r)`, la direzione verso il nemico: scatto in avanti, contraccolpo, particelle delle parole chiave. `sameLane()` trova i Custodi della stessa corsia.
+- Sfondo nuovo: `mare-verticale-802.png` (flux2-klein-4b, 960 × 1344, riferimento 3B), in `assets/board/web/sea-tall.webp`. `build.py` attenua la scia dorata sotto la corsia centrale. L'orizzonte sta sotto i Fari avversari: le torri si stagliano sul cielo. Il cielo è uno sprite senza il filtro delle onde.
+- Opzioni della partita: "Plancia" Automatica (verticale sul telefono in verticale), Orizzontale, Verticale. La scelta vale dalla partita dopo. Su schermo largo la plancia verticale sta al centro e i pannelli a sinistra.
+- Prestazioni: la plancia verticale disegna al massimo i pixel della plancia orizzontale sullo stesso schermo. Telefono lento: 46 fps per entrambe le plance, sulla stessa macchina di prova.
+
 ### Pulizia finale
 
 Quando tutte le schermate usano i nuovi asset, togli `SpriteTheme`, gli spritesheet pixel art e gli script di `assets/src/` che non servono più.
