@@ -1,0 +1,15 @@
+{
+  "cardId": "vesper-013",
+  "model": "flux2-klein-4b",
+  "seed": 222,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140921_z-image-turbo_102.png",
+    "20261117-140922_z-image-turbo_103.png"
+  ],
+  "prompt": "A new card illustration in exactly the same painting style, brushwork, lighting and color treatment as images 1 and 2: a spectral queen in a flowing pale gown and a crown of extinguished lanterns, floating above a misty sea at night, dead lanterns drifting around her, face visible, regal and sad, in the left third. Faction colors: dusk purple, violet, lilac, with pale ghostly glow and white, mist and lanterns. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, melancholic storybook mood, no text, no letters.",
+  "original": "tcg-fase1/vesper-013.png",
+  "formula": "ancora della fazione (2B + 3B)",
+  "web": "dall'originale 1344x960"
+}

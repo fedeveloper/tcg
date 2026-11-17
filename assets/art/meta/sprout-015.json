@@ -1,0 +1,15 @@
+{
+  "cardId": "sprout-015",
+  "model": "flux2-klein-4b",
+  "seed": 1038,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png",
+    "tcg-fase1/sprout-008.png"
+  ],
+  "prompt": "Use images 1 and 2 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy their characters, faces, buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a big crab with a thorny green shell raising its claws on a rock, half of its shell cracked but standing proud, character in the left third. Faction colors: dark kelp green, moss green, fresh sprout green and coral pink, living sea plants everywhere. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4b/sprout-015.png",
+  "formula": "produzione (3B + ancora della fazione)",
+  "web": "dall'originale 1344x960"
+}

@@ -1,0 +1,14 @@
+{
+  "cardId": "gear-002",
+  "model": "flux2-klein-4b",
+  "seed": 3017,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png"
+  ],
+  "prompt": "Use image 1 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy its buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a young soldier in a blue cloth coat and leather cap winding a big spring crossbow made of brass on a harbor wall, character in the left third, face visible and patient, no armor. Faction colors: dark wood, polished copper, tan and sand, brass gears and steam. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4c/gear-002.png",
+  "formula": "rifacimento (solo 3B)",
+  "web": "dall'originale 1344x960"
+}

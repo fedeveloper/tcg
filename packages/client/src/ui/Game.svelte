@@ -15,7 +15,7 @@
   import { ShapeTheme, type Theme } from "../render/theme.ts";
   import { loadArt } from "../render/spriteTheme.ts";
   import { loadPainted, PaintedTheme } from "../render/paintedTheme.ts";
-  import PixelCard from "./PixelCard.svelte";
+  import HdCard from "./HdCard.svelte";
   import type { CardFace } from "./pixelCanvas.ts";
 
   interface Props {
@@ -128,7 +128,7 @@
 
   /** The hand on the pier: the cards overlap when they do not fit in 288 scene pixels. */
   const handSize = $derived(game ? game.players[me].hand.length : 0);
-  const overlap = $derived(handSize > 1 ? Math.max(-4, (handSize * 64 - 288) / (handSize - 1)) : 0);
+  const overlap = $derived(handSize > 1 ? Math.max(-6, (handSize * 60 - 288) / (handSize - 1)) : 0);
 
   onMount(() => {
     TextureStyle.defaultOptions.scaleMode = "nearest";
@@ -332,6 +332,9 @@
     return myTurn ? optionsForKeeper(actions, id) : [];
   }
 
+  /** The card under the mouse or the keyboard focus: a large copy shows above it (graphics plan, phase 4, step 5). */
+  let peekId = $state<string | null>(null);
+
   /** The card shown full screen with its complete text. */
   let zoomId = $state<string | null>(null);
   const zoom = $derived.by(() => {
@@ -405,11 +408,15 @@
               zoomId = id;
             }}
             onkeydown={(e) => cardKey(e, id)}
+            onpointerenter={(e) => e.pointerType === "mouse" && (peekId = id)}
+            onpointerleave={() => peekId === id && (peekId = null)}
+            onfocus={() => (peekId = id)}
+            onblur={() => peekId === id && (peekId = null)}
           >
-            <PixelCard face={info.face} />
+            <HdCard def={info.def} {tr} width={portrait ? 100 : 60 * fit} attack={info.echo ? 1 : undefined} hold={info.echo ? 1 : undefined} foil={false} />
             <span class="sr-only">{info.summary}{info.echo ? " [1/1]" : ""}</span>
-            {#if info.rules.length > 0}
-              <span class="rules" aria-hidden="true">{#each info.rules as line}<span>{line}</span>{/each}</span>
+            {#if peekId === id && !portrait}
+              <span class="peek" aria-hidden="true"><HdCard def={info.def} {tr} width={100 * fit} attack={info.echo ? 1 : undefined} hold={info.echo ? 1 : undefined} /></span>
             {/if}
           </button>
         {/if}
@@ -559,7 +566,7 @@
     {#if zoom}
       <div class="zoom" role="dialog" aria-modal="true" aria-label={zoom.face.name} tabindex="-1" onclick={() => (zoomId = null)} onkeydown={() => {}}>
         <div class="zoom-card" role="presentation" onclick={(e) => e.stopPropagation()}>
-          <PixelCard face={zoom.face} scale={3} />
+          <HdCard def={zoom.def} {tr} width={280} attack={zoom.echo ? 1 : undefined} hold={zoom.echo ? 1 : undefined} />
           <div class="zoom-text">
             <h3>{zoom.face.name}</h3>
             <p>{zoom.summary}{zoom.stats ? ` · ${tr.t("ui.current")}: ${zoom.stats}` : ""}</p>
@@ -636,15 +643,21 @@
   .acts button { font-size: calc(6 * var(--u)); padding: calc(3 * var(--u)) calc(4 * var(--u)); }
 
   /* The hand, on the pier between my data and my buttons. */
-  .hand { position: absolute; left: calc(96 * var(--u)); width: calc(288 * var(--u)); top: calc(180 * var(--u)); height: calc(90 * var(--u)); display: flex; justify-content: center; align-items: flex-start; pointer-events: none; }
-  .card { position: relative; flex: none; padding: 0; margin-left: calc(-1 * var(--overlap) * var(--u)); background: transparent; border: 0; pointer-events: auto; transition: transform 0.12s ease-out; transform-origin: 50% 100%; }
+  .hand { position: absolute; left: calc(96 * var(--u)); width: calc(288 * var(--u)); top: calc(176 * var(--u)); height: calc(90 * var(--u)); display: flex; justify-content: center; align-items: flex-start; pointer-events: none; }
+  /* The hand is a fan, also on desktop (graphics plan, phase 4, step 6). */
+  .card {
+    position: relative; flex: none; padding: 0; margin-left: calc(-1 * var(--overlap) * var(--u)); background: transparent; border: 0; box-shadow: none; pointer-events: auto;
+    transition: transform 0.14s ease-out, filter 0.14s; transform-origin: 50% 130%;
+    transform: rotate(calc(var(--fan) * 3deg)) translateY(calc(var(--fan) * var(--fan) * 0.4 * var(--u)));
+  }
   .card:first-child { margin-left: 0; }
-  .card :global(canvas) { width: calc(64 * var(--u)) !important; height: calc(88 * var(--u)) !important; }
-  .card:hover:not(.dim), .card:focus-visible { transform: translateY(calc(-30 * var(--u))) scale(1.25); z-index: 5; background: transparent; }
-  .card.selected { transform: translateY(calc(-14 * var(--u))); filter: drop-shadow(0 0 6px var(--accent)); z-index: 4; }
+  .card:hover:not(.dim), .card:focus-visible { transform: translateY(calc(-8 * var(--u))) rotate(calc(var(--fan) * 1deg)); z-index: 5; background: transparent; }
+  .card.selected { transform: translateY(calc(-14 * var(--u))); filter: drop-shadow(0 0 calc(3 * var(--u)) var(--accent)); z-index: 4; }
   .card.dim { filter: brightness(0.6) saturate(0.7); }
-  .card .rules { display: none; position: absolute; left: 50%; bottom: calc(100% + 2 * var(--u)); transform: translateX(-50%); width: calc(90 * var(--u)); flex-direction: column; gap: calc(1 * var(--u)); background: var(--paper) center / 256px; box-shadow: var(--frame); border-radius: 6px; padding: calc(2 * var(--u)); font-size: calc(3.6 * var(--u)); text-align: left; color: var(--paper-ink); }
-  .card:hover .rules, .card:focus-visible .rules { display: flex; }
+  .card.dim:hover { z-index: 5; }
+  .peek { position: absolute; left: 50%; bottom: calc(100% + 2 * var(--u)); transform: translateX(-50%) rotate(calc(var(--fan) * -1deg)); pointer-events: none; z-index: 6; filter: none; animation: peek 0.12s ease-out; }
+  @keyframes peek { from { opacity: 0; transform: translateX(-50%) translateY(calc(6 * var(--u))); } }
+  @media (prefers-reduced-motion: reduce) { .peek { animation: none; } }
   .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
 
@@ -692,8 +705,6 @@
     transform-origin: 50% 120%;
   }
   .portrait .card:first-child { margin-left: 0; }
-  .portrait .card :global(canvas) { width: 100% !important; height: auto !important; }
   .portrait .card:hover:not(.dim), .portrait .card:focus-visible { transform: rotate(calc(var(--fan) * 5deg)) translateY(-8px); }
-  .portrait .card .rules { display: none !important; }
   .portrait .card.selected { transform: translateY(-22px); z-index: 1; }
 </style>

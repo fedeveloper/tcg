@@ -1,0 +1,15 @@
+{
+  "cardId": "forge-026",
+  "model": "flux2-klein-4b",
+  "seed": 1025,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png",
+    "tcg-fase1/forge-011.png"
+  ],
+  "prompt": "Use images 1 and 2 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy their characters, faces, buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a rider on a horse made of fire and iron galloping across the wet sand at sunset, flames trailing from the hooves, character in the left third, face visible and fierce. Faction colors: soot dark red, rust, ember orange, flame and golden glow, warm firelight dominates. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4b/forge-026.png",
+  "formula": "produzione (3B + ancora della fazione)",
+  "web": "dall'originale 1344x960"
+}

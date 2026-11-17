@@ -1,0 +1,15 @@
+{
+  "cardId": "neutral-015",
+  "model": "flux2-klein-4b",
+  "seed": 1064,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png",
+    "tcg-fase1/neutral-006.png"
+  ],
+  "prompt": "Use images 1 and 2 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy their characters, faces, buildings or composition. New card illustration: a huge perfect storm with lightning, giant waves and swirling clouds crashing over several lighthouses, wide view, dramatic sky. Faction colors: slate, stone gray, sand and white, plain harbor materials, weathered wood and rope. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4b/neutral-015.png",
+  "formula": "produzione (3B + ancora della fazione)",
+  "web": "dall'originale 1344x960"
+}

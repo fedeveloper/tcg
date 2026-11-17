@@ -1,0 +1,15 @@
+{
+  "cardId": "forge-009",
+  "model": "flux2-klein-4b",
+  "seed": 2009,
+  "width": 1344,
+  "height": 960,
+  "references": [
+    "20261117-140922_z-image-turbo_103.png",
+    "tcg-fase1/forge-011.png"
+  ],
+  "prompt": "Use images 1 and 2 only as a reference for painting style, brushwork, line work, lighting and color treatment. Do not copy their characters, faces, buildings or composition. Do not paint any lighthouse, tower or house unless the description asks for one. New card illustration: a bald muscular smith with a big black beard and a leather apron, bare arms, hammering a glowing iron bar on an anvil at the edge of the surf, the waves pulling back from the sparks, character in the left third, face visible and focused. Faction colors: soot dark red, rust, ember orange, flame and golden glow, warm firelight dominates. Painterly 2D game illustration in gouache style, visible soft brush strokes, rich textured color, bold readable silhouettes, strong rim light, adventurous storybook mood, no text, no letters.",
+  "original": "tcg-fase4c/forge-009.png",
+  "formula": "rifacimento (3B + ancora della fazione, tratti espliciti)",
+  "web": "dall'originale 1344x960"
+}

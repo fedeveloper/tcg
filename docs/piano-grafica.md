@@ -204,6 +204,8 @@ Criterio di fine: un giocatore nuovo distingue corsie, file e Fari senza il tuto
 
 Criterio di fine: il nome, il costo, l'Attacco e la Tenuta si leggono a 1366 × 768 senza ingrandire.
 
+Stato: fatta il 17/11/2026. Tutte le 151 carte del gioco hanno un'illustrazione dipinta (164 immagini generate sull'OMEN, 23 rifatte). La mano usa `HdCard` a ventaglio, con l'anteprima grande al passaggio del mouse. I Riti hanno una cornice ad arco, ogni fazione ha un emblema, le carte rare e leggendarie hanno un riflesso animato in CSS (non uno shader). Il dorso è `CardBack.svelte`. Il criterio di fine è verificato a 1366 × 768. Passo 3 (atlante) rimandato: la mano carica file `sm` da circa 10 KB (1,4 MB per tutte le carte), uno per carta e solo quando serve. Rivaluta l'atlante nella fase 8, con le misure sul telefono lento.
+
 ### Fase 5: Custodi sul campo
 
 Gli sprite animati della pixel art spariscono. Un Custode sul campo diventa un **medaglione**.
