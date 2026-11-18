@@ -1,4 +1,4 @@
-# Caddy for the Raspberry Pi (plan, section 6.7).
+# Caddy for a self-hosted Linux server (plan, section 6.7).
 # Replace tcg.example.org with your host name. Caddy gets the HTTPS certificate.
 # For a test in the local network, use ":80" in place of the host name.
 tcg.example.org {

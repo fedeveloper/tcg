@@ -1,248 +1,266 @@
 <p align="center">
-  <img src="docs/screenshots/titolo.jpg" alt="Schermata del titolo di High Tides: un faro sotto la tempesta" width="100%">
+  <img src="docs/screenshots/titolo.jpg" alt="High Tides title screen: a lighthouse in a storm" width="100%">
 </p>
 
 <h1 align="center">High Tides</h1>
 
-<p align="center"><em>Accendi i Fari. Domina la Marea.</em></p>
+<p align="center"><em>Light the Beacons. Rule the Tide.</em></p>
 
 <p align="center">
-  Gioco di carte collezionabili originale, nel browser e sul telefono.<br>
-  Partite brevi, decisioni difficili, illustrazioni dipinte a mano.
+  An original collectible card game for the browser, on desktop and on smartphones.<br>
+  Short matches, hard decisions, hand-painted illustrations.
 </p>
+
+<p align="center">
+  <a href="docs/installation.md"><strong>Install and play</strong></a> ·
+  <a href="#how-to-play">How to play</a> ·
+  <a href="#game-modes">Game modes</a> ·
+  <a href="#technology">Technology</a>
+</p>
+
+> **Note:** the screenshots in this README show the Italian interface. The game is fully available in English too.
 
 ---
 
-## Il gioco in breve
+## The game in brief
 
-Il mondo è un arcipelago dopo una grande inondazione.
-Ogni comunità sopravvive intorno a un faro: la luce del faro protegge le isole dal buio del mare.
-Tu sei un **Guardiano**. Difendi tre Fari e attacchi i Fari avversari con i tuoi **Custodi**.
+The world is an archipelago after a great flood.
+Each community survives around a lighthouse: its light protects the islands from the dark sea.
+You are a **Warden**. You defend three **Beacons** and attack the enemy Beacons with your **Keepers**.
 
-- **Partite di 10-15 minuti**, con molte scelte in ogni turno.
-- **154 carte** in 5 fazioni più le carte neutrali, tutte illustrate.
-- **Tre corsie e due file**: la posizione di una carta cambia il suo valore.
-- **Due risorse**: la Brace, tua, e la Marea, condivisa e contesa.
-- **Giocatore singolo e online**: tutorial, sfida libera, Spedizione, Draft, partite con un amico.
-- **Italiano e inglese**, nel browser del computer e dello smartphone. Tutto gratis.
+- **10–15 minute matches**, with many choices in every turn.
+- **154 cards** in 5 factions plus neutral cards, all illustrated.
+- **Three lanes and two rows**: the position of a card changes its value.
+- **Two resources**: **Ember**, which is yours, and the **Tide**, which both players share and fight over.
+- **Single player and online**: tutorial, free match against the AI, Expedition, Draft, matches with a friend.
+- **Two supported languages: English and Italian.** The game picks the language of your browser. You can change it in the menu.
+- **Desktop and smartphone browsers.** No installation and no sign-up for players. Everything is free.
 
 <p align="center">
-  <img src="docs/screenshots/partita.jpg" alt="Una partita sulla plancia orizzontale: Fari, Custodi nei medaglioni e la mano sul molo" width="100%">
+  <img src="docs/screenshots/partita.jpg" alt="A match on the horizontal board: Beacons, Keepers in medallions and the hand on the pier" width="100%">
 </p>
 
-## Come si gioca
+## How to play
 
-### L'obiettivo
+### The goal
 
-Ogni giocatore ha **3 Fari**, uno per corsia. Ogni Faro ha 10 punti **Luce**.
-Vinci quando spegni **2 Fari** avversari.
-Devi scegliere ogni volta: concentrare l'attacco su una corsia o difendere ovunque.
+Each player has **3 Beacons**, one for each lane. Each Beacon has 10 **Light** points.
+You win when you put out **2 enemy Beacons**.
+Every round you choose: focus the attack on one lane, or defend everywhere.
 
-### Il campo
+### The board
 
 ```
-        Corsia A     Corsia B     Corsia C
-       [ Faro A ]   [ Faro B ]   [ Faro C ]     <- Avversario
-       [Retro   ]   [Retro   ]   [Retro   ]
-       [Fronte  ]   [Fronte  ]   [Fronte  ]
-       ------------- Luoghi ---------------     <- 1 Luogo per corsia, condiviso
-       [Fronte  ]   [Fronte  ]   [Fronte  ]
-       [Retro   ]   [Retro   ]   [Retro   ]
-       [ Faro A ]   [ Faro B ]   [ Faro C ]     <- Tu
+        Lane A       Lane B       Lane C
+       [Beacon A]   [Beacon B]   [Beacon C]     <- Opponent
+       [Back    ]   [Back    ]   [Back    ]
+       [Front   ]   [Front   ]   [Front   ]
+       --------------- Sites --------------     <- 1 Site per lane, shared
+       [Front   ]   [Front   ]   [Front   ]
+       [Back    ]   [Back    ]   [Back    ]
+       [Beacon A]   [Beacon B]   [Beacon C]     <- You
 ```
 
-- Un Custode in **Fronte** attacca e blocca. Un Custode in **Retro** è protetto, ma attacca solo con la Gittata.
-- Ogni corsia può avere un **Luogo**. Il Luogo cambia le regole della corsia per entrambi i giocatori.
-- Se la corsia avversaria non ha un Custode in Fronte, il danno va al Faro.
+- A Keeper in the **Front** row attacks and blocks. A Keeper in the **Back** row is protected, but it attacks only with Reach.
+- Each lane can have one **Site**. A Site changes the rules of its lane for both players.
+- If the enemy lane has no Keeper in the Front row, the damage goes to the Beacon.
 
-### Brace e Marea
+### Ember and Tide
 
-La **Brace** è la tua risorsa. Il massimo cresce di 1 a ogni round, fino a 10.
-A fine round conservi al massimo 2 Brace nella **Riserva**.
+**Ember** is your resource. Your maximum Ember grows by 1 every round, up to 10.
+At the end of a round you keep at most 2 Ember in your **Reserve**.
 
-La **Marea** è un indicatore unico tra i due giocatori, da −5 a +5.
-Molte carte spingono la Marea verso il proprio lato.
-Le carte con **Alta Marea** diventano più forti quando la Marea è dalla tua parte di almeno 2 punti.
-Le carte con **Riflusso** sono forti quando la Marea è dalla parte avversaria.
+The **Tide** is a single track between the two players, from −5 to +5.
+Many cards push the Tide toward their owner.
+Cards with **High Tide** get stronger when the Tide is at least 2 points on your side.
+Cards with **Ebb** are strong when the Tide is on the opponent's side.
 
-### Il round
+### The round
 
-1. **Alba.** Peschi 1 carta e ricarichi la Brace. L'Iniziativa passa all'altro giocatore.
-2. **Manovra.** I giocatori agiscono a turno, un'azione alla volta: giocare una carta, spostare un Custode, passare.
-3. **Scontro.** Il combattimento si risolve corsia per corsia, da A a C.
-4. **Tramonto.** Gli effetti di fine round si risolvono. Dal round 14 la **Marea crescente** toglie 1 Luce a ogni Faro acceso.
+1. **Dawn.** You draw 1 card and refill your Ember. The Initiative goes to the other player.
+2. **Maneuver.** The players act in turns, one action at a time: play a card, move a Keeper, or pass.
+3. **Clash.** Combat resolves lane by lane, from A to C.
+4. **Dusk.** End-of-round effects resolve. From round 14, the **Rising Tide** removes 1 Light from each lit Beacon.
 
-Un **Rito Rapido** si gioca anche in risposta all'avversario. Le risposte formano una **catena** di massimo 4 carte.
+You can also play a **Quick Rite** in response to the opponent. Responses form a **chain** of at most 4 cards.
 
-### Le parole chiave
+### Keywords
 
-| Parola chiave | Effetto |
+| Keyword | Effect |
 |---|---|
-| **Radici** | Il Custode non si sposta. Ha +1 Tenuta in Fronte. |
-| **Gittata** | Il Custode attacca anche dalla fila Retro. |
-| **Travolgere** | Il danno in eccesso colpisce il Faro. |
-| **Eco** | Quando il Custode muore, una copia 1/1 torna in mano. |
-| **Usura** | Il Custode perde 1 Attacco a ogni Tramonto. |
-| **Ancora** | La Marea non si sposta mentre il Custode è in gioco. |
-| **Slancio** | Il Custode attacca anche nel round in cui entra. |
+| **Rooted** | The Keeper cannot move. It has +1 Hold in the Front row. |
+| **Reach** | The Keeper also attacks from the Back row. |
+| **Overrun** | Excess damage hits the Beacon. |
+| **Echo** | When the Keeper dies, a 1/1 copy returns to your hand. |
+| **Wear** | The Keeper loses 1 Attack at each Dusk. |
+| **Anchor** | The Tide cannot move while the Keeper is in play. |
+| **Surge** | The Keeper can attack in the round it enters. |
 
 <p align="center">
-  <img src="docs/screenshots/scheda-carta.jpg" alt="La scheda di una carta: illustrazione, costo, tipo, testo delle regole" width="80%">
+  <img src="docs/screenshots/scheda-carta.jpg" alt="A card detail view: illustration, cost, type and rules text" width="80%">
 </p>
 
-## Le fazioni
+## Factions
 
-Ogni fazione ha uno stile di gioco chiaro e un rapporto diverso con la Marea.
-Un mazzo usa una o due fazioni, più le carte neutrali.
+Each faction has a clear play style and a different relationship with the Tide.
+A deck uses one or two factions, plus neutral cards.
 
-| Fazione | Tema | Stile di gioco | Rapporto con la Marea |
+| Faction | Theme | Play style | Relationship with the Tide |
 |---|---|---|---|
-| 🔥 **Fucina** | Fuoco, rame, fabbri | Aggressivo, danno diretto ai Fari | Spinge la Marea in modo rapido ma instabile |
-| 🌿 **Germoglio** | Alghe, coralli, crescita | Custodi che crescono, Radici, difesa | Effetti che durano più round |
-| 🌊 **Abisso** | Mare profondo, creature cieche | Controllo, rimozione, pesca | Forte con il Riflusso |
-| ⚙️ **Ingranaggio** | Meccanismi, orologi, fari | Reliquie e combinazioni | Blocca la Marea con l'Ancora |
-| 🌙 **Vespro** | Nebbia, spiriti, lanterne | Sacrificio, cimitero, Eco | Guadagna valore quando la Marea cambia lato |
-| ⚓ **Neutrali** | Marinai e gente delle isole | Carte di supporto per ogni mazzo | — |
+| 🔥 **Forge** | Fire, copper, smiths | Aggressive, direct damage to Beacons | Pushes the Tide fast, but not for long |
+| 🌿 **Sprout** | Kelp, coral, growth | Keepers that grow, Rooted, defense | Effects that last for several rounds |
+| 🌊 **Abyss** | Deep sea, blind creatures | Control, removal, card draw | Strong with Ebb |
+| ⚙️ **Gear** | Machines, clocks, lighthouses | Relics and combinations | Locks the Tide with Anchor |
+| 🌙 **Vesper** | Mist, spirits, lanterns | Sacrifice, graveyard, Echo | Gains value when the Tide changes side |
+| ⚓ **Neutral** | Sailors and island folk | Support cards for every deck | — |
 
-Il primo set ha **154 carte**: 90 Custodi, 42 Riti (17 rapidi e 25 lenti), 16 Reliquie e 6 Luoghi.
+The first set has **154 cards**: 90 Keepers, 42 Rites (17 Quick and 25 Slow), 16 Relics and 6 Sites.
 
 <p align="center">
-  <img src="docs/screenshots/collezione.jpg" alt="La collezione: le carte di tutte le fazioni, con il filtro per fazione e il dettaglio di una carta" width="100%">
+  <img src="docs/screenshots/collezione.jpg" alt="The collection: cards of all factions, with the faction filter and a card detail" width="100%">
 </p>
 
-## Modalità di gioco
+## Game modes
 
-| Modalità | Cosa fai |
+| Mode | What you do |
 |---|---|
-| **Tutorial** | 5 lezioni guidate. Ogni lezione introduce una regola con una posizione preparata. |
-| **Sfida libera** | Scegli il tuo mazzo, il mazzo avversario e la difficoltà dell'IA: facile, media o difficile. |
-| **Spedizione** | Campagna roguelite. Parti con un mazzo di 20 carte e affronti 6 avversari su una mappa. Dopo ogni vittoria scegli una carta nuova. Hai 2 vite. |
-| **Draft** | Scegli due fazioni, poi costruisci un mazzo di 30 carte: a ogni passo prendi 1 carta su 3. Giochi fino a 7 vittorie o 3 sconfitte. |
-| **Online** | Partita rapida contro un avversario, o partita con un amico tramite un codice di 6 caratteri. Il server controlla ogni azione. |
-| **Collezione e Mazzi** | Guarda le carte, trasforma i doppioni in Frammenti, crea le carte che mancano e costruisci i tuoi mazzi. |
+| **Tutorial** | 5 guided lessons. Each lesson teaches one rule with a prepared position. |
+| **Free match** | Choose your deck, the opponent's deck and the AI difficulty: easy, medium or hard. |
+| **Expedition** | A roguelite campaign. You start with a 20-card deck and face 6 opponents on a map. After each win you pick a new card. You have 2 lives. |
+| **Draft** | Choose two factions, then build a 30-card deck: at each step you take 1 card out of 3. You play until 7 wins or 3 losses. |
+| **Online** | Quick match against a random opponent, or a match with a friend through a 6-character code. The server checks every action. |
+| **Collection and Decks** | Browse the cards, break extra copies into Shards, create the cards you are missing and build your decks. |
 
 <table>
   <tr>
-    <td width="50%"><img src="docs/screenshots/spedizione.jpg" alt="La mappa della Spedizione con il percorso tra le isole"></td>
-    <td width="50%"><img src="docs/screenshots/draft.jpg" alt="Il Draft: scegli 1 carta su 3"></td>
+    <td width="50%"><img src="docs/screenshots/spedizione.jpg" alt="The Expedition map with the route between the islands"></td>
+    <td width="50%"><img src="docs/screenshots/draft.jpg" alt="The Draft: pick 1 card out of 3"></td>
   </tr>
   <tr>
-    <td><em>Spedizione: la mappa tra le isole e il tuo mazzo.</em></td>
-    <td><em>Draft: a ogni passo prendi 1 carta su 3.</em></td>
+    <td><em>Expedition: the map of the islands and your deck.</em></td>
+    <td><em>Draft: at each step you take 1 card out of 3.</em></td>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/screenshots/editor.jpg" alt="L'editor dei mazzi con la curva dei costi"></td>
-    <td width="50%"><img src="docs/screenshots/online.jpg" alt="La schermata Online: partita rapida o con un amico"></td>
+    <td width="50%"><img src="docs/screenshots/editor.jpg" alt="The deck editor with the cost curve"></td>
+    <td width="50%"><img src="docs/screenshots/online.jpg" alt="The Online screen: quick match or match with a friend"></td>
   </tr>
   <tr>
-    <td><em>Editor dei mazzi, con la curva dei costi.</em></td>
-    <td><em>Online: partita rapida o codice per un amico.</em></td>
+    <td><em>Deck editor, with the cost curve.</em></td>
+    <td><em>Online: quick match or a code for a friend.</em></td>
   </tr>
   <tr>
-    <td width="50%"><img src="docs/screenshots/tutorial.jpg" alt="Una lezione del tutorial"></td>
-    <td width="50%"><img src="docs/screenshots/fine-partita.jpg" alt="La schermata di fine partita"></td>
+    <td width="50%"><img src="docs/screenshots/tutorial.jpg" alt="A tutorial lesson"></td>
+    <td width="50%"><img src="docs/screenshots/fine-partita.jpg" alt="The end-of-match screen"></td>
   </tr>
   <tr>
-    <td><em>Tutorial: una regola per lezione.</em></td>
-    <td><em>Fine partita.</em></td>
+    <td><em>Tutorial: one rule for each lesson.</em></td>
+    <td><em>End of the match.</em></td>
   </tr>
 </table>
 
-## Sul telefono
+## On your phone
 
-Sul telefono in verticale il gioco usa una **plancia verticale**: le corsie sono colonne, i tuoi Fari sono in basso e quelli avversari in alto.
-La mano è un ventaglio sotto la plancia. Nelle Opzioni della partita puoi scegliere la plancia: Automatica, Orizzontale o Verticale.
+On a phone in portrait orientation, the game uses a **vertical board**: the lanes are columns, your Beacons are at the bottom and the enemy Beacons are at the top.
+Your hand is a fan below the board. In the match **Options** you can choose the board: Automatic, Horizontal or Vertical.
 
 <p align="center">
-  <img src="docs/screenshots/telefono.jpg" alt="Una partita sul telefono con la plancia verticale" width="320">
+  <img src="docs/screenshots/telefono.jpg" alt="A match on a phone with the vertical board" width="320">
 </p>
 
-## La grafica
+## Art and feel
 
-- **Illustrazioni dipinte** in stile gouache, coerenti tra loro: prima l'identità del gioco, poi quella di ogni fazione.
-- Ogni immagine nasce da **modelli locali** su un PC di casa, mai da servizi esterni. Le regole di stile sono in [docs/guida-di-stile.md](docs/guida-di-stile.md).
-- **Custodi come medaglioni** con l'anello della fazione, il respiro e la luce della fazione.
-- **Animazioni fluide**: ingresso con compressione e rimbalzo, scatto in avanti, contraccolpo, numeri dei danni, particelle per ogni parola chiave, onde del mare con uno shader.
-- **Accessibilità**: tastiera completa, testo per i lettori di schermo, opzione "Riduci le animazioni".
-- **Prestazioni**: obiettivo 60 fotogrammi al secondo su un telefono di fascia media.
+- **Painted illustrations** in a gouache style, consistent across the game: first a shared identity for the whole game, then one for each faction.
+- **All images come from image models that run locally**, never from external image services.
+- **Keepers as medallions**, with the faction ring, an idle "breathing" motion and the faction light.
+- **Smooth animations**: entry with squash and bounce, forward lunge, recoil, damage numbers, particles for each keyword, sea waves drawn with a shader.
+- **Accessibility**: full keyboard control, text for screen readers, a "Reduce animations" option.
+- **Performance**: the target is 60 frames per second on a mid-range phone.
 
-## Tecnologia
+## Technology
 
-| Parte | Strumenti |
+| Part | Tools |
 |---|---|
-| Motore delle regole | TypeScript puro e deterministico, senza grafica. Test basati su proprietà e 500 partite simulate a ogni controllo. |
-| Client | Svelte 5, PixiJS 8, GSAP, Vite. L'IA gira in un Web Worker. |
-| IA | Tre livelli: euristica, ricerca, e ISMCTS (ricerca ad albero Monte Carlo con informazione nascosta). |
-| Server PvP | Node.js, WebSocket, SQLite. Leggero: funziona anche su un Raspberry Pi 3B. |
-| Lingue | i18next, con il testo delle regole generato dagli effetti delle carte. |
-| Qualità | CI su GitHub: tipi, test unitari, validazione delle carte, test end-to-end con Playwright. |
+| Rules engine | Pure, deterministic TypeScript with no graphics. Property-based tests and 500 simulated games on every check. |
+| Client | Svelte 5, PixiJS 8, GSAP, Vite. The AI runs in a Web Worker. |
+| AI | Three levels: heuristic, search, and ISMCTS (Monte Carlo tree search with hidden information). |
+| PvP server | Node.js, WebSocket, SQLite. Lightweight: it runs well on a single-board computer with 1 GB of RAM. |
+| Languages | i18next. The rules text of each card is generated from the card effects, in English and in Italian. |
+| Quality | GitHub CI: types, unit tests, card validation, end-to-end tests with Playwright. |
 
-## Provare il gioco
+## Quick start
 
-**Per installare e provare il gioco, leggi [docs/guida-installazione.md](docs/guida-installazione.md).**
+For the full guide, read **[docs/installation.md](docs/installation.md)**. It covers local play, online play, phone testing and self-hosting.
 
-### Requisiti
+### Requirements
 
-- Node.js 22
-- pnpm 10 (`corepack enable` attiva la versione corretta)
+- Node.js 22.13 or later
+- pnpm 10 (Corepack, included in Node.js, installs the correct version)
+- Git
 
-### Comandi
+### Play in 4 steps
 
-1. Installa le dipendenze: `pnpm install`
-2. Gioca nel browser: `pnpm dev`, poi apri l'indirizzo che Vite mostra.
-3. Gioca online: avvia `pnpm start:server` in un secondo terminale, poi apri la schermata Online del client.
-4. Gioca contro l'IA nel terminale: `pnpm play`
-5. Scegli la lingua e i mazzi: `pnpm play --lang en --deck sprout --opponent forge`
-6. Guarda una partita IA contro IA: `pnpm play --auto --seed 7`
-7. Esegui tutti i controlli della CI: `pnpm check`
+1. Clone the repository: `git clone https://github.com/fedeveloper/tcg.git`
+2. Go into the folder and enable pnpm: `cd tcg && corepack enable`
+3. Install the dependencies: `pnpm install`
+4. Start the game: `pnpm dev`, then open `http://localhost:5173/`.
 
-| Comando | Effetto |
+To play online, start the PvP server in a second terminal with `pnpm start:server` (port 8787). Then open the **Online** screen in the game.
+
+### Useful commands
+
+| Command | Effect |
 |---|---|
-| `pnpm typecheck` | Controlla i tipi TypeScript. |
-| `pnpm test` | Esegue i test unitari e i test basati su proprietà. |
-| `pnpm e2e` | Esegue i test end-to-end nel browser (Playwright). |
-| `pnpm validate:cards` | Controlla i file delle carte. |
-| `pnpm check:i18n` | Controlla che ogni testo esista in italiano e in inglese. |
-| `pnpm build` | Crea il client statico in `packages/client/dist`. |
-| `pnpm duel --a medium --b easy` | Confronta due livelli di IA. |
-| `pnpm balance --games 20` | Gioca tutte le coppie di mazzi base e mostra le percentuali di vittoria. |
-| `pnpm sim --games 500` | Simula 500 partite e controlla le regole dopo ogni azione. |
-| `pnpm soak:pvp --games 100` | Gioca 100 partite PvP tramite il server e controlla la sincronizzazione. |
-| `pnpm start:server` | Avvia il server PvP (porta 8787). |
-| `pnpm smoke --url ws://host/ws --matches 10` | Gioca partite complete su un server installato e misura i tempi. |
-| `pnpm build:server` | Crea il server in un solo file: `dist/server/server.mjs`. |
-| `pnpm assets` | Ricostruisce le immagini web dagli originali (vedi [assets/README.md](assets/README.md)). |
+| `pnpm dev` | Starts the browser client with Vite (port 5173). |
+| `pnpm start:server` | Starts the PvP server (port 8787). |
+| `pnpm play` | Plays against the AI in the terminal. |
+| `pnpm play --lang en --deck sprout --opponent forge` | Chooses the language and the decks in the terminal game. |
+| `pnpm play --auto --seed 7` | Shows an AI-against-AI match in the terminal. |
+| `pnpm check` | Runs all the CI checks. |
+| `pnpm typecheck` | Checks the TypeScript types. |
+| `pnpm test` | Runs the unit tests and the property-based tests. |
+| `pnpm e2e` | Runs the end-to-end tests in the browser (Playwright). |
+| `pnpm validate:cards` | Checks the card data files. |
+| `pnpm check:i18n` | Checks that each text exists in English and in Italian. |
+| `pnpm build` | Builds the static client into `packages/client/dist`. |
+| `pnpm build:server` | Builds the server into one file: `dist/server/server.mjs`. |
+| `pnpm duel --a medium --b easy` | Compares two AI levels. |
+| `pnpm balance --games 20` | Plays all pairs of starter decks and shows the win rates. |
+| `pnpm sim --games 500` | Simulates 500 games and checks the rules after each action. |
+| `pnpm soak:pvp --games 100` | Plays 100 PvP matches through the server and checks the synchronization. |
+| `pnpm smoke --url ws://host/ws --matches 10` | Plays complete matches on an installed server and measures the response times. |
+| `pnpm assets` | Rebuilds the web images from the originals (see [assets/README.md](assets/README.md)). |
 
-I mazzi disponibili per `--deck` e `--opponent` sono `forge`, `sprout`, `forgeSprout`, `abyss`, `gear` e `vesper`.
+The decks for `--deck` and `--opponent` are `forge`, `sprout`, `forgeSprout`, `abyss`, `gear` and `vesper`.
 
-## Struttura
+## Repository structure
 
-| Pacchetto | Contenuto |
+| Package | Content |
 |---|---|
-| `packages/engine` | Motore delle regole: puro, deterministico, senza grafica. |
-| `packages/cards` | Dati delle carte (JSON), schema Zod, validatore, mazzi base. |
-| `packages/i18n` | Testi in italiano e inglese, testo delle regole generato dagli effetti. |
-| `packages/ai` | IA facile (euristica), IA media (ricerca), IA difficile (ricerca e ISMCTS) e giocatore casuale. |
-| `packages/meta` | Collezione, Frammenti, Spedizione e Draft. |
-| `packages/protocol` | Messaggi tra il client e il server PvP (Zod). |
-| `packages/server` | Server PvP: WebSocket, SQLite, replay. Vedi [docs/server.md](docs/server.md). |
-| `packages/client` | Gioco nel browser: Svelte, PixiJS, GSAP, IA in un Web Worker. Vedi [docs/client.md](docs/client.md). |
-| `packages/tools` | Interfaccia testuale, simulatore, strumenti di controllo. |
-| `assets` | Illustrazioni, mare, Fari e texture dell'interfaccia. Vedi [assets/README.md](assets/README.md). |
+| `packages/engine` | Rules engine: pure, deterministic, no graphics. See [docs/engine.md](docs/engine.md). |
+| `packages/cards` | Card data (JSON), Zod schema, validator, starter decks. |
+| `packages/i18n` | English and Italian texts, rules text generated from the card effects. |
+| `packages/ai` | Easy AI (heuristic), medium AI (search), hard AI (search and ISMCTS) and a random player. |
+| `packages/meta` | Collection, Shards, Expedition and Draft. |
+| `packages/protocol` | Messages between the client and the PvP server (Zod). |
+| `packages/server` | PvP server: WebSocket, SQLite, replays. See [docs/server.md](docs/server.md). |
+| `packages/client` | Browser game: Svelte, PixiJS, GSAP, AI in a Web Worker. See [docs/client.md](docs/client.md). |
+| `packages/tools` | Terminal interface, simulator, test tools. |
+| `assets` | Illustrations, sea, Beacons and interface textures. See [assets/README.md](assets/README.md). |
+| `deploy` | systemd units, Caddy configuration, Docker image and deploy script. |
 
-## Documenti
+## Documentation
 
-| Documento | Contenuto |
+| Document | Content |
 |---|---|
-| [Piano di progetto](docs/piano-di-progetto.md) | Visione, regole complete, fazioni, architettura, roadmap. |
-| [Piano della grafica](docs/piano-grafica.md) | Le fasi della grafica dipinta, dalla prima ancora alla plancia verticale. |
-| [Guida di stile](docs/guida-di-stile.md) | Stile delle illustrazioni, formule dei prompt, colori delle fazioni. |
-| [Animazioni](docs/animazioni.md) | Tempi e curve delle animazioni degli eventi. |
-| [Motore](docs/motore.md) | Le scelte del motore delle regole. |
-| [Client](docs/client.md) | Struttura del client, tema grafico, prestazioni. |
-| [Server](docs/server.md) | Server PvP e installazione sul Raspberry Pi. |
-| [Guida all'installazione](docs/guida-installazione.md) | Come installare e provare il gioco. |
+| [Installation guide](docs/installation.md) | How to install, play, test and self-host the game. |
+| [Rules engine](docs/engine.md) | Engine API, effect language, rules decisions, AI. |
+| [Client](docs/client.md) | Client structure, graphic theme, accessibility, performance. |
+| [PvP server](docs/server.md) | Server design, configuration, database, security. |
+| [Animations](docs/animations.md) | Timing and curves of the event animations. |
+| [Assets](assets/README.md) | Image folders and how to rebuild the web images. |
 
-## Licenza
+The `docs` folder also contains the internal planning notes of the project (`piano-*.md`) and the art style guide (`guida-di-stile.md`). These files are in Italian.
 
-Tutti i diritti riservati.
+## License
+
+All rights reserved.

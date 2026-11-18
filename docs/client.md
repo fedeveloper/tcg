@@ -1,124 +1,122 @@
-# Client nel browser
+# Browser client
 
-Il client è in `packages/client`. Il client mostra la partita e anima gli eventi del motore. Il client non calcola le regole.
+The client is in `packages/client`. The client shows the match and animates the engine events. The client does not compute the rules.
 
-## Flusso dei dati
+## Data flow
 
-1. Il giocatore sceglie una carta nella mano (Svelte), poi clicca un punto evidenziato del campo (PixiJS).
-2. `selection.ts` riduce le azioni legali a una sola azione.
-3. `GameSession` applica l'azione con il motore e riceve lo stato nuovo e gli eventi.
-4. `BoardView.play()` anima gli eventi con una timeline GSAP, poi mostra lo stato esatto.
-5. L'IA sceglie la sua azione in un Web Worker (`aiWorker.ts`). L'interfaccia non si blocca.
+1. The player chooses a card in the hand (Svelte), then clicks a highlighted point of the board (PixiJS).
+2. `selection.ts` reduces the legal actions to one action.
+3. `GameSession` applies the action with the engine and receives the new state and the events.
+4. `BoardView.play()` animates the events with a GSAP timeline, then shows the exact state.
+5. The AI chooses its action in a Web Worker (`aiWorker.ts`). The interface does not freeze.
 
-L'input resta bloccato durante le animazioni. Un clic sul campo accelera l'animazione in corso.
+Input stays blocked during the animations. A click on the board speeds up the current animation.
 
-## File principali
+## Main files
 
-| File | Contenuto |
+| File | Content |
 |---|---|
-| `src/game/session.ts` | Sequenza delle azioni del giocatore, dell'IA e delle animazioni. Nessun codice DOM. |
-| `src/game/selection.ts` | Selezione con il clic: carta, poi slot, corsia o bersaglio. |
-| `src/game/aiDriver.ts`, `src/game/aiWorker.ts` | IA nel Web Worker (browser) o nello stesso thread (test). |
-| `src/render/layout.ts` | Geometria delle due plance: orizzontale 480 × 270 e verticale 270 × 392. |
-| `src/render/theme.ts` | Interfaccia `Theme` e tema provvisorio `ShapeTheme` (forme semplici). |
-| `src/render/board.ts` | Campo PixiJS, stato visivo, animazioni per evento. |
-| `src/ui/App.svelte`, `src/ui/Game.svelte` | Menu, mano, pulsanti, cronaca, schermata finale. |
+| `src/game/session.ts` | Sequence of player actions, AI actions and animations. No DOM code. |
+| `src/game/selection.ts` | Click selection: card, then slot, lane or target. |
+| `src/game/aiDriver.ts`, `src/game/aiWorker.ts` | AI in the Web Worker (browser) or in the same thread (tests). |
+| `src/render/layout.ts` | Geometry of the two boards: horizontal 480 × 270 and vertical 270 × 392. |
+| `src/render/theme.ts` | `Theme` interface and the fallback theme `ShapeTheme` (simple shapes). |
+| `src/render/board.ts` | PixiJS board, visual state, animations for each event. |
+| `src/ui/App.svelte`, `src/ui/Game.svelte` | Menu, hand, buttons, log, end screen. |
 
-## Tema grafico
+## Graphic theme
 
-Il campo usa il tema `PaintedTheme` (`src/render/paintedTheme.ts`). Il tema implementa l'interfaccia `Theme`.
-I dettagli dello stile sono in [guida-di-stile.md](guida-di-stile.md) e in [piano-grafica.md](piano-grafica.md).
+The board uses the `PaintedTheme` theme (`src/render/paintedTheme.ts`). The theme implements the `Theme` interface.
+The style rules are in the art style guide ([guida-di-stile.md](guida-di-stile.md), in Italian).
 
-- `loadPainted()` carica il mare, i Fari dipinti e il legno del molo. I medaglioni dei Custodi e le illustrazioni piccole si caricano alla prima richiesta.
-- I Custodi sono medaglioni rotondi (`assets/art/web/medal/`). I Luoghi mostrano la loro illustrazione in una cornice d'ottone.
-- I numeri dei danni usano il font bitmap "tcg-damage" (Alegreya). Gli effetti sono luci morbide: scintille, sbuffi, colpi.
-- Il tema `ShapeTheme` resta come riserva. Il client lo usa se il caricamento delle immagini fallisce.
-- La mano mostra le carte HD (`HdCard.svelte`). `src/render/art.ts` dà l'URL di ogni illustrazione nelle 3 misure.
-- La scena occupa tutto lo schermo (piano della grafica, fase 0). Sulla plancia orizzontale la mano, la Brace e il pulsante principale stanno sul molo, in basso nella scena.
-- La plancia verticale (fase 8) mette la mano sotto la scena. L'opzione "Plancia" sceglie: Automatica, Orizzontale, Verticale.
-- La variabile CSS `--u` vale un pixel della scena in pixel CSS. Gli elementi DOM sopra il canvas usano `--u` per posizione e dimensione.
-- La cronaca e l'elenco del campo sono in un pannello a destra (pulsante "Cronaca"). La lingua, la plancia e "Riduci le animazioni" sono nel menu "Opzioni".
+- `loadPainted()` loads the sea, the painted Beacons and the wood of the pier. The Keeper medallions and the small illustrations load on first use.
+- Keepers are round medallions (`assets/art/web/medal/`). Sites show their illustration in a brass frame.
+- The damage numbers use the bitmap font "tcg-damage" (Alegreya). The effects are soft lights: sparks, puffs, hits.
+- The `ShapeTheme` theme stays as a fallback. The client uses it if the images do not load.
+- The hand shows the HD cards (`HdCard.svelte`). `src/render/art.ts` gives the URL of each illustration in 3 sizes.
+- The scene fills the whole screen. On the horizontal board, the hand, the Ember and the main button are on the pier, at the bottom of the scene.
+- The vertical board puts the hand below the scene. The "Board" option chooses: Automatic, Horizontal, Vertical.
+- The CSS variable `--u` is the size of one scene pixel in CSS pixels. The DOM elements above the canvas use `--u` for position and size.
+- The log and the board list are in a panel on the right ("Log" button). Language, board and "Reduce animations" are in the "Options" menu.
 
-Tre metodi di `Theme` sono opzionali: `fx` (scintille, sbuffi, colpi), `cardGhost` (illustrazione della carta giocata) e `dissolve` (dissolvenza a dithering).
-`BoardView.animateEvent` applica i tempi di `assets/animations/animations.json`. Vedi [animazioni.md](animazioni.md).
+Three `Theme` methods are optional: `fx` (sparks, puffs, hits), `cardGhost` (illustration of the played card) and `dissolve` (dithered dissolve).
+`BoardView.animateEvent` applies the timings of `assets/animations/animations.json`. See [animations.md](animations.md).
 
-L'opzione "Riduci le animazioni" è nel menu "Opzioni" della partita. Il client salva la scelta in `localStorage`.
-Alla prima visita il client segue l'impostazione `prefers-reduced-motion` del sistema operativo.
-Con l'opzione attiva, `BoardView` dimezza i tempi, disattiva la scossa, l'hit stop e lo squash and stretch, e genera 3 particelle su 10.
+The "Reduce animations" option is in the "Options" menu of the match. The client saves the choice in `localStorage`.
+On the first visit, the client follows the `prefers-reduced-motion` setting of the operating system.
+When the option is on, `BoardView` halves the durations, turns off shake, hit stop and squash and stretch, and creates 3 particles out of 10.
 
-Il canvas disegna la scena con una scala intera e il filtro `nearest`. Poi il CSS adatta il canvas allo spazio libero con una scala continua: la scena riempie lo schermo.
+The canvas draws the scene at an integer scale with the `nearest` filter. Then CSS scales the canvas continuously to the free space: the scene fills the screen.
 
 ## Tutorial
 
-Il tutorial ha cinque lezioni. Ogni lezione introduce una regola.
+The tutorial has five lessons. Each lesson teaches one rule.
 
-1. Custodi e Fari.
-2. Blocco e Gittata.
-3. Brace e incantesimi.
-4. Marea.
-5. Catena e risposte.
+1. Keepers and Beacons.
+2. Blocking and Reach.
+3. Ember and Reserve.
+4. The Tide.
+5. Responses and the chain.
 
-- `packages/engine/src/scenario.ts` crea una posizione fissa con `newScenario`. La partita parte in Manovra, senza mulligan e senza mescolare.
-- `packages/client/src/tutorial/lessons.ts` contiene le lezioni: scenario, avversario, obiettivo e round massimo.
-- L'avversario del tutorial usa `ScriptedAiDriver`: passa, oppure segue uno script.
-- I testi sono nelle chiavi `tutorial.*` dei file di lingua.
-- `packages/client/test/tutorial.test.ts` controlla che ogni lezione si risolva con le mosse previste.
+- `packages/engine/src/scenario.ts` creates a fixed position with `newScenario`. The match starts in the Maneuver phase, with no mulligan and no shuffle.
+- `packages/client/src/tutorial/lessons.ts` contains the lessons: scenario, opponent, goal and maximum round.
+- The tutorial opponent uses `ScriptedAiDriver`: it passes, or it follows a script.
+- The texts are in the `tutorial.*` keys of the language files.
+- `packages/client/test/tutorial.test.ts` checks that each lesson ends with the expected moves.
 
-NOTA: tieni lo stato del gioco, le azioni e le lezioni in `$state.raw`. Il motore usa `structuredClone`, e questa funzione non copia i proxy di Svelte.
+NOTE: keep game state, actions and lessons in `$state.raw`. The engine uses `structuredClone`, and this function does not copy Svelte proxies.
 
-## Modalità e profilo
+## Modes and profile
 
-Il menu offre la Sfida libera, la Spedizione, il Draft, la Collezione, i Mazzi e il Tutorial.
+The menu offers Free match, Expedition, Draft, Collection, Decks and Tutorial.
 
-- `packages/meta` contiene la logica senza interfaccia: collezione, Frammenti, ricompense, Spedizione e Draft. I test sono in `packages/meta/test`.
-- `src/meta/profileStore.svelte.ts` salva il profilo nella memoria del browser (`localStorage`, chiave `tcg.profile`). Prima della fase 4 non c'è un server: il profilo resta su un solo browser.
-- La collezione iniziale contiene le carte dei mazzi base. Una vittoria in Sfida libera dà 3 carte, una sconfitta 10 Frammenti.
-- Un doppione oltre il limite del mazzo si rompe in Frammenti. I Frammenti creano carte (costo per rarità in `packages/meta/src/collection.ts`).
-- Spedizione: un mazzo di 20 carte di una fazione, 6 avversari, 2 vite, una carta nuova dopo ogni vittoria.
-- Draft: due fazioni, 30 scelte di 1 carta su 3, poi partite fino a 7 vittorie o 3 sconfitte.
-- Uscire da una partita di una corsa conta come una sconfitta.
+- `packages/meta` contains the logic with no interface: collection, Shards, rewards, Expedition and Draft. The tests are in `packages/meta/test`.
+- `src/meta/profileStore.svelte.ts` saves the profile in browser storage (`localStorage`, key `tcg.profile`). The profile stays in one browser.
+- The starting collection contains the cards of the starter decks. A win in Free match gives 3 cards, a loss gives 10 Shards.
+- An extra copy above the deck limit breaks into Shards. Shards create cards (cost by rarity in `packages/meta/src/collection.ts`).
+- Expedition: a 20-card deck of one faction, 6 opponents, 2 lives, a new card after each win.
+- Draft: two factions, 30 picks of 1 card out of 3, then matches until 7 wins or 3 losses.
+- Leaving a match of a run counts as a loss.
 
-NOTA: le nuove carte senza illustrazione mostrano un riquadro vuoto. Il thread di grafica disegna le illustrazioni.
+## Online mode
 
-## Modalità Online
+The **Online** screen plays against other players through the PvP server (see [server.md](server.md)).
 
-La schermata **Online** gioca contro altri giocatori tramite il server PvP (vedi [server.md](server.md)).
+- `src/online/connection.ts`: the WebSocket connection. It saves the guest account token in the browser and reconnects automatically.
+- `src/online/remoteSession.ts`: the session of an online match. The server sends a view after each action. The session animates the views in order.
+- `src/ui/Online.svelte`: quick match, match with a code and list of matches in progress.
+- `src/online/replaySession.ts`: the replay of a finished online match. The client rebuilds the match from seed, decks and actions, and shows it from the seat of the player: hidden cards stay hidden. The "Pause" button stops the replay.
 
-- `src/online/connection.ts`: la connessione WebSocket. Salva il token dell'account ospite nel browser e si riconnette da sola.
-- `src/online/remoteSession.ts`: la sessione di una partita online. Il server manda una vista dopo ogni azione; la sessione anima le viste in ordine.
-- `src/ui/Online.svelte`: partita rapida, partita con un codice e lista delle partite in corso.
+`Game.svelte` uses the `PlaySession` interface. `GameSession` runs the engine in the browser. `RemoteSession` receives the views from the server.
+The local player is `me`. Online, `me` can be seat 1: the board always shows the local player on the left.
+The client computes the legal actions only for the interface. The server checks each action again.
 
-Game.svelte usa l'interfaccia `PlaySession`. `GameSession` esegue il motore nel browser; `RemoteSession` riceve le viste dal server.
-Il giocatore locale è `me`. Online, `me` può essere il posto 1: la plancia mostra sempre il giocatore locale a sinistra.
-Il client calcola le azioni legali solo per l'interfaccia. Il server controlla di nuovo ogni azione.
-- `src/online/replaySession.ts`: il replay di una partita online finita. Il client ricostruisce la partita da seed, mazzi e azioni, e la mostra dal posto del giocatore: le carte nascoste restano nascoste. Il pulsante "Pausa" ferma il replay.
+## Accessibility
 
-## Accessibilità (sezione 7.4 del piano)
+- **Keyboard.** Tab moves the focus between cards and buttons. Enter selects. P passes or confirms the mulligan. Esc cancels the choice or closes the card detail.
+- **Board choices.** During a choice, the "Choose where" section shows the same slots, lanes and targets that the board highlights, as buttons.
+- **Board list.** The "Board" section lists the Keepers of both players with position, Attack and Hold. The "Actions" button opens the move and the abilities of a Keeper.
+- **Card detail.** A right click or the I key on a card opens the card full screen, with the keywords explained, the full rules text and the flavor text.
+- **Tests.** `pnpm e2e` runs the end-to-end tests with Playwright, also the keyboard-only flow.
 
-- **Tastiera.** Tab sposta il fuoco tra le carte e i pulsanti. Invio sceglie. P passa o conferma il mulligan. Esc annulla la scelta o chiude la scheda.
-- **Scelte della plancia.** Durante una scelta, la sezione "Scegli dove" mostra le stesse caselle, corsie e bersagli evidenziati sulla plancia, come pulsanti.
-- **Elenco del campo.** La sezione "Campo" elenca i Custodi dei due giocatori con posizione, Attacco e Tenuta. Il pulsante "Azioni" apre lo spostamento e le abilità di un Custode.
-- **Scheda della carta.** Il clic destro o il tasto I su una carta apre la carta a schermo intero, con le parole chiave spiegate, il testo completo e il testo di colore.
-- **Test.** `pnpm e2e` esegue i test end-to-end con Playwright, anche il flusso con la sola tastiera.
+## Phone in portrait orientation
 
-## Telefono in verticale (sezione 7.5 del piano)
+- Below 700 px of width and in portrait orientation, the client uses the vertical board. The hand stays at the bottom as a fan.
+- The player bar stays above the hand, and the main button is always visible.
+- The cards in the hand are small. The rules text appears only in the card detail.
+- With the "Horizontal" option, the horizontal board fits the width of the screen.
+- An e2e test checks the layout on a 412 × 915 px phone: hand on one row, button visible, no horizontal scroll.
 
-- Sotto 700 px di larghezza e in verticale, il canvas mostra solo la parte alta della scena (`VIEW_HEIGHT` = 186 pixel). La mano resta in basso come un ventaglio.
-- La riga del giocatore resta sopra la mano, con il pulsante principale sempre visibile.
-- Le carte della mano sono piccole. Il testo delle regole appare solo nella scheda della carta.
-- Il telefono in verticale usa la plancia verticale (fase 8 della grafica). Con l'opzione "Orizzontale" la plancia orizzontale si adatta alla larghezza.
-- Un test e2e controlla il layout su un telefono di 412 × 915 px: mano su una riga, pulsante visibile, nessuno scorrimento orizzontale.
+## Performance
 
-## Prestazioni (sezione 7.5 del piano)
+- The target is 60 frames per second on a mid-range phone from 2022.
+- The cards in the hand are HTML and CSS (`HdCard.svelte`): no canvas for each card.
+- The vertical board draws at most the pixels of the horizontal board on the same screen. `PERF_BOARD=horizontal` measures the horizontal board.
+- `PERF=1 pnpm e2e perf` measures a match on a phone with a CPU slowed down 4 times. The test fails below 50 fps.
+- The test is not in the CI, because the result depends on the machine.
 
-- L'obiettivo è 60 fotogrammi al secondo su un telefono di fascia media del 2022.
-- Le carte della mano sono HTML e CSS (`HdCard.svelte`): nessun canvas per carta.
-- La plancia verticale disegna al massimo i pixel della plancia orizzontale sullo stesso schermo. `PERF_BOARD=horizontal` misura la plancia orizzontale.
-- `PERF=1 pnpm e2e perf` misura una partita su un telefono con la CPU rallentata 4 volte. Il test fallisce sotto 50 fps.
-- Il test non è nella CI, perché il risultato dipende dalla macchina.
-
-| Misura (CPU 4× più lenta, 412 × 915) | Prima | Dopo |
+| Measure (CPU 4× slower, 412 × 915) | Before | After |
 |---|---|---|
-| Fotogrammi al secondo | 57,7 | 58,8 |
-| Fotogramma p99 | 49,9 ms | 33,3 ms |
-| Task lunghi (oltre 50 ms) | 13 | 3 |
+| Frames per second | 57.7 | 58.8 |
+| p99 frame | 49.9 ms | 33.3 ms |
+| Long tasks (over 50 ms) | 13 | 3 |

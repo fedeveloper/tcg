@@ -29,7 +29,7 @@ function hashToken(token: string): string {
 /**
  * Persistent data in one SQLite file: accounts and matches.
  * The match row keeps the seed, the decks and the list of actions. They rebuild the match and the replay.
- * The server uses the SQLite module of Node.js, so there is no native dependency to build on the Raspberry Pi.
+ * The server uses the SQLite module of Node.js, so there is no native dependency to build for the target machine.
  */
 export class Store {
   private readonly db: DatabaseSync;

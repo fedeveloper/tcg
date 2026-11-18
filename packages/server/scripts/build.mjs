@@ -1,6 +1,6 @@
 /**
  * Bundles the PvP server into one JavaScript file: dist/server/server.mjs.
- * The Raspberry Pi gets only this file and the "ws" code inside it.
+ * The host machine gets only this file and the "ws" code inside it.
  * No compilation and no node_modules on the Pi (plan, section 6.7).
  */
 import { build } from "esbuild";

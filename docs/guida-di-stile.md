@@ -15,13 +15,13 @@ NOTA: questa guida sostituisce la guida della pixel art (17/11/2026). La version
 - **Personaggi leggibili.** Il soggetto sta in un terzo dell'immagine. Il volto si vede quando il soggetto è un personaggio.
 - **Colori di fazione.** I colori dominanti della fazione coprono almeno metà dell'immagine.
 - **Niente testo.** Le illustrazioni non contengono lettere, numeri o simboli scritti.
-- **Solo modelli locali.** Le immagini nascono con `local-image-mcp` sull'OMEN di Federico, solo quando Federico è presente.
+- **Solo modelli locali.** Le immagini nascono con modelli di immagini locali, mai con servizi esterni.
 
 ## 2. Ancore
 
-Le ancore sono immagini approvate da Federico. Ogni generazione usa 2 riferimenti: l'ancora del gioco e l'ancora della fazione.
+Le ancore sono immagini approvate dal progetto. Ogni generazione usa 2 riferimenti: l'ancora del gioco e l'ancora della fazione.
 
-| Livello | Ancora | File sull'OMEN (in `Pictures\local-image\generated-images\`) |
+| Livello | Ancora | File di origine (cartella del generatore locale) |
 |---|---|---|
 | Gioco | 3B, faro nella tempesta | `20261117-140922_z-image-turbo_103.png` |
 | Fucina | F1, Campione della Fonderia | `tcg-fase1\forge-011.png` |
@@ -80,7 +80,7 @@ Per un Custode con un'emozione (per esempio "Lanciabraci"), scrivi l'emozione de
 
 Se il soggetto non chiede un faro, aggiungi dopo la regola dei riferimenti: `Do not paint any lighthouse, tower or house unless the description asks for one.`
 
-Durante ogni lotto, mostra a Federico una barra di avanzamento con il numero di immagini finite e il tempo stimato.
+Durante ogni lotto, mostra una barra di avanzamento con il numero di immagini finite e il tempo stimato.
 
 ## 6. Carta
 
@@ -120,7 +120,7 @@ I font arrivano dai pacchetti `@fontsource/alegreya` e `@fontsource/alegreya-san
 
 1. Scrivi il prompt con le regole della sezione 4.
 2. Genera l'immagine con i parametri della sezione 5.
-3. Mostra l'immagine a Federico e ottieni la sua approvazione.
+3. Fai approvare l'immagine prima di usarla.
 4. Copia l'originale in `assets/art/originals/<cardId>.png`.
 5. Scrivi `assets/art/meta/<cardId>.json` con modello, seme, riferimenti e prompt.
 6. Se la carta è un Custode, aggiungi il suo punto di ritaglio in `assets/art/crops.json`.

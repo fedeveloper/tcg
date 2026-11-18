@@ -1,27 +1,28 @@
-# Asset grafici
+# Art assets
 
-Questa cartella contiene la grafica dipinta di High Tides.
-Le regole di stile sono in [docs/guida-di-stile.md](../docs/guida-di-stile.md).
-Il piano della grafica è in [docs/piano-grafica.md](../docs/piano-grafica.md).
-Le specifiche di animazione sono in [docs/animazioni.md](../docs/animazioni.md).
+This folder contains the painted art of High Tides.
+The animation specification is in [docs/animations.md](../docs/animations.md).
+The art style guide ([docs/guida-di-stile.md](../docs/guida-di-stile.md)) and the art plan ([docs/piano-grafica.md](../docs/piano-grafica.md)) are in Italian.
 
-## Contenuto
+## Content
 
-| Cartella | Contenuto |
+| Folder | Content |
 |---|---|
-| `art/` | Illustrazioni delle 154 carte: `web/lg`, `web/md`, `web/sm` e i medaglioni dei Custodi in `web/medal`. |
-| `board/` | Mare orizzontale, mare verticale e Fari (acceso, danneggiato, spento). |
-| `ui/` | Texture dell'interfaccia (legno, pergamena, pietra) e immagini grandi (titolo, sfondi). |
-| `animations/` | Tempi e curve delle animazioni degli eventi (`animations.json`). |
+| `art/` | Illustrations of the 154 cards: `web/lg`, `web/md`, `web/sm` and the Keeper medallions in `web/medal`. |
+| `board/` | Horizontal sea, vertical sea and Beacons (lit, damaged, out). |
+| `ui/` | Interface textures (wood, parchment, stone) and large images (title, backgrounds). |
+| `animations/` | Timings and curves of the event animations (`animations.json`). |
 
-## Come nascono le immagini
+## How the images are made
 
-Le immagini nascono dai modelli locali sul PC di Federico (local-image-mcp), mai da servizi esterni.
-Gli originali PNG stanno in `*/originals/` e non sono nel repository (`.gitignore`).
-Ogni cartella ha uno script `build.py` che produce i file `web/` dagli originali.
+All images come from image models that run locally, never from external image services.
+The PNG originals are in `*/originals/`. They are not in the repository (`.gitignore`).
+Each folder has a `build.py` script that creates the `web/` files from the originals.
 
-1. Metti gli originali nella cartella `originals/` giusta.
-2. Esegui `pnpm assets`. Il comando esegue i tre script `build.py`.
-3. Controlla il risultato nel gioco.
+1. Put the originals in the correct `originals/` folder.
+2. Run `pnpm assets`. The command runs the three `build.py` scripts.
+3. Check the result in the game.
 
-`pnpm art` esegue solo `assets/art/build.py`: illustrazioni e medaglioni.
+`pnpm art` runs only `assets/art/build.py`: illustrations and medallions.
+
+NOTE: the scripts need Python 3. You need the originals only to change the art. The repository already contains the web images, so the game works without them.

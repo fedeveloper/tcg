@@ -1,123 +1,108 @@
-# Server PvP
+# PvP server
 
-Questo documento descrive il server delle partite tra giocatori (fase 4 del piano).
-Il codice è in `packages/server`. Il protocollo dei messaggi è in `packages/protocol`.
+This document describes the server for matches between players.
+The code is in `packages/server`. The message protocol is in `packages/protocol`.
+For installation steps, read the [installation guide](installation.md).
 
-## Principi
+## Principles
 
-- Il server è **autoritativo**. Il server esegue il motore delle regole e decide ogni risultato.
-- Il client manda solo azioni. Il server controlla la forma (Zod) e la legalità (motore).
-- Ogni giocatore riceve solo la sua **vista**: le carte nascoste dell'avversario arrivano come `hidden`.
-- Il server non esegue l'IA. Le partite contro l'IA restano nel browser.
+- The server is **authoritative**. The server runs the rules engine and decides every result.
+- The client sends only actions. The server checks their shape (Zod) and their legality (engine).
+- Each player receives only their own **view**: the hidden cards of the opponent arrive as `hidden`.
+- The server does not run the AI. Matches against the AI stay in the browser.
 
-## Avvio
+## Start
 
-1. Avvia il server in sviluppo con `pnpm start:server`.
-2. Avvia il client con `pnpm dev`.
-3. Apri la schermata **Online** del client.
+1. Start the server in development with `pnpm start:server`.
+2. Start the client with `pnpm dev`.
+3. Open the **Online** screen of the client.
 
-In sviluppo il client usa `ws://<host>:8787/ws`.
-In produzione il client usa `wss://<host>/ws` sullo stesso dominio, dietro Caddy.
-La variabile `VITE_SERVER_URL` cambia questo indirizzo al momento del build.
+In development, the client uses `ws://<host>:8787/ws`.
+In production, the client uses `wss://<host>/ws` on the same domain, behind Caddy.
+The `VITE_SERVER_URL` variable changes this address at build time.
 
-## Configurazione
+## Configuration
 
-Il server legge le variabili d'ambiente.
+The server reads these environment variables.
 
-| Variabile | Valore predefinito | Significato |
+| Variable | Default | Meaning |
 |---|---|---|
-| `PORT` | `8787` | Porta HTTP e WebSocket. |
-| `HOST` | `127.0.0.1` | Indirizzo di ascolto. Caddy inoltra le connessioni da fuori. |
-| `DB_PATH` | `tcg.sqlite` | File del database SQLite. |
-| `ALLOWED_ORIGIN` | vuoto | Origini del browser consentite, separate da virgole. Vuoto: tutte le origini. |
-| `TURN_SECONDS` | `120` | Tempo per una decisione, in secondi. |
-| `MAX_TIMEOUTS` | `3` | Dopo questo numero di tempi scaduti di fila, il giocatore perde. |
+| `PORT` | `8787` | HTTP and WebSocket port. |
+| `HOST` | `127.0.0.1` | Listen address. Caddy forwards the connections from outside. |
+| `DB_PATH` | `tcg.sqlite` | SQLite database file. |
+| `ALLOWED_ORIGIN` | empty | Allowed browser origins, separated by commas. Empty: all origins. |
+| `TURN_SECONDS` | `120` | Time for one decision, in seconds. |
+| `MAX_TIMEOUTS` | `3` | After this number of timeouts in a row, the player loses. |
 
 ## Database
 
-Il server usa `node:sqlite`, il modulo SQLite incluso in Node.js 22.13 o successivo.
-Questa scelta sostituisce `better-sqlite3` del piano: il server non ha dipendenze native.
-Così il build per il Raspberry Pi non richiede binari ARM.
-Node.js stampa un avviso `ExperimentalWarning`. L'unità systemd nasconde questo avviso.
+The server uses `node:sqlite`, the SQLite module included in Node.js 22.13 or later.
+The server has no native dependencies, so the build needs no platform-specific binaries (for example for ARM).
+Node.js prints an `ExperimentalWarning`. The systemd unit hides this warning.
 
-Il database ha due tabelle:
+The database has two tables:
 
-- `players`: account ospite. Il database salva solo l'hash SHA-256 del token, non il token.
-- `matches`: una riga per partita, con seed, mazzi, nomi, stato e lista delle azioni.
+- `players`: guest accounts. The database saves only the SHA-256 hash of the token, not the token.
+- `matches`: one row for each match, with seed, decks, names, status and list of actions.
 
-La lista delle azioni è anche il **replay**. Il motore è deterministico: seed, mazzi e azioni ricostruiscono la partita.
-Dopo un riavvio, il server ricostruisce le partite aperte dalla lista delle azioni.
+The list of actions is also the **replay**. The engine is deterministic: seed, decks and actions rebuild the match.
+After a restart, the server rebuilds the open matches from their lists of actions.
 
-## Partite
+## Matches
 
-- **Account ospite.** Il primo messaggio `hello` crea un account e restituisce un token. Il client salva il token nel browser.
-- **Partita privata.** `createMatch` restituisce un codice di 6 caratteri. L'amico usa `joinMatch` con il codice.
-- **Partita rapida.** `queue` mette il giocatore in coda. Il server unisce i primi due giocatori.
-- **Posti.** Il server sceglie a caso chi gioca per primo.
-- **Timer.** Ogni decisione ha un tempo limite (`TURN_SECONDS`). Quando il tempo scade, il server gioca "Passa" o tiene la mano iniziale.
-- **Riconnessione.** Il client manda `resume` e riceve la vista attuale.
-- **Numero di sequenza.** Ogni azione porta il numero `seq`. Il server rifiuta un'azione con una vista vecchia e manda la vista nuova.
-- **Mazzi.** Il server controlla le regole del mazzo. La collezione resta nel browser, quindi il server non controlla il possesso delle carte.
+- **Guest account.** The first `hello` message creates an account and returns a token. The client saves the token in the browser.
+- **Private match.** `createMatch` returns a 6-character code. The friend sends `joinMatch` with the code.
+- **Quick match.** `queue` puts the player in a queue. The server pairs the first two players.
+- **Seats.** The server chooses at random who plays first.
+- **Timer.** Each decision has a time limit (`TURN_SECONDS`). When the time runs out, the server plays "Pass" or keeps the starting hand.
+- **Reconnection.** The client sends `resume` and receives the current view.
+- **Sequence number.** Each action carries a `seq` number. The server refuses an action made on an old view and sends the new view.
+- **Decks.** The server checks the deck rules. The collection stays in the browser, so the server does not check card ownership.
 
-## Sicurezza
+## Security
 
-- Messaggi più grandi di 16 KB chiudono la connessione.
-- Ogni connessione può mandare al massimo 40 messaggi in 10 secondi.
-- `ALLOWED_ORIGIN` blocca le pagine di altri domini.
-- I nomi dei giocatori perdono i caratteri di controllo e i caratteri `<` e `>`.
+- A message larger than 16 KB closes the connection.
+- Each connection can send at most 40 messages in 10 seconds.
+- `ALLOWED_ORIGIN` blocks pages from other domains.
+- Player names lose control characters and the characters `<` and `>`.
 
-## Build e deploy sul Raspberry Pi
+## Build and deploy
 
-ATTENZIONE: non compilare il progetto sul Raspberry Pi. Il Raspberry Pi ha solo 1 GB di RAM.
+ATTENTION: do not build the project on a server with little RAM. Build on your computer and copy the result.
 
-`pnpm build:server` crea un solo file JavaScript: `dist/server/server.mjs`.
-Il file contiene il motore, le carte e la libreria `ws`. Il Raspberry Pi non ha bisogno di `node_modules`.
+`pnpm build:server` creates one JavaScript file: `dist/server/server.mjs`.
+The file contains the engine, the cards and the `ws` library. The server machine does not need `node_modules`.
 
-Prepara il Raspberry Pi una volta sola:
+`deploy/deploy.sh user@your-server` builds the client and the server, copies the files with `rsync` and restarts the service.
+The [installation guide](installation.md#2-host-the-game-on-a-linux-server) gives all the steps.
 
-1. Installa Raspberry Pi OS Lite a 64 bit.
-2. Installa Node.js 22.13 o successivo.
-3. Installa Caddy.
-4. Crea l'utente di sistema: `sudo useradd --system --home /opt/tcg tcg`.
-5. Crea la cartella: `sudo mkdir -p /opt/tcg && sudo chown $USER /opt/tcg`.
-6. Copia `deploy/systemd/tcg-server.service` in `/etc/systemd/system/`.
-7. Scrivi il dominio in `ALLOWED_ORIGIN` nel file dell'unità.
-8. Copia `deploy/caddy/Caddyfile` in `/etc/caddy/Caddyfile` e scrivi il nome del tuo host.
-9. Esegui `sudo systemctl enable tcg-server` e `sudo systemctl reload caddy`.
+## Memory
 
-Aggiorna il gioco dal computer di sviluppo:
+A test measures the server memory with 10 active matches. The test fails above 200 MB.
+The systemd unit limits the Node.js heap to 256 MB and the service to 300 MB.
 
-1. Esegui `deploy/deploy.sh pi@raspberrypi.local`.
+## Synchronization test
 
-Lo script esegue il build del client e del server, copia i file con `rsync` e riavvia il servizio.
+`pnpm soak:pvp --games 100` plays 100 matches through the server.
+Each player chooses actions only from their own view, with the easy AI.
+In every fifth match, one player loses the connection and resumes the match.
+At the end of each match, the command rebuilds the match from the replay and compares every view that the players received.
+The command fails when the server refuses a legal action, or when a view is different from the replay.
+The CI runs this command.
 
-## Memoria
+## Test of an installed server
 
-Un test misura la memoria del server con 10 partite attive. Il test fallisce sopra 200 MB.
-L'unità systemd limita Node.js a 256 MB di heap e il servizio a 300 MB.
-
-## Test di sincronizzazione
-
-`pnpm soak:pvp --games 100` gioca 100 partite tramite il server. Il comando è il criterio di uscita della fase 4.
-Ogni giocatore sceglie le azioni solo dalla sua vista, con l'IA facile.
-Ogni quinta partita, un giocatore perde la connessione e riprende la partita.
-Alla fine di ogni partita, il comando ricostruisce la partita dal replay e confronta ogni vista ricevuta.
-Il comando fallisce quando il server rifiuta un'azione legale o quando una vista è diversa dal replay.
-La CI esegue questo comando.
-
-## Prova del server installato
-
-`pnpm smoke --url ws://<host>/ws --matches 10` gioca partite complete sul server installato, tramite WebSocket.
-Il comando mostra le partite finite, il tempo di risposta (mediana e p95) e la memoria del server prima e dopo.
-Ogni giocatore attende 260 ms tra due azioni, perché il server accetta al massimo 40 messaggi in 10 s.
-`GET /health` risponde con `ok`, le partite aperte, la memoria (RSS) e il tempo di attività.
+`pnpm smoke --url ws://<host>/ws --matches 10` plays complete matches on the installed server, through WebSocket.
+The command shows the finished matches, the response time (median and p95) and the server memory before and after.
+Each player waits 260 ms between two actions, because the server accepts at most 40 messages in 10 s.
+`GET /health` answers with `ok`, the open matches, the memory (RSS) and the uptime.
 
 ## Backup
 
-`deploy/backup.mjs` copia il database con `VACUUM INTO`. La copia è coerente anche con il server attivo.
-Il timer systemd `tcg-backup.timer` esegue la copia ogni giorno e tiene le ultime 14 copie.
+`deploy/backup.mjs` copies the database with `VACUUM INTO`. The copy is consistent also while the server runs.
+The systemd timer `tcg-backup.timer` makes the copy every day and keeps the last 14 copies.
 
 ## Docker
 
-`deploy/docker/Dockerfile` crea l'immagine del server per l'hosting pubblico. Il Raspberry Pi non usa Docker.
-L'immagine contiene solo il bundle del server e lo script di backup. Il database è nel volume `/data`.
+`deploy/docker/Dockerfile` creates the server image for public hosting.
+The image contains only the server bundle and the backup script. The database is in the `/data` volume.

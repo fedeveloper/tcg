@@ -1,10 +1,10 @@
 # Piano per la grafica di High Tides
 
 Questo piano porta la grafica di High Tides al livello di un gioco indie finito, come quelli in vendita su Steam.
-Il gioco resta un gioco per il browser, con supporto per lo smartphone. Per ora il gioco non va su Steam (Federico, 17/11/2026).
+Il gioco resta un gioco per il browser, con supporto per lo smartphone. Per ora il gioco non va su Steam (17/11/2026).
 Il piano non cambia le regole del gioco. Il piano cambia il layout, gli asset, l'interfaccia e gli effetti.
 
-**Direzione scelta da Federico (17/11/2026): illustrazioni dipinte in alta risoluzione (opzione C).**
+**Direzione scelta (17/11/2026): illustrazioni dipinte in alta risoluzione (opzione C).**
 Il gioco abbandona la pixel art. Carte, campo e sfondi diventano illustrazioni dipinte. L'interfaccia diventa vettoriale.
 
 ## Indice
@@ -52,7 +52,7 @@ Ho avviato il client e ho preso screenshot a 1920 × 1080, 1366 × 768 e 412 × 
 
 ### 2.2 Cosa resta utile
 
-- Le animazioni hanno già anticipazione, hit stop, squash and stretch e dissolvenza (vedi [animazioni.md](animazioni.md)). Queste tecniche valgono anche per le illustrazioni.
+- Le animazioni hanno già anticipazione, hit stop, squash and stretch e dissolvenza (vedi [animations.md](animations.md)). Queste tecniche valgono anche per le illustrazioni.
 - Il codice separa bene il motore, la sessione e il disegno (`Theme`, `BoardView`). Un nuovo tema non tocca le regole.
 - La palette "Fari 32" resta come base dei colori di fazione (mare, fari, tramonto). Non è più un limite tecnico.
 - Gli asset pixel art restano come tema di riserva finché i nuovi asset non li sostituiscono.
@@ -79,12 +79,12 @@ Ho avviato il client e ho preso screenshot a 1920 × 1080, 1366 × 768 e 412 × 
 
 ### 3.1.1 Coerenza a due livelli
 
-Federico vuole illustrazioni coerenti tra loro: prima un'identità del gioco, poi un'identità per ogni fazione (17/11/2026).
+Il progetto vuole illustrazioni coerenti tra loro: prima un'identità del gioco, poi un'identità per ogni fazione (17/11/2026).
 Quindi le regole hanno due livelli. Il livello del gioco vince sempre sul livello della fazione.
 
 | Livello | Cosa resta uguale | Strumento |
 |---|---|---|
-| **Gioco** (tutte le 154 carte) | Tecnica pittorica, spessore dei contorni, tipo di luce (calda contro fredda), proporzioni dei personaggi, inquadratura, mondo marino con i fari | 2 **ancore del gioco**: immagini approvate da Federico, presenti come riferimento in ogni generazione. Frase di stile del gioco in ogni prompt. |
+| **Gioco** (tutte le 154 carte) | Tecnica pittorica, spessore dei contorni, tipo di luce (calda contro fredda), proporzioni dei personaggi, inquadratura, mondo marino con i fari | 2 **ancore del gioco**: immagini approvate dal proprietario del progetto, presenti come riferimento in ogni generazione. Frase di stile del gioco in ogni prompt. |
 | **Fazione** | Colori dominanti, materiali, ambienti, forma dei costumi e degli oggetti | 1–2 **ancore della fazione**. Frase della fazione dopo la frase del gioco. |
 
 - `flux2-klein-4b` accetta fino a 4 immagini di riferimento. Ogni generazione usa 2 riferimenti: l'ancora del gioco 3B e l'ancora della fazione. Con l'ancora 2B il modello copia il ragazzo in ogni carta (prova del 17/11/2026). Formula completa in [guida-di-stile.md](guida-di-stile.md), sezione 4.
@@ -157,14 +157,14 @@ Criterio di fine: a 1920 × 1080 la scena occupa almeno il 90% dello schermo e l
 Stato: fatta il 17/11/2026 (PR #21 e PR successiva). Ancore, prompt e carta HD sono in [guida-di-stile.md](guida-di-stile.md).
 
 1. Crea una tavola di riferimento per l'identità del gioco con `z-image-turbo`: 8–12 immagini con fari, mare e personaggi neutri.
-2. Scegli con Federico le 2 **ancore del gioco** e la frase di stile del gioco (sezione 3.1.1).
+2. Scegli con il proprietario del progetto le 2 **ancore del gioco** e la frase di stile del gioco (sezione 3.1.1).
 3. Crea una tavola di riferimento per ogni fazione con `flux2-klein-4b` e le ancore del gioco: 6–8 immagini per fazione.
-4. Scegli con Federico 1–2 **ancore per ogni fazione** e la frase della fazione.
+4. Scegli con il proprietario del progetto 1–2 **ancore per ogni fazione** e la frase della fazione.
 5. Fissa un modello di prompt per ogni tipo di carta (Custode, Rito, Reliquia, Luogo).
 6. Produci 1 carta completa per fazione: illustrazione, cornice, testo.
 7. Riscrivi [guida-di-stile.md](guida-di-stile.md) per lo stile dipinto. La versione pixel art resta nella cronologia di git.
 
-Criterio di fine: Federico approva le 6 carte di prova, affiancate. Solo dopo parte la produzione in serie.
+Criterio di fine: il proprietario del progetto approva le 6 carte di prova, affiancate. Solo dopo parte la produzione in serie.
 
 ### Fase 2: kit dell'interfaccia
 
@@ -204,7 +204,7 @@ Criterio di fine: un giocatore nuovo distingue corsie, file e Fari senza il tuto
 
 Criterio di fine: il nome, il costo, l'Attacco e la Tenuta si leggono a 1366 × 768 senza ingrandire.
 
-Stato: fatta il 17/11/2026. Tutte le 154 carte del gioco (con le 3 pedine evocate) hanno un'illustrazione dipinta (164 immagini generate sull'OMEN, 23 rifatte). La mano usa `HdCard` a ventaglio, con l'anteprima grande al passaggio del mouse. I Riti hanno una cornice ad arco, ogni fazione ha un emblema, le carte rare e leggendarie hanno un riflesso animato in CSS (non uno shader). Il dorso è `CardBack.svelte`. Il criterio di fine è verificato a 1366 × 768. Passo 3 (atlante) rimandato: la mano carica file `sm` da circa 10 KB (1,4 MB per tutte le carte), uno per carta e solo quando serve. Rivaluta l'atlante nella fase 8, con le misure sul telefono lento.
+Stato: fatta il 17/11/2026. Tutte le 154 carte del gioco (con le 3 pedine evocate) hanno un'illustrazione dipinta (164 immagini generate in locale, 23 rifatte). La mano usa `HdCard` a ventaglio, con l'anteprima grande al passaggio del mouse. I Riti hanno una cornice ad arco, ogni fazione ha un emblema, le carte rare e leggendarie hanno un riflesso animato in CSS (non uno shader). Il dorso è `CardBack.svelte`. Il criterio di fine è verificato a 1366 × 768. Passo 3 (atlante) rimandato: la mano carica file `sm` da circa 10 KB (1,4 MB per tutte le carte), uno per carta e solo quando serve. Rivaluta l'atlante nella fase 8, con le misure sul telefono lento.
 
 ### Fase 5: Custodi sul campo
 
@@ -266,9 +266,9 @@ Stato: fatta il 17/11/2026.
 
 Questa fase era già prevista a fine progetto (piano di progetto, sezione 12).
 Con lo stile dipinto la plancia verticale è soprattutto un lavoro di layout: spazio di progetto 1080 × 1920, corsie in colonna, uno sfondo verticale nuovo.
-Dopo questa fase Federico sceglie: tenere una sola plancia o offrirle entrambe.
+Dopo questa fase il proprietario del progetto sceglie: tenere una sola plancia o offrirle entrambe.
 
-Stato: fatta il 17/11/2026, in attesa della scelta di Federico.
+Stato: fatta il 17/11/2026, in attesa della scelta del proprietario del progetto.
 - `layout.ts` ha due geometrie. `setBoardOrientation()` sceglie la plancia prima della partita. La plancia verticale misura 270 × 392 pixel di scena: 3 corsie in colonna (48 pixel con 24 di spazio), 7 file dai Fari avversari (in alto) ai miei (in basso).
 - Le animazioni usano `forward(r)`, la direzione verso il nemico: scatto in avanti, contraccolpo, particelle delle parole chiave. `sameLane()` trova i Custodi della stessa corsia.
 - Sfondo nuovo: `mare-verticale-802.png` (flux2-klein-4b, 960 × 1344, riferimento 3B), in `assets/board/web/sea-tall.webp`. `build.py` attenua la scia dorata sotto la corsia centrale. L'orizzonte sta sotto i Fari avversari: le torri si stagliano sul cielo. Il cielo è uno sprite senza il filtro delle onde.
@@ -290,14 +290,12 @@ Fase 0 ──► Fase 1 ──► Fase 2 ──► Fase 3 ──► Fase 4 ─�
 
 ### Fuori da questo piano
 
-- **Audio.** Oggi il gioco non ha suoni né musica. Per ora resta così (Federico, 17/11/2026).
+- **Audio.** Oggi il gioco non ha suoni né musica. Per ora resta così (17/11/2026).
 
 ## 6. Immagini con i modelli locali
 
-Federico preferisce generare le immagini sulla sua GPU con `local-image-mcp` (PC OMEN).
+Il progetto genera le immagini su una GPU locale con `local-image-mcp`.
 Con l'opzione C i modelli locali producono quasi tutte le immagini del gioco.
-
-ATTENZIONE: sull'OMEN usa solo la cartella `tcg`. Non usare mai la cartella `rogue`: contiene un altro gioco.
 
 ### 6.1 Modelli disponibili (verificato il 17/11/2026)
 
@@ -336,16 +334,16 @@ ATTENZIONE: sull'OMEN usa solo la cartella `tcg`. Non usare mai la cartella `rog
 4. Correggi i difetti (mani, occhi, oggetti in più) con la modifica di `flux2-klein-4b`.
 5. Esegui `pnpm art` (nuovo script): ridimensiona nelle 3 misure, converte in WebP, aggiorna l'atlante.
 6. Salva prompt, seme, modello e ancore in `assets/art/meta/<cardId>.json`. Il risultato resta riproducibile.
-7. Salva l'originale di 1344 × 960 fuori dal repository (sull'OMEN, con una copia di backup). Il repository contiene solo le versioni WebP.
+7. Salva l'originale di 1344 × 960 fuori dal repository (sul PC con la GPU, con una copia di backup). Il repository contiene solo le versioni WebP.
 
 ### 6.5 Come lavora un thread con i modelli locali
 
-1. Il thread si collega all'OMEN con la cartella `tcg` approvata.
-2. Il thread chiama `generate_image`. Le immagini vanno in `C:\Users\icoma\Pictures\local-image\generated-images\`.
+1. Il thread si collega al PC con la GPU, sulla cartella del progetto.
+2. Il thread chiama `generate_image`. Le immagini vanno nella cartella di output del generatore locale.
 3. Il thread copia le immagini scelte nel container e le elabora con lo script del repository.
 4. Il thread mette nel repository solo le versioni WebP e i file `.json`.
 
-NOTA: l'OMEN genera solo durante le sessioni di lavoro con Federico, non di notte (Federico, 17/11/2026). 154 illustrazioni × 4 varianti a circa 30 secondi richiedono circa 5 ore di GPU, più le correzioni. Una fazione (circa 26 carte) richiede circa 1 ora: una fazione per sessione.
+NOTA: il PC con la GPU genera solo durante le sessioni di lavoro, non di notte (17/11/2026). 154 illustrazioni × 4 varianti a circa 30 secondi richiedono circa 5 ore di GPU, più le correzioni. Una fazione (circa 26 carte) richiede circa 1 ora: una fazione per sessione.
 
 ### 6.6 Trasparenza sull'IA generativa
 
@@ -363,7 +361,7 @@ Con l'opzione C i modelli locali dipingono. Claude scrive prompt, sceglie le var
 | Fase | Modello | Motivo |
 |---|---|---|
 | 0. Layout a schermo pieno | Opus | Solo codice |
-| 1. Bibbia dello stile | Opus | Prompt e scelte con Federico |
+| 1. Bibbia dello stile | Opus | Prompt e scelte con il proprietario del progetto |
 | 2. Kit dell'interfaccia | Opus, Fable solo per gli ornamenti SVG delle cornici se Opus non basta | SVG e componenti |
 | 3. Campo di gioco | Opus | Immagini locali e shader |
 | 4. Carte | Opus | Pipeline e produzione in serie |
@@ -381,23 +379,23 @@ Con l'opzione C i modelli locali dipingono. Claude scrive prompt, sceglie le var
 | Giudizio negativo dei giocatori sulla grafica IA | Il gioco sembra meno curato | Dichiarazione chiara, qualità alta, interfaccia e cornici disegnate a mano. |
 | Peso del download | Caricamento lento, soprattutto sul telefono | WebP, 3 misure, caricamento progressivo. Obiettivo: meno di 25 MB per tutte le illustrazioni. |
 | Le prestazioni calano con shader e illustrazioni grandi | Meno di 60 fps sul telefono | `PERF=1 pnpm e2e perf` dopo ogni fase. Gli effetti pesanti hanno un interruttore. |
-| L'OMEN non è raggiungibile | La generazione si ferma | Le fasi 0, 2 (in parte), 5 e 6 non dipendono dai modelli locali. |
+| Il PC con la GPU non è raggiungibile | La generazione si ferma | Le fasi 0, 2 (in parte), 5 e 6 non dipendono dai modelli locali. |
 | Lavoro pixel art perso | Gli sprite, i font e gli script attuali non servono più | Gli asset restano come tema di riserva fino alla pulizia finale e restano nella cronologia di git. |
 
 ## 9. Decisioni
 
 Decisioni prese:
 
-1. **Direzione artistica:** opzione C, illustrazioni dipinte in alta risoluzione (Federico, 17/11/2026).
-2. **Piattaforma:** solo browser, con supporto per lo smartphone. Per ora niente Steam (Federico, 17/11/2026).
-3. **Fase 0:** parte subito (Federico, 17/11/2026).
-4. **Generazione:** l'OMEN genera solo durante le sessioni di lavoro con Federico (17/11/2026).
-5. **Audio:** per ora niente audio (Federico, 17/11/2026).
-6. **Coerenza:** illustrazioni coerenti prima come gioco, poi per fazione (Federico, 17/11/2026). Vedi la sezione 3.1.1.
+1. **Direzione artistica:** opzione C, illustrazioni dipinte in alta risoluzione (17/11/2026).
+2. **Piattaforma:** solo browser, con supporto per lo smartphone. Per ora niente Steam (17/11/2026).
+3. **Fase 0:** parte subito (17/11/2026).
+4. **Generazione:** il PC con la GPU genera solo durante le sessioni di lavoro (17/11/2026).
+5. **Audio:** per ora niente audio (17/11/2026).
+6. **Coerenza:** illustrazioni coerenti prima come gioco, poi per fazione (17/11/2026). Vedi la sezione 3.1.1.
 
 ## 10. Appendice: pubblicazione su Steam (opzionale)
 
-Questa sezione serve solo se un giorno Federico decide di pubblicare il gioco su Steam. Oggi non fa parte del piano.
+Questa sezione serve solo se un giorno il progetto decide di pubblicare il gioco su Steam. Oggi non fa parte del piano.
 
 - Steam vuole un eseguibile: Electron o Tauri possono incapsulare il client.
 - Steam chiede di dichiarare i contenuti creati con l'IA nel questionario dei contenuti (Content Survey). I file `assets/art/meta/*.json` documentano l'origine delle immagini.
