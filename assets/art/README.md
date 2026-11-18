@@ -1,12 +1,12 @@
-# Illustrazioni dipinte
+# Painted illustrations
 
-Questa cartella contiene le illustrazioni HD delle carte (piano grafica, sezione 6.4).
+This folder contains the HD card illustrations.
 
-- `originals/`: gli originali 1344x960 dei modelli locali. Git ignora questa cartella.
-- `meta/<cardId>.json`: modello, seme, riferimenti e prompt di ogni illustrazione.
-- `web/{lg,md,sm}/<cardId>.webp`: le versioni per il gioco (768, 384 e 192 px di larghezza, rapporto 7:5).
+- `originals/`: the 1344 × 960 originals from the local image models. Git ignores this folder.
+- `meta/<cardId>.json`: model, seed, references and prompt of each illustration.
+- `web/{lg,md,sm}/<cardId>.webp`: the versions for the game (768, 384 and 192 px wide, 7:5 ratio).
 
-Per creare le versioni web:
+To create the web versions:
 
-1. Copia gli originali in `assets/art/originals/`.
-2. Esegui `corepack pnpm art`.
+1. Copy the originals to `assets/art/originals/`.
+2. Run `pnpm art`.

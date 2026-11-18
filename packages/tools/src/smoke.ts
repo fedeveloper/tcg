@@ -2,7 +2,7 @@
  * Smoke and load test of an installed PvP server, through the real WebSocket connection.
  * It opens 2 guest accounts for each match, pairs them with a private code and plays every match to the end.
  *
- * Usage: pnpm smoke [--url ws://raspberrypi.local/ws] [--matches 1] [--seed 1]
+ * Usage: pnpm smoke [--url ws://your-server/ws] [--matches 1] [--seed 1]
  * With --matches 10 it checks the plan budget: 10 active matches at the same time.
  * The server accepts at most 40 messages in 10 s for each connection, so each player waits --pace ms between two actions.
  */

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Builds the client and the server, then copies them to the Raspberry Pi with rsync.
-# Usage: deploy/deploy.sh pi@raspberrypi.local
-# The Pi needs /opt/tcg owned by your SSH user, and the tcg-server systemd unit.
+# Builds the client and the server, then copies them to a Linux server with rsync.
+# Usage: deploy/deploy.sh user@your-server
+# The server needs /opt/tcg owned by your SSH user, and the tcg-server systemd unit.
 set -euo pipefail
 target="${1:?usage: deploy/deploy.sh user@host}"
 cd "$(dirname "$0")/.."

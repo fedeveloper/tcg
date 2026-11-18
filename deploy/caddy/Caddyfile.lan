@@ -1,5 +1,5 @@
 # Caddy for a test in the local network, without a domain and without HTTPS.
-# Open http://<ip-of-the-pi>/ from a browser in the same network.
+# Open http://<ip-of-the-server>/ from a browser in the same network.
 :80 {
 	encode zstd gzip
 

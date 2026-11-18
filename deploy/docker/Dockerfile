@@ -1,4 +1,4 @@
-# Image of the PvP server for public hosting (plan, section 6.7). The Raspberry Pi does not use Docker.
+# Image of the PvP server for public hosting (plan, section 6.7).
 # Build from the repository root:  docker build -f deploy/docker/Dockerfile -t tcg-server .
 # Run:  docker run -d -p 8787:8787 -v tcg-data:/data -e ALLOWED_ORIGIN=https://example.org tcg-server
 

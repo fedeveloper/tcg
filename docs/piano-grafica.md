@@ -52,7 +52,7 @@ Ho avviato il client e ho preso screenshot a 1920 × 1080, 1366 × 768 e 412 × 
 
 ### 2.2 Cosa resta utile
 
-- Le animazioni hanno già anticipazione, hit stop, squash and stretch e dissolvenza (vedi [animazioni.md](animazioni.md)). Queste tecniche valgono anche per le illustrazioni.
+- Le animazioni hanno già anticipazione, hit stop, squash and stretch e dissolvenza (vedi [animations.md](animations.md)). Queste tecniche valgono anche per le illustrazioni.
 - Il codice separa bene il motore, la sessione e il disegno (`Theme`, `BoardView`). Un nuovo tema non tocca le regole.
 - La palette "Fari 32" resta come base dei colori di fazione (mare, fari, tramonto). Non è più un limite tecnico.
 - Gli asset pixel art restano come tema di riserva finché i nuovi asset non li sostituiscono.

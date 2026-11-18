@@ -295,7 +295,7 @@ export class BoardView {
     });
   }
 
-  /** Camera shake: at most 3 pixels (docs/animazioni.md). */
+  /** Camera shake: at most 3 pixels (docs/animations.md). */
   private shake(tl: gsap.core.Timeline, pos: number, amount: number, duration: number): void {
     if (amount <= 0 || this.speed.reduced) return;
     const n = Math.max(2, Math.round(duration / 0.04));

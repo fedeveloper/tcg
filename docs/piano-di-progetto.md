@@ -510,7 +510,7 @@ L'IA usa lo stesso motore del gioco e ha tre livelli di difficoltà.
 | **Medio** | Ricerca in profondità limitata (2–3 azioni) con funzione di valutazione. |
 | **Difficile** | **ISMCTS** (Information Set Monte Carlo Tree Search): simula molte partite con le carte nascoste dell'avversario ipotizzate a caso. |
 
-- Implementazione (novembre 2026): l'IA difficile usa ISMCTS sulla catena e una ricerca più profonda nella Manovra. Vedi `docs/motore.md`, sezione 4.1.
+- Implementazione (novembre 2026): l'IA difficile usa ISMCTS sulla catena e una ricerca più profonda nella Manovra. Vedi `docs/engine.md`, sezione 4.1.
 - L'IA gira in un **Web Worker**. Il Web Worker evita blocchi dell'interfaccia.
 - L'IA ha un limite di tempo per azione (esempio: 800 ms).
 - La funzione di valutazione considera: Luce dei Fari, valore sul campo, carte in mano, controllo della Marea.
@@ -584,6 +584,6 @@ Il proprietario del progetto ha risposto alle decisioni aperte l'11 novembre 202
 
 | Punto | Stato |
 |---|---|
-| Prova del server sul Raspberry Pi 3B o sul ThinkPad T480 | Da fare, con `docs/guida-installazione.md`. |
+| Prova del server su un host di test | Da fare, con `docs/installation.md`. |
 | Plancia verticale | Fatta (fase 8 della grafica). Federico tiene le due plance: la verticale sul telefono in verticale, l'orizzontale altrove. L'opzione "Plancia" cambia la scelta. |
 | Miglioramento dell'IA difficile (opzionale) | Oggi vince il 53% delle partite contro la media. La regolazione automatica dei pesi non ha migliorato il risultato (verifica su 320 partite nuove). Il passo utile è aggiungere voci nuove alla valutazione, per esempio la qualità delle carte in mano. |
